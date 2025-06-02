@@ -86,7 +86,7 @@ export default function Header() {
                         <Fragment key={index}>
                             <motion.button
                                 onClick={() => handleNavigation(headerElement.url)}
-                                className="text-sm font-medium hover:text-primary transition-colors text-center"
+                                className="text-sm font-medium hover:text-primary transition-colors text-center cursor-pointer"
                                 whileHover={{scale: 1.05}}
                                 initial={{opacity: 0, x: -20}}
                                 animate={{opacity: 1, x: 0}}
@@ -98,7 +98,7 @@ export default function Header() {
                                 <motion.button
                                     key={item.link}
                                     onClick={() => handleNavigation(item.link)}
-                                    className="text-sm font-medium hover:text-primary transition-colors"
+                                    className="text-sm font-medium hover:text-primary transition-colors cursor-pointer"
                                     whileHover={{scale: 1.05}}
                                     initial={{opacity: 0, x: -20}}
                                     animate={{opacity: 1, x: 0}}
@@ -183,7 +183,7 @@ export default function Header() {
         >
             <div className="container mx-auto px-4 flex justify-between items-center">
                 <motion.div whileHover={{scale: 1.05}} transition={{type: "spring", stiffness: 300}}>
-                    <Link to="/" className="flex items-center gap-2">
+                    <Link to="/" className="flex items-center gap-2 cursor-pointer">
                         <img
                             src="/icon.png"
                             className="h-10 w-10 text-primary"
