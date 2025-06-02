@@ -11,108 +11,77 @@
 
 ## Pour shadcnUI :
 
-### 🎨 Couleurs principales (mode clair)
-
-| Variable CSS               | HSL                          | Hexadécimal |
-|----------------------------|------------------------------|-------------|
-| `--primary`                | `hsl(23.90, 49.17%, 47.06%)` | `#b87b45`   |
-| `--primary-foreground`     | `hsl(28.00, 100%, 97.06%)`   | `#fff9f2`   |
-| `--secondary`              | `hsl(174, 34.78%, 45.10%)`   | `#4cb9ae`   |
-| `--secondary-foreground`   | `hsl(28.00, 100%, 97.06%)`   | `#fff9f2`   |
-| `--accent`                 | `hsl(174, 34.78%, 45.10%)`   | `#4cb9ae`   |
-| `--accent-foreground`      | `hsl(28.00, 100%, 97.06%)`   | `#fff9f2`   |
-| `--destructive`            | `hsl(4.26, 60%, 53.92%)`     | `#dd514c`   |
-| `--destructive-foreground` | `hsl(28.00, 100%, 97.06%)`   | `#fff9f2`   |
-| `--muted`                  | `hsl(30.97, 60.78%, 90%)`    | `#f4e3d4`   |
-| `--muted-foreground`       | `hsl(24, 9.80%, 40%)`        | `#685c51`   |
-| `--background`             | `hsl(40.00, 60.00%, 98.04%)` | `#fef9f0`   |
-| `--foreground`             | `hsl(24.00, 19.48%, 15.10%)` | `#2b231c`   |
-| `--card`                   | `hsl(40.00, 60.00%, 98.04%)` | `#fef9f0`   |
-| `--card-foreground`        | `hsl(24.00, 19.48%, 15.10%)` | `#2b231c`   |
-| `--popover`                | `hsl(40.00, 60.00%, 98.04%)` | `#fef9f0`   |
-| `--popover-foreground`     | `hsl(24.00, 19.48%, 15.10%)` | `#2b231c`   |
-| `--border`                 | `hsl(31.30, 29.87%, 84.90%)` | `#e3d5c5`   |
-| `--input`                  | `hsl(31.30, 29.87%, 84.90%)` | `#e3d5c5`   |
-| `--ring`                   | `hsl(23.90, 49.17%, 47.06%)` | `#b87b45`   |
-
----
-
-### 📊 Couleurs pour les graphiques
-
-| Variable CSS | HSL                          | Hexadécimal |
-|--------------|------------------------------|-------------|
-| `--chart-1`  | `hsl(23.90, 49.17%, 47.06%)` | `#b87b45`   |
-| `--chart-2`  | `hsl(4.26, 60%, 53.92%)`     | `#dd514c`   |
-| `--chart-3`  | `hsl(174, 34.78%, 45.10%)`   | `#4cb9ae`   |
-| `--chart-4`  | `hsl(28.00, 100%, 97.06%)`   | `#fff9f2`   |
-| `--chart-5`  | `hsl(30.97, 60.78%, 90%)`    | `#f4e3d4`   |
-
----
-
-### 🧭 Couleurs de la sidebar
-
-| Variable CSS                   | HSL                          | Hexadécimal |
-|--------------------------------|------------------------------|-------------|
-| `--sidebar`                    | `hsl(39, 34.48%, 88.63%)`    | `#f0e3cc`   |
-| `--sidebar-foreground`         | `hsl(28.57, 16.54%, 24.90%)` | `#3e332a`   |
-| `--sidebar-primary`            | `hsl(30.00, 33.87%, 48.63%)` | `#a4744f`   |
-| `--sidebar-primary-foreground` | `hsl(0, 0%, 100%)`           | `#ffffff`   |
-| `--sidebar-accent`             | `hsl(42.86, 32.81%, 74.90%)` | `#e4d1a8`   |
-| `--sidebar-accent-foreground`  | `hsl(28.57, 16.54%, 24.90%)` | `#3e332a`   |
-| `--sidebar-border`             | `hsl(40.00, 31.43%, 79.41%)` | `#e4d2b8`   |
-| `--sidebar-ring`               | `hsl(30.00, 33.87%, 48.63%)` | `#a4744f`   |
+### 🎨 Couleurs (mode clair)
+| Variable CSS                   | OKLCH                         | Hexadécimal |
+|--------------------------------|-------------------------------|-------------|
+| `--background`                 | oklch(0.9595 0.0080 253.8534) | #f5f4f9     |
+| `--foreground`                 | oklch(0.2365 0.0682 250.6963) | #2c2a3a     |
+| `--card`                       | oklch(0.9595 0.0080 253.8534) | #f5f4f9     |
+| `--card-foreground`            | oklch(0.2365 0.0682 250.6963) | #2c2a3a     |
+| `--popover`                    | oklch(0.9595 0.0080 253.8534) | #f5f4f9     |
+| `--popover-foreground`         | oklch(0.2365 0.0682 250.6963) | #2c2a3a     |
+| `--primary`                    | oklch(0.7257 0.1294 51.1911)  | #e07b00     |
+| `--primary-foreground`         | oklch(1.0000 0 0)             | #ffffff     |
+| `--secondary`                  | oklch(0.6345 0.0782 186.6101) | #3b82f6     |
+| `--secondary-foreground`       | oklch(1.0000 0 0)             | #ffffff     |
+| `--muted`                      | oklch(0.9223 0.0077 241.6696) | #eae9f0     |
+| `--muted-foreground`           | oklch(0.5053 0.0201 248.2257) | #6b6a7d     |
+| `--accent`                     | oklch(0.6408 0.1727 26.8050)  | #f59e0b     |
+| `--accent-foreground`          | oklch(1.0000 0 0)             | #ffffff     |
+| `--destructive`                | oklch(0.6358 0.2088 25.4126)  | #f87171     |
+| `--destructive-foreground`     | oklch(1.0000 0 0)             | #ffffff     |
+| `--border`                     | oklch(0.8414 0.0142 247.9963) | #d1d0e0     |
+| `--input`                      | oklch(0.8414 0.0142 247.9963) | #d1d0e0     |
+| `--ring`                       | oklch(0.4847 0.1632 255.6195) | #7c3aed     |
+| `--chart-1`                    | oklch(0.7257 0.1294 51.1911)  | #e07b00     |
+| `--chart-2`                    | oklch(0.6408 0.1727 26.8050)  | #f59e0b     |
+| `--chart-3`                    | oklch(0.6345 0.0782 186.6101) | #3b82f6     |
+| `--chart-4`                    | oklch(1.0000 0 0)             | #ffffff     |
+| `--chart-5`                    | oklch(0.9595 0.0080 253.8534) | #f5f4f9     |
+| `--sidebar`                    | oklch(0.9028 0.0168 250.8525) | #e0dff0     |
+| `--sidebar-foreground`         | oklch(0.2365 0.0682 250.6963) | #2c2a3a     |
+| `--sidebar-primary`            | oklch(0.7257 0.1294 51.1911)  | #e07b00     |
+| `--sidebar-primary-foreground` | oklch(1.0000 0 0)             | #ffffff     |
+| `--sidebar-accent`             | oklch(0.7771 0.0632 188.2323) | #60a5fa     |
+| `--sidebar-accent-foreground`  | oklch(0.2365 0.0682 250.6963) | #2c2a3a     |
+| `--sidebar-border`             | oklch(0.8414 0.0142 247.9963) | #d1d0e0     |
+| `--sidebar-ring`               | oklch(0.7257 0.1294 51.1911)  | #e07b00     |
 
 ---
 
 ### 🌙 Couleurs principales (mode sombre)
 
-| Variable CSS               | HSL                          | Hexadécimal |
-|----------------------------|------------------------------|-------------|
-| `--primary`                | `hsl(23.90, 49.17%, 47.06%)` | `#b87b45`   |
-| `--primary-foreground`     | `hsl(28.00, 100%, 97.06%)`   | `#fff9f2`   |
-| `--secondary`              | `hsl(174, 34.78%, 45.10%)`   | `#4cb9ae`   |
-| `--secondary-foreground`   | `hsl(28.00, 100%, 97.06%)`   | `#fff9f2`   |
-| `--accent`                 | `hsl(174, 34.78%, 45.10%)`   | `#4cb9ae`   |
-| `--accent-foreground`      | `hsl(28.00, 100%, 97.06%)`   | `#fff9f2`   |
-| `--destructive`            | `hsl(4.26, 60%, 53.92%)`     | `#dd514c`   |
-| `--destructive-foreground` | `hsl(28.00, 100%, 97.06%)`   | `#fff9f2`   |
-| `--muted`                  | `hsl(30.97, 60.78%, 10%)`    | `#1a130a`   |
-| `--muted-foreground`       | `hsl(24, 9.80%, 60%)`        | `#998d83`   |
-| `--background`             | `hsl(24.00, 10.08%, 10.20%)` | `#1b1714`   |
-| `--foreground`             | `hsl(28.00, 100%, 97.06%)`   | `#fff9f2`   |
-| `--card`                   | `hsl(24.00, 10.08%, 10.20%)` | `#1b1714`   |
-| `--card-foreground`        | `hsl(28.00, 100%, 97.06%)`   | `#fff9f2`   |
-| `--popover`                | `hsl(24.00, 10.08%, 10.20%)` | `#1b1714`   |
-| `--popover-foreground`     | `hsl(28.00, 100%, 97.06%)`   | `#fff9f2`   |
-| `--border`                 | `hsl(28.00, 10%, 20%)`       | `#332a23`   |
-| `--input`                  | `hsl(28.00, 10%, 20%)`       | `#332a23`   |
-| `--ring`                   | `hsl(23.90, 49.17%, 47.06%)` | `#b87b45`   |
-
----
-
-### 📊 Couleurs pour les graphiques
-
-| Variable CSS | HSL                          | Hexadécimal |
-|--------------|------------------------------|-------------|
-| `--chart-1`  | `hsl(23.90, 49.17%, 47.06%)` | `#b87b45`   |
-| `--chart-2`  | `hsl(4.26, 60%, 53.92%)`     | `#dd514c`   |
-| `--chart-3`  | `hsl(174, 34.78%, 45.10%)`   | `#4cb9ae`   |
-| `--chart-4`  | `hsl(28.00, 100%, 97.06%)`   | `#fff9f2`   |
-| `--chart-5`  | `hsl(30.97, 60.78%, 90%)`    | `#f4e3d4`   |
-
----
-
-### 🧭 Couleurs de la sidebar
-
-| Variable CSS                   | HSL                          | Hexadécimal |
-|--------------------------------|------------------------------|-------------|
-| `--sidebar`                    | `hsl(39, 34.48%, 15.00%)`    | `#2a2319`   |
-| `--sidebar-foreground`         | `hsl(28.57, 16.54%, 74.90%)` | `#c0b4a1`   |
-| `--sidebar-primary`            | `hsl(30.00, 33.87%, 48.63%)` | `#a4744f`   |
-| `--sidebar-primary-foreground` | `hsl(0, 0%, 100%)`           | `#ffffff`   |
-| `--sidebar-accent`             | `hsl(42.86, 32.81%, 25.00%)` | `#4a3e2e`   |
-| `--sidebar-accent-foreground`  | `hsl(28.57, 16.54%, 74.90%)` | `#c0b4a1`   |
-| `--sidebar-border`             | `hsl(40.00, 31.43%, 20%)`    | `#3f3429`   |
-| `--sidebar-ring`               | `hsl(30.00, 33.87%, 48.63%)` | `#a4744f`   |
-
----
+| Variable CSS                   | OKLCH                         | Hexadécimal |
+|--------------------------------|-------------------------------|-------------|
+| `--background`                 | oklch(0.1885 0.0171 252.5875) | #1e1e2a     |
+| `--foreground`                 | oklch(1.0000 0 0)             | #ffffff     |
+| `--card`                       | oklch(0.1885 0.0171 252.5875) | #1e1e2a     |
+| `--card-foreground`            | oklch(1.0000 0 0)             | #ffffff     |
+| `--popover`                    | oklch(0.1885 0.0171 252.5875) | #1e1e2a     |
+| `--popover-foreground`         | oklch(1.0000 0 0)             | #ffffff     |
+| `--primary`                    | oklch(0.7257 0.1294 51.1911)  | #e07b00     |
+| `--primary-foreground`         | oklch(1.0000 0 0)             | #ffffff     |
+| `--secondary`                  | oklch(0.6345 0.0782 186.6101) | #3b82f6     |
+| `--secondary-foreground`       | oklch(1.0000 0 0)             | #ffffff     |
+| `--muted`                      | oklch(0.3664 0.0218 248.4209) | #4b4b5e     |
+| `--muted-foreground`           | oklch(0.7604 0.0225 245.9365) | #b0b0c8     |
+| `--accent`                     | oklch(0.6408 0.1727 26.8050)  | #f59e0b     |
+| `--accent-foreground`          | oklch(1.0000 0 0)             | #ffffff     |
+| `--destructive`                | oklch(0.6358 0.2088 25.4126)  | #f87171     |
+| `--destructive-foreground`     | oklch(1.0000 0 0)             | #ffffff     |
+| `--border`                     | oklch(0.3664 0.0218 248.4209) | #4b4b5e     |
+| `--input`                      | oklch(0.3664 0.0218 248.4209) | #4b4b5e     |
+| `--ring`                       | oklch(0.4847 0.1632 255.6195) | #7c3aed     |
+| `--chart-1`                    | oklch(0.7257 0.1294 51.1911)  | #e07b00     |
+| `--chart-2`                    | oklch(0.6408 0.1727 26.8050)  | #f59e0b     |
+| `--chart-3`                    | oklch(0.6345 0.0782 186.6101) | #3b82f6     |
+| `--chart-4`                    | oklch(1.0000 0 0)             | #ffffff     |
+| `--chart-5`                    | oklch(0.9595 0.0080 253.8534) | #f5f4f9     |
+| `--sidebar`                    | oklch(0.2640 0.0274 251.0545) | #34344a     |
+| `--sidebar-foreground`         | oklch(0.9595 0.0080 253.8534) | #f5f4f9     |
+| `--sidebar-primary`            | oklch(0.7257 0.1294 51.1911)  | #e07b00     |
+| `--sidebar-primary-foreground` | oklch(0.2640 0.0274 251.0545) | #34344a     |
+| `--sidebar-accent`             | oklch(0.4755 0.0576 185.8174) | #5b5b8c     |
+| `--sidebar-accent-foreground`  | oklch(0.9595 0.0080 253.8534) | #f5f4f9     |
+| `--sidebar-border`             | oklch(0.3664 0.0218 248.4209) | #4b4b5e     |
+| `--sidebar-ring`               | oklch(0.7257 0.1294 51.1911)  | #e07b00     |
