@@ -28,7 +28,7 @@ public class CoachController {
 
     @GetMapping("/coach/{id}")
     public CoachDTO get(
-            @PathVariable int id
+            @PathVariable String id
     ) {
         return new CoachDTO(coachService.select(id));
     }
@@ -45,7 +45,7 @@ public class CoachController {
     }
 
     @DeleteMapping("/coach/{id}")
-    public void deleteCoach(@PathVariable int id) {
+    public void deleteCoach(@PathVariable String id) {
         coachService.delete(id);
     }
 }
