@@ -36,9 +36,9 @@ public class Coach {
     @Column(nullable = false)
     private Gender gender;
 
-//    @OneToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
-//    private User user;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    private User user;
 
     @Override
     public String toString() {

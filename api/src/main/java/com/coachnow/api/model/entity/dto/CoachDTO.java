@@ -20,7 +20,7 @@ public class CoachDTO {
 
     private Gender gender;
 
-//    private String userId;
+    private String userId;
 
     public CoachDTO(Coach coach) {
         this.id = coach.getId();
@@ -29,7 +29,7 @@ public class CoachDTO {
         this.hourlyRate = coach.getHourlyRate();
         this.sports = coach.getSports();
         this.levels = coach.getLevels();
-//        this.userId = coach.getUser() != null ? coach.getUser().getId() : null
+        this.userId = coach.getUser() != null ? coach.getUser().getId() : null;
     }
 
 }
