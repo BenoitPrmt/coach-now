@@ -15,8 +15,6 @@ const Footer = () => {
                             <img
                                 src={footer.iconUrl}
                                 className="h-10 w-10 text-primary"
-                                width="42"
-                                height="42"
                                 alt={footer.title}
                             />
                             <span className="text-2xl font-bold tracking-tight">{footer.title}</span>

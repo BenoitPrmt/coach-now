@@ -5,7 +5,7 @@ import {useState, useEffect, Fragment} from "react";
 import {navigation} from "~/constants";
 import {Menu, X} from "lucide-react";
 import {cn} from "~/lib/utils";
-import {Link, useLocation, useNavigate} from "react-router";
+import {Link, useNavigate} from "react-router";
 
 export default function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -43,8 +43,6 @@ export default function Header() {
     //                         <img
     //                             src="/icon.png"
     //                             className="h-10 w-10 text-primary"
-    //                             width="42"
-    //                             height="42"
     //                             alt="CoachNow Logo"
     //                         />
     //                         <span className="text-xl font-bold">CoachNow</span>
@@ -187,8 +185,6 @@ export default function Header() {
                         <img
                             src="/icon.png"
                             className="h-10 w-10 text-primary"
-                            width="42"
-                            height="42"
                             alt="CoachNow Logo"
                         />
                         <span className="text-xl font-bold">CoachNow</span>
