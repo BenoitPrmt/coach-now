@@ -5,6 +5,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CoachRepository extends CrudRepository<Coach, Integer> {
+public interface CoachRepository extends CrudRepository<Coach, String> {
 
 }
