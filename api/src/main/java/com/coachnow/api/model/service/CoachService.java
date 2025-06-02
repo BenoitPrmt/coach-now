@@ -17,7 +17,7 @@ public class CoachService {
         return (List<Coach>) coachRepository.findAll();
     }
 
-    public Coach select(Integer id) {
+    public Coach select(String id) {
         Optional<Coach> optionalPlayer = coachRepository.findById(id);
         return optionalPlayer.orElse(null);
     }
@@ -26,7 +26,7 @@ public class CoachService {
         return coachRepository.save(player);
     }
 
-    public void delete(int id) {
+    public void delete(String id) {
         coachRepository.deleteById(id);
     }
 
