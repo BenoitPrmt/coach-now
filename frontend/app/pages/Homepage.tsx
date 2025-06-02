@@ -2,7 +2,7 @@ import React from 'react';
 
 const Homepage = () => {
     return (
-        <main className="flex items-center justify-center pt-16 pb-4">
+        <main className="flex items-center justify-center min-h-screen">
             Bienvenue sur CoachNow !
         </main>
     );
