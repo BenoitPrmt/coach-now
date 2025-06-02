@@ -8,6 +8,9 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Data
 @Table(name = "user")
@@ -32,6 +35,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     private Roles type;
+
+    @OneToMany(mappedBy = "booking")
+    private List<Booking> contests = new ArrayList<Booking>();
 
     public String getId() {
         return id;
@@ -81,4 +87,11 @@ public class User {
         this.type = type;
     }
 
+    public List<Booking> getContests() {
+        return contests;
+    }
+
+    public void setContests(List<Booking> contests) {
+        this.contests = contests;
+    }
 }

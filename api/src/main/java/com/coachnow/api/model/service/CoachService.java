@@ -22,15 +22,15 @@ public class CoachService {
         return optionalPlayer.orElse(null);
     }
 
-    public Coach save(Coach player) {
-        return coachRepository.save(player);
+    public Coach save(Coach coach) {
+        return coachRepository.save(coach);
     }
 
     public void delete(String id) {
         coachRepository.deleteById(id);
     }
 
-    public void delete(Coach player) {
-        coachRepository.delete(player);
+    public void delete(Coach coach) {
+        coachRepository.delete(coach);
     }
 }

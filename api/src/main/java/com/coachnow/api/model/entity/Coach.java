@@ -42,6 +42,9 @@ public class Coach {
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
+    @OneToMany(mappedBy = "booking")
+    private List<Booking> contests = new ArrayList<Booking>();
+
     @Override
     public String toString() {
         return "";
@@ -109,5 +112,13 @@ public class Coach {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public List<Booking> getContests() {
+        return contests;
+    }
+
+    public void setContests(List<Booking> contests) {
+        this.contests = contests;
     }
 }
