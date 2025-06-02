@@ -1,7 +1,7 @@
 "use client";
 
 import {AnimatePresence, motion} from "motion/react";
-import {useState, useEffect} from "react";
+import {useState, useEffect, Fragment} from "react";
 import {navigation} from "~/constants";
 import {Menu, X} from "lucide-react";
 import {cn} from "~/lib/utils";
@@ -10,7 +10,6 @@ import {Link, useLocation, useNavigate} from "react-router";
 export default function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
-    const {pathname} = useLocation();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -78,25 +77,39 @@ export default function Header() {
     };
 
     const renderNavButtons = () => {
-        const currentNav = headerElements.find((el) => el.url === pathname);
-        const links = currentNav?.links || [];
         const transitionBase = {duration: 0.3};
 
         return (
             <>
-                {links.map((item, index) => (
-                    <motion.button
-                        key={item.link}
-                        onClick={() => handleNavigation(item.link)}
-                        className="text-sm font-medium hover:text-primary transition-colors"
-                        whileHover={{scale: 1.05}}
-                        initial={{opacity: 0, x: -20}}
-                        animate={{opacity: 1, x: 0}}
-                        transition={{...transitionBase, delay: index * 0.1}}
-                    >
-                        {item.label}
-                    </motion.button>
-                ))}
+                {
+                    headerElements.map((headerElement, index) => (
+                        <Fragment key={index}>
+                            <motion.button
+                                onClick={() => handleNavigation(headerElement.url)}
+                                className="text-sm font-medium hover:text-primary transition-colors text-center"
+                                whileHover={{scale: 1.05}}
+                                initial={{opacity: 0, x: -20}}
+                                animate={{opacity: 1, x: 0}}
+                                transition={{...transitionBase, delay: index * 0.1}}
+                            >
+                                {headerElement.page}
+                            </motion.button>
+                            {headerElement.links.map((item, index) => (
+                                <motion.button
+                                    key={item.link}
+                                    onClick={() => handleNavigation(item.link)}
+                                    className="text-sm font-medium hover:text-primary transition-colors"
+                                    whileHover={{scale: 1.05}}
+                                    initial={{opacity: 0, x: -20}}
+                                    animate={{opacity: 1, x: 0}}
+                                    transition={{...transitionBase, delay: index * 0.1}}
+                                >
+                                    {item.label}
+                                </motion.button>
+                            ))}
+                        </Fragment>
+                    ))
+                }
                 {/* Condition if logged */}
                 {/*{currentUsername ? (*/}
                 {/*    <>*/}

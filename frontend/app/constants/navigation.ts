@@ -19,22 +19,12 @@ const navigation: NavigationOptions = [
     {
         page: "Accueil",
         url: "/",
-        links: [
-            {
-                label: "Accueil",
-                link: "#",
-            },
-        ]
+        links: []
     },
     {
         page: "À propos",
         url: "/about",
-        links: [
-            {
-                label: "À propos",
-                link: "#",
-            },
-        ]
+        links: []
     },
 ]
 
