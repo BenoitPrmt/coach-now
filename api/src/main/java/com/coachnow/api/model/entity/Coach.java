@@ -5,6 +5,8 @@ import com.coachnow.api.types.Level;
 import com.coachnow.api.types.Sports;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -43,5 +45,69 @@ public class Coach {
     @Override
     public String toString() {
         return "";
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Date getBirthdate() {
+        return birthdate;
+    }
+
+    public void setBirthdate(Date birthdate) {
+        this.birthdate = birthdate;
+    }
+
+    public String getProfilePictureUrl() {
+        return profilePictureUrl;
+    }
+
+    public void setProfilePictureUrl(String profilePictureUrl) {
+        this.profilePictureUrl = profilePictureUrl;
+    }
+
+    public Float getHourlyRate() {
+        return hourlyRate;
+    }
+
+    public void setHourlyRate(Float hourlyRate) {
+        this.hourlyRate = hourlyRate;
+    }
+
+    public Set<Sports> getSports() {
+        return sports;
+    }
+
+    public void setSports(Set<Sports> sports) {
+        this.sports = sports;
+    }
+
+    public Set<Level> getLevels() {
+        return levels;
+    }
+
+    public void setLevels(Set<Level> levels) {
+        this.levels = levels;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

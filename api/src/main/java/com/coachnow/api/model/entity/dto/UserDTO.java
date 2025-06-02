@@ -14,15 +14,14 @@ public class UserDTO {
     private String last_name;
     private String email;
     private String password;
-    private List<Roles> roles = new ArrayList<Roles>();
+    private Roles roles;
 
     public UserDTO(User user) {
         this.id = user.getId();
         this.first_name = user.getFirstName();
-        this.last_name = user.getFirstName();
+        this.last_name = user.getLastName();
         this.email = user.getEmail();
-        this.password = user.getPassword();
-
+        this.roles = user.getType();
     }
 
 }
