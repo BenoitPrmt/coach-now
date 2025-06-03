@@ -9,6 +9,7 @@ import {Button} from "~/components/ui/button";
 import {cn} from "~/lib/utils";
 import {Card, CardContent} from "~/components/ui/card";
 import {Link} from "react-router";
+import {useMemo} from "react";
 
 type AuthFormProps = React.ComponentProps<"div"> & {
     type?: "login" | "register";
@@ -19,7 +20,8 @@ const AuthForm = ({
                       className,
                       ...props
                   }: AuthFormProps) => {
-    const schema = type === "login" ? loginSchema : registerSchema;
+    const isLogin = useMemo(() => type === "login", [type]);
+    const schema = isLogin ? loginSchema : registerSchema;
     const form = useForm<z.infer<typeof schema>>({
         resolver: zodResolver(schema),
         defaultValues: {
@@ -89,7 +91,7 @@ const AuthForm = ({
                         animate={type}
                         className={cn(
                             "relative z-10",
-                            type === "register" ? "md:order-last" : ""
+                            !isLogin && "md:order-last"
                         )}
                         layout
                     >
@@ -112,7 +114,7 @@ const AuthForm = ({
                                             transition={{duration: 0.3}}
                                             className="flex flex-col items-center text-center"
                                         >
-                                            {type === "login" ? (
+                                            {isLogin ? (
                                                 <>
                                                     <h1 className="text-2xl font-bold">
                                                         De retour ?
@@ -135,7 +137,7 @@ const AuthForm = ({
                                     </AnimatePresence>
 
                                     <AnimatePresence>
-                                        {type === "register" && (
+                                        {!isLogin && (
                                             <motion.div
                                                 initial={{opacity: 0, height: 0}}
                                                 animate={{opacity: 1, height: "auto"}}
@@ -206,7 +208,7 @@ const AuthForm = ({
                                     </motion.div>
 
                                     <AnimatePresence>
-                                        {type === "register" && (
+                                        {!isLogin && (
                                             <motion.div
                                                 initial={{opacity: 0, height: 0}}
                                                 animate={{opacity: 1, height: "auto"}}
@@ -234,7 +236,7 @@ const AuthForm = ({
 
                                     <motion.div variants={itemVariants}>
                                         <Button type="submit" className="w-full cursor-pointer">
-                                            {type === "login" ? "Se connecter" : "Créer un compte"}
+                                            {isLogin ? "Se connecter" : "Créer un compte"}
                                         </Button>
                                     </motion.div>
 
@@ -247,7 +249,7 @@ const AuthForm = ({
                                                 exit={{opacity: 0}}
                                                 transition={{duration: 0.2}}
                                             >
-                                                {type === "login" ? (
+                                                {isLogin ? (
                                                     <>
                                                         Pas encore de compte ?{" "}
                                                         <Link to="/register" className="underline underline-offset-4">
@@ -278,7 +280,7 @@ const AuthForm = ({
                         layout
                     >
                         <motion.img
-                            src="/coach-swimming.webp"
+                            src={isLogin ? "/coach-swimming.webp" : "/coach-fitness.webp"}
                             alt="Image"
                             className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
                             initial={{scale: 1.1, opacity: 0}}
