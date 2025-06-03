@@ -34,10 +34,10 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
-    private Roles type;
+    private Roles role;
 
-    @OneToMany(mappedBy = "booking")
-    private List<Booking> contests = new ArrayList<Booking>();
+    @OneToMany(mappedBy = "user")
+    private List<Booking> bookings = new ArrayList<Booking>();
 
     public String getId() {
         return id;
@@ -79,19 +79,19 @@ public class User {
         this.password = password;
     }
 
-    public Roles getType() {
-        return type;
+    public Roles getRole() {
+        return role;
     }
 
-    public void setType(Roles type) {
-        this.type = type;
+    public void setRole(Roles role) {
+        this.role = role;
     }
 
-    public List<Booking> getContests() {
-        return contests;
+    public List<Booking> getBookings() {
+        return bookings;
     }
 
-    public void setContests(List<Booking> contests) {
-        this.contests = contests;
+    public void setBookings(List<Booking> bookings) {
+        this.bookings = bookings;
     }
 }
