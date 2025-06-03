@@ -38,9 +38,7 @@ public class CoachController {
     }
 
     @GetMapping("/coach/{id}")
-    public CoachDTO get(
-            @PathVariable String id
-    ) {
+    public CoachDTO get(@PathVariable String id) {
         return new CoachDTO(coachService.select(id));
     }
 

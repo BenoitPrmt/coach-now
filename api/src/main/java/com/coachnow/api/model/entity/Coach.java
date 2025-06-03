@@ -2,6 +2,7 @@ package com.coachnow.api.model.entity;
 
 import com.coachnow.api.types.Gender;
 import com.coachnow.api.types.Level;
+import com.coachnow.api.types.Roles;
 import com.coachnow.api.types.Sports;
 import com.coachnow.api.web.request.coach.CoachCreation;
 import jakarta.persistence.*;
@@ -28,11 +29,13 @@ public class Coach {
     @Column(nullable = false)
     private Float hourlyRate;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Set<Sports> sports;
+    private Sports sports;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Set<Level> levels;
+    private Level levels;
 
     @Column(nullable = false)
     private Gender gender;
@@ -43,6 +46,9 @@ public class Coach {
 
     @OneToMany(mappedBy = "coach")
     private List<Booking> bookings = new ArrayList<Booking>();
+
+    @OneToMany(mappedBy = "coach", fetch = FetchType.EAGER)
+    private List<Rating> ratings;
 
     @Override
     public String toString() {
@@ -100,19 +106,19 @@ public class Coach {
         this.hourlyRate = hourlyRate;
     }
 
-    public Set<Sports> getSports() {
+    public Sports getSports() {
         return sports;
     }
 
-    public void setSports(Set<Sports> sports) {
+    public void setSports(Sports sports) {
         this.sports = sports;
     }
 
-    public Set<Level> getLevels() {
+    public Level getLevels() {
         return levels;
     }
 
-    public void setLevels(Set<Level> levels) {
+    public void setLevels(Level levels) {
         this.levels = levels;
     }
 
@@ -139,4 +145,13 @@ public class Coach {
     public void setBookings(List<Booking> bookings) {
         this.bookings = bookings;
     }
+
+    public List<Rating> getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(List<Rating> ratings) {
+        this.ratings = ratings;
+    }
+
 }
