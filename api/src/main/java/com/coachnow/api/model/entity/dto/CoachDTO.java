@@ -19,8 +19,8 @@ public class CoachDTO {
     private String profilePictureUrl;
     private Float hourlyRate;
 
-    private Sports sports;
-    private Level levels;
+    private Set<Sports> sports;
+    private Set<Level> levels;
 
     private Gender gender;
 
@@ -62,11 +62,11 @@ public class CoachDTO {
         return hourlyRate;
     }
 
-    public Sports getSports() {
+    public Set<Sports> getSports() {
         return sports;
     }
 
-    public Level getLevels() {
+    public Set<Level> getLevels() {
         return levels;
     }
 

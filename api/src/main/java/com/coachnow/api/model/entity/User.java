@@ -116,7 +116,7 @@ public class User {
 
     public void setRatings(List<Rating> ratings) {
         this.ratings = ratings;
-
+    }
     public Boolean isCoach() {
         return this.role == Roles.COACH;
     }

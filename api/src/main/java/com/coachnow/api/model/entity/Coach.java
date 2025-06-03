@@ -31,11 +31,11 @@ public class Coach {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Sports sports;
+    private Set<Sports> sports;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Level levels;
+    private Set<Level> levels;
 
     @Column(nullable = false)
     private Gender gender;
@@ -106,19 +106,19 @@ public class Coach {
         this.hourlyRate = hourlyRate;
     }
 
-    public Sports getSports() {
+    public Set<Sports> getSports() {
         return sports;
     }
 
-    public void setSports(Sports sports) {
+    public void setSports(Set<Sports> sports) {
         this.sports = sports;
     }
 
-    public Level getLevels() {
+    public Set<Level> getLevels() {
         return levels;
     }
 
-    public void setLevels(Level levels) {
+    public void setLevels(Set<Level> levels) {
         this.levels = levels;
     }
 
