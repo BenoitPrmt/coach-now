@@ -42,8 +42,8 @@ public class Coach {
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "booking")
-    private List<Booking> contests = new ArrayList<Booking>();
+    @OneToMany(mappedBy = "coach")
+    private List<Booking> bookings = new ArrayList<Booking>();
 
     @Override
     public String toString() {
@@ -114,11 +114,11 @@ public class Coach {
         this.user = user;
     }
 
-    public List<Booking> getContests() {
-        return contests;
+    public List<Booking> getBookings() {
+        return bookings;
     }
 
-    public void setContests(List<Booking> contests) {
-        this.contests = contests;
+    public void setBookings(List<Booking> bookings) {
+        this.bookings = bookings;
     }
 }

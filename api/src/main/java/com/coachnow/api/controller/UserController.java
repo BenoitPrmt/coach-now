@@ -11,6 +11,7 @@ import java.util.List;
 
 @RestController
 //@CrossOrigin(origins = "http://localhost:8000")
+@RequestMapping("/api")
 public class UserController {
 
     @Autowired UserService userService;
@@ -29,7 +30,10 @@ public class UserController {
     public UserDTO get(
             @PathVariable String id
     ) {
-        return new UserDTO(userService.select(id));
+        User user = userService.select(id);
+
+        return user != null ? new UserDTO(user) : null;
+
     }
 
     @PostMapping("/user")
