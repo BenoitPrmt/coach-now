@@ -23,7 +23,7 @@ public class User {
     @Column(name = "first_name", length = 255, nullable = false)
     private String firstName;
 
-    @Column(name = "last_name", length = 255, nullable = false, unique = true)
+    @Column(name = "last_name", length = 255, nullable = false)
     private String lastName;
 
     @Column(name = "email", length = 255, nullable = false, unique = true)
@@ -34,7 +34,7 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
-    private Roles role;
+    private Roles role = Roles.USER;
 
     @OneToMany(mappedBy = "user")
     private List<Booking> bookings = new ArrayList<Booking>();
