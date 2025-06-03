@@ -144,7 +144,7 @@ const AuthForm = ({
                                                 animate={{opacity: 1, height: "auto"}}
                                                 exit={{opacity: 0, height: 0}}
                                                 transition={{duration: 0.4, ease: "easeInOut"}}
-                                                className="grid grid-cols-2 gap-3 overflow-hidden"
+                                                className="grid grid-cols-2 gap-3"
                                             >
                                                 <FormField
                                                     control={form.control}
@@ -184,7 +184,7 @@ const AuthForm = ({
                                                 <FormItem className='grid gap-3'>
                                                     <FormLabel>Email</FormLabel>
                                                     <FormControl>
-                                                        <Input placeholder="m@example.com" {...field} />
+                                                        <Input placeholder="john.doe@example.com" {...field} />
                                                     </FormControl>
                                                     <FormMessage/>
                                                 </FormItem>
@@ -215,13 +215,12 @@ const AuthForm = ({
                                                 animate={{opacity: 1, height: "auto"}}
                                                 exit={{opacity: 0, height: 0}}
                                                 transition={{duration: 0.4, ease: "easeInOut"}}
-                                                className="overflow-hidden"
                                             >
                                                 <FormField
                                                     control={form.control}
                                                     name="confirmPassword"
                                                     render={({field}) => (
-                                                        <FormItem className='grid gap-3'>
+                                                        <FormItem>
                                                             <FormLabel>Confirmer le mot de passe</FormLabel>
                                                             <FormControl>
                                                                 <Input placeholder="Confirmer le mot de passe"
