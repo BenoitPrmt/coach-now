@@ -9,7 +9,7 @@ import {Button} from "~/components/ui/button";
 import {cn} from "~/lib/utils";
 import {Card, CardContent} from "~/components/ui/card";
 import {Link} from "react-router";
-import {useMemo} from "react";
+import {useMemo, useState, useEffect} from "react";
 import {animations} from "~/constants";
 
 type AuthFormProps = React.ComponentProps<"div"> & {
@@ -25,13 +25,46 @@ const AuthForm = ({
         authFormVariants,
         authContainerVariants,
         authItemVariants,
-        authImageVariants
+        authImageVariants,
+        authImageContainerVariants
     } = animations;
 
     const isLogin = useMemo(() => type === "login", [type]);
+    const [imageLoaded, setImageLoaded] = useState(false);
+    const [preloadedImages, setPreloadedImages] = useState(new Set<string>());
+
     const schema = useMemo(() => {
         return isLogin ? loginSchema : registerSchema;
     }, [isLogin]);
+
+    const currentImage = isLogin ? "/coach-swimming.webp" : "/coach-fitness.webp";
+    const nextImage = !isLogin ? "/coach-swimming.webp" : "/coach-fitness.webp";
+
+    // Preload des images pour éviter les flashes
+    useEffect(() => {
+        const preloadImage = (src: string) => {
+            if (preloadedImages.has(src)) return;
+
+            const img = new Image();
+            img.onload = () => {
+                setPreloadedImages(prev => new Set(prev).add(src));
+                if (src === currentImage) {
+                    setImageLoaded(true);
+                }
+            };
+            img.onerror = () => {
+                console.warn(`Failed to preload image: ${src}`);
+            };
+            img.src = src;
+        };
+
+        preloadImage(currentImage);
+        preloadImage(nextImage);
+    }, [currentImage, nextImage, preloadedImages]);
+
+    useEffect(() => {
+        setImageLoaded(preloadedImages.has(currentImage));
+    }, [currentImage, preloadedImages]);
 
     const form = useForm<z.infer<typeof schema>>({
         resolver: zodResolver(schema),
@@ -47,6 +80,7 @@ const AuthForm = ({
     const onSubmit = (values: z.infer<typeof schema>) => {
 
     }
+
     return (
         <div className={cn("flex flex-col gap-6", className)} {...props}>
             <Card className="overflow-hidden p-0 h-full">
@@ -239,20 +273,55 @@ const AuthForm = ({
                         </Form>
                     </motion.div>
 
+                    {/* Section image avec placeholder et loading state */}
                     <motion.div
-                        className="bg-muted relative hidden md:block"
-                        variants={authImageVariants}
+                        className="bg-muted relative hidden md:block overflow-hidden"
+                        variants={authImageContainerVariants}
                         initial="login"
                         animate={type}
                         layout
                     >
-                        <motion.img
-                            src={isLogin ? "/coach-swimming.webp" : "/coach-fitness.webp"}
-                            alt="Image"
-                            className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
-                            initial={{scale: 1.1, opacity: 0}}
-                            animate={{scale: 1, opacity: 1}}
-                            transition={{duration: 0.5, ease: "easeOut"}}
+                        {/* Placeholder/Loading state */}
+                        <AnimatePresence>
+                            {!imageLoaded && (
+                                <motion.div
+                                    initial={{opacity: 0}}
+                                    animate={{opacity: 1}}
+                                    exit={{opacity: 0}}
+                                    className="absolute inset-0 bg-gradient-to-br from-muted via-muted/80 to-muted/60 flex items-center justify-center"
+                                >
+                                    {/* Skeleton loader */}
+                                    <div
+                                        className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin"/>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+
+                        {/* Image avec AnimatePresence pour transition fluide */}
+                        <AnimatePresence mode="wait">
+                            <motion.img
+                                key={currentImage}
+                                src={currentImage}
+                                alt="Image d'illustration"
+                                className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+                                variants={authImageVariants}
+                                initial="initial"
+                                animate={imageLoaded ? "loaded" : "initial"}
+                                exit="exit"
+                                onLoad={() => setImageLoaded(true)}
+                                style={{
+                                    // Évite le flash pendant le chargement
+                                    visibility: imageLoaded ? 'visible' : 'hidden'
+                                }}
+                            />
+                        </AnimatePresence>
+
+                        {/* Overlay décoratif optionnel */}
+                        <motion.div
+                            className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"
+                            initial={{opacity: 0}}
+                            animate={{opacity: imageLoaded ? 1 : 0}}
+                            transition={{delay: 0.3, duration: 0.4}}
                         />
                     </motion.div>
                 </CardContent>

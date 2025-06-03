@@ -29,7 +29,7 @@ const authFormVariants = {
     }
 };
 
-const authImageVariants = {
+const authImageContainerVariants = {
     login: {
         x: 0,
         transition: {duration: 0.6, ease: "easeInOut"}
@@ -40,9 +40,35 @@ const authImageVariants = {
     }
 };
 
+const authImageVariants = {
+        initial: {
+            scale: 1.05,
+            opacity: 0,
+            filter: "blur(4px)"
+        },
+        loaded: {
+            scale: 1,
+            opacity: 1,
+            filter: "blur(0px)",
+            transition: {
+                duration: 0.6,
+                ease: "easeOut",
+                scale: {duration: 0.8},
+                filter: {duration: 0.4}
+            }
+        },
+        exit: {
+            scale: 0.95,
+            opacity: 0,
+            filter: "blur(2px)",
+            transition: {duration: 0.3}
+        }
+    };
+
 export {
     authContainerVariants,
     authItemVariants,
     authFormVariants,
+    authImageContainerVariants,
     authImageVariants
 }
