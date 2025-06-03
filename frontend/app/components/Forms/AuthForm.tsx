@@ -10,6 +10,7 @@ import {cn} from "~/lib/utils";
 import {Card, CardContent} from "~/components/ui/card";
 import {Link} from "react-router";
 import {useMemo} from "react";
+import {animations} from "~/constants";
 
 type AuthFormProps = React.ComponentProps<"div"> & {
     type?: "login" | "register";
@@ -20,10 +21,18 @@ const AuthForm = ({
                       className,
                       ...props
                   }: AuthFormProps) => {
+    const {
+        authFormVariants,
+        authContainerVariants,
+        authItemVariants,
+        authImageVariants
+    } = animations;
+
     const isLogin = useMemo(() => type === "login", [type]);
     const schema = useMemo(() => {
         return isLogin ? loginSchema : registerSchema;
     }, [isLogin]);
+
     const form = useForm<z.infer<typeof schema>>({
         resolver: zodResolver(schema),
         defaultValues: {
@@ -38,57 +47,13 @@ const AuthForm = ({
     const onSubmit = (values: z.infer<typeof schema>) => {
 
     }
-
-    // Animations variants
-    const containerVariants = {
-        hidden: {opacity: 0},
-        visible: {
-            opacity: 1,
-            transition: {
-                duration: 0.3,
-                staggerChildren: 0.1
-            }
-        }
-    };
-
-    const itemVariants = {
-        hidden: {opacity: 0, y: 20},
-        visible: {
-            opacity: 1,
-            y: 0,
-            transition: {duration: 0.3}
-        }
-    };
-
-    const formVariants = {
-        login: {
-            x: 0,
-            transition: {duration: 0.6, ease: "easeInOut"}
-        },
-        register: {
-            x: 0,
-            transition: {duration: 0.6, ease: "easeInOut"}
-        }
-    };
-
-    const imageVariants = {
-        login: {
-            x: 0,
-            transition: {duration: 0.6, ease: "easeInOut"}
-        },
-        register: {
-            x: 0,
-            transition: {duration: 0.6, ease: "easeInOut"}
-        }
-    };
-
     return (
         <div className={cn("flex flex-col gap-6", className)} {...props}>
             <Card className="overflow-hidden p-0 h-full">
                 <CardContent className="grid p-0 md:grid-cols-2 h-full relative">
                     <motion.div
                         key={`form-${type}`}
-                        variants={formVariants}
+                        variants={authFormVariants}
                         initial="hidden"
                         animate={type}
                         className={cn(
@@ -101,12 +66,12 @@ const AuthForm = ({
                             <motion.form
                                 onSubmit={form.handleSubmit(onSubmit)}
                                 className="flex flex-col gap-4 p-6 md:p-10 w-full m-auto h-full justify-center"
-                                variants={containerVariants}
+                                variants={authContainerVariants}
                                 initial="hidden"
                                 animate="visible"
                                 key={type}
                             >
-                                <motion.div className="flex flex-col gap-6" variants={itemVariants}>
+                                <motion.div className="flex flex-col gap-6" variants={authItemVariants}>
                                     <AnimatePresence mode="wait">
                                         <motion.div
                                             key={`header-${type}`}
@@ -177,7 +142,7 @@ const AuthForm = ({
                                         )}
                                     </AnimatePresence>
 
-                                    <motion.div variants={itemVariants}>
+                                    <motion.div variants={authItemVariants}>
                                         <FormField
                                             control={form.control}
                                             name="email"
@@ -193,7 +158,7 @@ const AuthForm = ({
                                         />
                                     </motion.div>
 
-                                    <motion.div variants={itemVariants}>
+                                    <motion.div variants={authItemVariants}>
                                         <FormField
                                             control={form.control}
                                             name="password"
@@ -236,13 +201,13 @@ const AuthForm = ({
                                         )}
                                     </AnimatePresence>
 
-                                    <motion.div variants={itemVariants}>
+                                    <motion.div variants={authItemVariants}>
                                         <Button type="submit" className="w-full cursor-pointer">
                                             {isLogin ? "Se connecter" : "Créer un compte"}
                                         </Button>
                                     </motion.div>
 
-                                    <motion.div variants={itemVariants} className="text-center text-sm">
+                                    <motion.div variants={authItemVariants} className="text-center text-sm">
                                         <AnimatePresence mode="wait">
                                             <motion.span
                                                 key={`link-${type}`}
@@ -276,7 +241,7 @@ const AuthForm = ({
 
                     <motion.div
                         className="bg-muted relative hidden md:block"
-                        variants={imageVariants}
+                        variants={authImageVariants}
                         initial="login"
                         animate={type}
                         layout
