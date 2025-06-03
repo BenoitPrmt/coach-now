@@ -9,6 +9,8 @@ import com.coachnow.api.web.request.coach.CoachCreation;
 import com.coachnow.api.web.response.coach.availability.DayAvailability;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
@@ -76,11 +78,15 @@ public class CoachController {
     }
 
     @GetMapping("/coach/{coachId}/availabilities")
-    public List<DayAvailability> getAvailabilities(
+    public ResponseEntity<List<DayAvailability>> getAvailabilities(
             @PathVariable String coachId,
             @RequestParam(value = "startDate", required = false, defaultValue = "") @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
             @RequestParam(value = "endDate", required = false, defaultValue = "") @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate
     ) throws ParseException {
-        return coachService.getAvailabilities(coachId, startDate, endDate);
+        try {
+            return new ResponseEntity<>(coachService.getAvailabilities(coachId, startDate, endDate), HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
     }
 }
