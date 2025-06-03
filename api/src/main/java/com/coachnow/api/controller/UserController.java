@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-//@CrossOrigin(origins = "http://localhost:8000")
 @RequestMapping("/api")
 public class UserController {
 
@@ -27,9 +26,7 @@ public class UserController {
     }
 
     @GetMapping("/user/{id}")
-    public UserDTO get(
-            @PathVariable String id
-    ) {
+    public UserDTO get(@PathVariable String id) {
         User user = userService.select(id);
 
         return user != null ? new UserDTO(user) : null;

@@ -5,6 +5,7 @@ import com.coachnow.api.model.service.JwtService;
 import com.coachnow.api.web.request.AuthRequest;
 import com.coachnow.api.web.response.AuthResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
@@ -14,9 +15,14 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthenticationController {
 
-    private final AuthenticationManager authenticationManager;
-    private final JwtService jwtService;
-    private final UserRepository userRepository;
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtService jwtService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @PostMapping("/login")
     public AuthResponse login(@RequestBody AuthRequest request) {
