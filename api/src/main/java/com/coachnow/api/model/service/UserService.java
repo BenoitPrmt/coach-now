@@ -2,9 +2,12 @@ package com.coachnow.api.model.service;
 
 import com.coachnow.api.model.entity.User;
 import com.coachnow.api.model.repository.UserRepository;
+import com.coachnow.api.types.Roles;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +16,9 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     public List<User> selectAll() {
         return (List<User>) userRepository.findAll();
     }
@@ -20,6 +26,19 @@ public class UserService {
     public User select(String id) {
         Optional<User> optionalPlayer = userRepository.findById(id);
         return optionalPlayer.orElse(null);
+    }
+
+    public User registerUser(User user) {
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
+
+        return userRepository.save(user);
+    }
+
+    public void updateUserPassword(User user) {
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
+        userRepository.save(user);
     }
 
     public User save(User user) {
