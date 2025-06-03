@@ -143,7 +143,7 @@ const CoachCard = ({
                                 {/* Bouton de fermeture */}
                                 <button
                                     onClick={handleCloseModal}
-                                    className="absolute top-4 right-4 w-8 h-8 rounded-full bg-neutral-200 dark:bg-neutral-700 flex items-center justify-center hover:bg-neutral-300 dark:hover:bg-neutral-600 transition-colors z-10"
+                                    className="absolute top-4 right-4 w-8 h-8 rounded-full bg-neutral-200 dark:bg-neutral-700 flex items-center justify-center hover:bg-neutral-300 dark:hover:bg-neutral-600 transition-colors z-10 cursor-pointer"
                                 >
                                     <XIcon
                                         className="w-4 h-4 text-neutral-600 dark:text-neutral-300"
@@ -153,9 +153,9 @@ const CoachCard = ({
 
                                 <motion.div
                                     className="mb-6 flex justify-center"
-                                    initial={{ scale: 0.8, opacity: 0 }}
-                                    animate={{ scale: 1, opacity: 1 }}
-                                    transition={{ delay: 0.1 }}
+                                    initial={{scale: 0.8, opacity: 0}}
+                                    animate={{scale: 1, opacity: 1}}
+                                    transition={{delay: 0.1}}
                                 >
                                     <img
                                         src={avatar}
@@ -201,12 +201,12 @@ const CoachCard = ({
                                     transition={{delay: 0.2}}
                                 >
                                     <Button
-                                        className="flex-1 font-medium rounded-lg transition-colors h-11">
+                                        className="flex-1 font-medium rounded-lg transition-colors h-11 cursor-pointer">
                                         Contacter
                                     </Button>
                                     <Button
                                         variant="secondary"
-                                        className="flex-1 font-medium rounded-lg transition-colors h-11">
+                                        className="flex-1 font-medium rounded-lg transition-colors h-11 cursor-pointer">
                                         Voir profil
                                     </Button>
                                 </motion.div>
