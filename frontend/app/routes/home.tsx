@@ -1,13 +1,16 @@
-import type { Route } from "./+types/home";
-import { Welcome } from "~/welcome/welcome";
+import type {Route} from "./+types/home";
+import Homepage from "~/pages/Homepage";
 
 export function meta({}: Route.MetaArgs) {
-  return [
-    { title: "New React Router App" },
-    { name: "description", content: "Welcome to React Router!" },
-  ];
+    return [
+        {title: "CoachNow - Accueil"},
+        {
+            name: "description",
+            content: "Bienvenue sur CoachNow, votre plateforme de réservation de coach sportif en ligne."
+        },
+    ];
 }
 
 export default function Home() {
-  return <Welcome />;
+    return <Homepage/>;
 }

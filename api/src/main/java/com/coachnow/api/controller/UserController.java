@@ -10,7 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:8000")
+//@CrossOrigin(origins = "http://localhost:8000")
+@RequestMapping("/api")
 public class UserController {
 
     @Autowired UserService userService;
@@ -25,25 +26,28 @@ public class UserController {
         return listDTO;
     }
 
-    @GetMapping("/player/{id}")
+    @GetMapping("/user/{id}")
     public UserDTO get(
             @PathVariable String id
     ) {
-        return new UserDTO(userService.select(id));
+        User user = userService.select(id);
+
+        return user != null ? new UserDTO(user) : null;
+
     }
 
-    @PostMapping("/player")
-    public UserDTO create(@RequestBody User player) {
-        return new UserDTO(userService.save(player));
+    @PostMapping("/user")
+    public UserDTO create(@RequestBody User user) {
+        return new UserDTO(userService.save(user));
     }
 
-    @PutMapping("/player/{id}")
+    @PutMapping("/user/{id}")
     public UserDTO create(@RequestBody User user, @PathVariable String id) {
         user.setId(id);
         return new UserDTO(userService.save(user));
     }
 
-    @DeleteMapping("/player/{id}")
+    @DeleteMapping("/user/{id}")
     public void deletePlayer(@PathVariable String id) {userService.delete(id);
     }
 

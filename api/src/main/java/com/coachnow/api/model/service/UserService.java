@@ -22,15 +22,15 @@ public class UserService {
         return optionalPlayer.orElse(null);
     }
 
-    public User save(User player) {
-        return userRepository.save(player);
+    public User save(User user) {
+        return userRepository.save(user);
     }
 
     public void delete(String id) {
         userRepository.deleteById(id);
     }
 
-    public void delete(User player) {
-        userRepository.delete(player);
+    public void delete(User user) {
+        userRepository.delete(user);
     }
 }
