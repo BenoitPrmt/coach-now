@@ -82,16 +82,16 @@ const AuthForm = ({
     }
 
     return (
-        <div className={cn("flex flex-col gap-6", className)} {...props}>
-            <Card className="overflow-hidden p-0 h-full">
-                <CardContent className="grid p-0 md:grid-cols-2 h-full relative">
+        <div className={cn("flex flex-col gap-6 h-full", className)} {...props}>
+            <Card className="overflow-hidden p-0 h-full flex-1">
+                <CardContent className="grid p-0 md:grid-cols-2 h-full flex-1 relative">
                     <motion.div
                         key={`form-${type}`}
                         variants={authFormVariants}
                         initial="hidden"
                         animate={type}
                         className={cn(
-                            "relative z-10",
+                            "relative z-10 h-full",
                             !isLogin && "md:order-last"
                         )}
                         layout
@@ -273,15 +273,13 @@ const AuthForm = ({
                         </Form>
                     </motion.div>
 
-                    {/* Section image avec placeholder et loading state */}
                     <motion.div
-                        className="bg-muted relative hidden md:block overflow-hidden"
+                        className="bg-muted relative hidden md:block overflow-hidden h-full"
                         variants={authImageContainerVariants}
                         initial="login"
                         animate={type}
                         layout
                     >
-                        {/* Placeholder/Loading state */}
                         <AnimatePresence>
                             {!imageLoaded && (
                                 <motion.div
@@ -297,7 +295,6 @@ const AuthForm = ({
                             )}
                         </AnimatePresence>
 
-                        {/* Image avec AnimatePresence pour transition fluide */}
                         <AnimatePresence mode="wait">
                             <motion.img
                                 key={currentImage}
@@ -316,7 +313,6 @@ const AuthForm = ({
                             />
                         </AnimatePresence>
 
-                        {/* Overlay décoratif optionnel */}
                         <motion.div
                             className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"
                             initial={{opacity: 0}}
