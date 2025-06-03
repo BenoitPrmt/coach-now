@@ -1,11 +1,17 @@
 package com.coachnow.api.controller;
 
 import com.coachnow.api.model.entity.Booking;
+import com.coachnow.api.model.entity.Coach;
+import com.coachnow.api.model.entity.User;
 import com.coachnow.api.model.entity.dto.BookingDTO;
 import com.coachnow.api.model.service.BookingService;
+import com.coachnow.api.model.service.CoachService;
+import com.coachnow.api.model.service.UserService;
+import com.coachnow.api.web.request.booking.BookingCreation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +20,14 @@ import java.util.List;
 @RequestMapping("/api")
 public class BookingController {
 
-    @Autowired BookingService bookingService;
+    @Autowired
+    BookingService bookingService;
+
+    @Autowired
+    CoachService coachService;
+
+    @Autowired
+    UserService userService;
 
     @GetMapping("/bookings")
     public List<BookingDTO> all() {
@@ -34,7 +47,30 @@ public class BookingController {
     }
 
     @PostMapping("/booking")
-    public BookingDTO create(@RequestBody Booking booking) {
+    public BookingDTO create(@RequestBody BookingCreation bookingData) throws ParseException {
+        Coach coach = coachService.select(bookingData.getCoachId());
+        if (coach == null) {
+            throw new IllegalArgumentException("Coach with id " + bookingData.getCoachId() + " does not exist.");
+        }
+
+        User user = userService.select(bookingData.getUserId());
+        if (user == null) {
+            throw new IllegalArgumentException("User with id " + bookingData.getUserId() + " does not exist.");
+        }
+
+        Booking booking = new Booking();
+        booking.setBookingWithBookingCreation(bookingData);
+        booking.setCoach(coach);
+        booking.setUser(user);
+
+        if (booking.getStartDate().after(booking.getEndDate())) {
+            throw new IllegalArgumentException("Start date cannot be after end date.");
+        }
+
+        if (booking.getStartDate().before(new java.util.Date())) {
+            throw new IllegalArgumentException("Start date cannot be in the past.");
+        }
+
         return new BookingDTO(bookingService.save(booking));
     }
 

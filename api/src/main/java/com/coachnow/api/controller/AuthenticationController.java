@@ -8,6 +8,7 @@ import com.coachnow.api.web.request.AuthRequest;
 import com.coachnow.api.web.response.AuthResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,9 +26,14 @@ public class AuthenticationController {
     @Autowired
     private UserService userService;
 
-    private final AuthenticationManager authenticationManager;
-    private final JwtService jwtService;
-    private final UserRepository userRepository;
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtService jwtService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @PostMapping("/login")
     public AuthResponse login(@RequestBody AuthRequest request) {
@@ -37,14 +43,8 @@ public class AuthenticationController {
                 )
         );
 
-        var user = userRepository.findUserByEmail(request.getEmail()).orElseThrow();
-        var token = jwtService.generateToken(
-                org.springframework.security.core.userdetails.User
-                        .withUsername(user.getEmail())
-                        .password(user.getPassword())
-                        .roles(user.getRole().name())
-                        .build()
-        );
+        User user = userRepository.findUserByEmail(request.getEmail()).orElseThrow();
+        String token = jwtService.generateToken(user);
         return new AuthResponse(token);
     }
 

@@ -28,9 +28,7 @@ public class UserController {
     }
 
     @GetMapping("/user/{id}")
-    public UserDTO get(
-            @PathVariable String id
-    ) {
+    public UserDTO get(@PathVariable String id) {
         User user = userService.select(id);
 
         return user != null ? new UserDTO(user) : null;
