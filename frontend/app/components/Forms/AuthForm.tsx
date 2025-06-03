@@ -8,9 +8,10 @@ import {Form, FormField, FormMessage, FormItem, FormControl, FormLabel} from "~/
 import {Button} from "~/components/ui/button";
 import {cn} from "~/lib/utils";
 import {Card, CardContent} from "~/components/ui/card";
-import {Link} from "react-router";
+import {Link, useNavigate} from "react-router";
 import {useMemo, useState, useEffect} from "react";
 import {animations} from "~/constants";
+import {login, register} from "~/actions/auth.action";
 
 type AuthFormProps = React.ComponentProps<"div"> & {
     type?: "login" | "register";
@@ -32,6 +33,7 @@ const AuthForm = ({
     const isLogin = useMemo(() => type === "login", [type]);
     const [imageLoaded, setImageLoaded] = useState(false);
     const [preloadedImages, setPreloadedImages] = useState(new Set<string>());
+    const navigate = useNavigate();
 
     const schema = useMemo(() => {
         return isLogin ? loginSchema : registerSchema;
@@ -77,8 +79,33 @@ const AuthForm = ({
         },
     })
 
-    const onSubmit = (values: z.infer<typeof schema>) => {
-
+    const onSubmit = async (values: z.infer<typeof schema>) => {
+        try {
+            if (isLogin) {
+                const {email, password} = values;
+                await login({email, password});
+                navigate("/", {replace: true});
+            } else {
+                if ('firstName' in values && 'lastName' in values) {
+                    const {firstName, lastName, email, password} = values;
+                    await register({firstName, lastName, email, password});
+                    navigate("/login", {replace: true});
+                }
+            }
+            form.reset();
+        } catch (error) {
+            if (error instanceof Error && error.message.includes("already exists")) {
+                form.setError("email", {
+                    type: "manual",
+                    message: "Cet email est déjà utilisé."
+                });
+                return;
+            }
+            form.setError("root", {
+                type: "manual",
+                message: error instanceof Error ? error.message : "An error occurred"
+            });
+        }
     }
 
     return (
@@ -235,7 +262,8 @@ const AuthForm = ({
                                     </AnimatePresence>
 
                                     <motion.div variants={authItemVariants}>
-                                        <Button type="submit" className="w-full cursor-pointer">
+                                        <Button type="submit" className="w-full cursor-pointer"
+                                                disabled={!form.formState.isValid}>
                                             {isLogin ? "Se connecter" : "Créer un compte"}
                                         </Button>
                                     </motion.div>
