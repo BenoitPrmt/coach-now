@@ -1,5 +1,6 @@
 package com.coachnow.api.controller;
 
+import com.coachnow.api.model.entity.User;
 import com.coachnow.api.model.repository.UserRepository;
 import com.coachnow.api.model.service.JwtService;
 import com.coachnow.api.web.request.AuthRequest;
@@ -32,14 +33,8 @@ public class AuthenticationController {
                 )
         );
 
-        var user = userRepository.findUserByEmail(request.getEmail()).orElseThrow();
-        var token = jwtService.generateToken(
-                org.springframework.security.core.userdetails.User
-                        .withUsername(user.getEmail())
-                        .password(user.getPassword())
-                        .roles(user.getRole().name())
-                        .build()
-        );
+        User user = userRepository.findUserByEmail(request.getEmail()).orElseThrow();
+        String token = jwtService.generateToken(user);
         return new AuthResponse(token);
     }
 }
