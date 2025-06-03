@@ -25,6 +25,9 @@ const AuthForm = ({
         defaultValues: {
             email: "",
             password: "",
+            firstName: "",
+            lastName: "",
+            confirmPassword: "",
         },
     })
 
@@ -280,7 +283,7 @@ const AuthForm = ({
                             className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
                             initial={{scale: 1.1, opacity: 0}}
                             animate={{scale: 1, opacity: 1}}
-                            transition={{duration: 0.8, ease: "easeOut"}}
+                            transition={{duration: 0.5, ease: "easeOut"}}
                         />
                     </motion.div>
                 </CardContent>
