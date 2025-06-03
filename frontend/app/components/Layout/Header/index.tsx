@@ -5,12 +5,13 @@ import {useState, useEffect, Fragment} from "react";
 import {navigation} from "~/constants";
 import {Menu, X} from "lucide-react";
 import {cn} from "~/lib/utils";
-import {Link, useNavigate} from "react-router";
+import {Link, useNavigate, useLocation} from "react-router";
 
 export default function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const navigate = useNavigate();
+    const {pathname} = useLocation();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -79,12 +80,19 @@ export default function Header() {
 
         return (
             <>
-                {
-                    headerElements.map((headerElement, index) => (
+                {headerElements.map((headerElement, index) => {
+                    const isParentActive =
+                        pathname === headerElement.url || pathname.startsWith(headerElement.url + "/");
+
+                    return (
                         <Fragment key={index}>
                             <motion.button
+                                layout
                                 onClick={() => handleNavigation(headerElement.url)}
-                                className="text-sm font-medium hover:text-primary transition-colors text-center cursor-pointer"
+                                className={cn(
+                                    "text-sm font-medium transition-colors text-center cursor-pointer",
+                                    isParentActive ? "text-primary font-semibold" : "hover:text-primary"
+                                )}
                                 whileHover={{scale: 1.05}}
                                 initial={{opacity: 0, x: -20}}
                                 animate={{opacity: 1, x: 0}}
@@ -92,22 +100,32 @@ export default function Header() {
                             >
                                 {headerElement.page}
                             </motion.button>
-                            {headerElement.links.map((item, index) => (
-                                <motion.button
-                                    key={item.link}
-                                    onClick={() => handleNavigation(item.link)}
-                                    className="text-sm font-medium hover:text-primary transition-colors cursor-pointer"
-                                    whileHover={{scale: 1.05}}
-                                    initial={{opacity: 0, x: -20}}
-                                    animate={{opacity: 1, x: 0}}
-                                    transition={{...transitionBase, delay: index * 0.1}}
-                                >
-                                    {item.label}
-                                </motion.button>
-                            ))}
+
+                            {isParentActive &&
+                                headerElement.links.map((item, subIndex) => {
+                                    const isSubActive = pathname === item.link;
+
+                                    return (
+                                        <motion.button
+                                            layout
+                                            key={item.link}
+                                            onClick={() => handleNavigation(item.link)}
+                                            className={cn(
+                                                "text-sm font-medium transition-colors cursor-pointer ml-4",
+                                                isSubActive ? "text-primary font-semibold" : "hover:text-primary"
+                                            )}
+                                            whileHover={{scale: 1.05}}
+                                            initial={{opacity: 0, x: -20}}
+                                            animate={{opacity: 1, x: 0}}
+                                            transition={{...transitionBase, delay: subIndex * 0.1}}
+                                        >
+                                            {item.label}
+                                        </motion.button>
+                                    );
+                                })}
                         </Fragment>
-                    ))
-                }
+                    );
+                })}
                 {/* Condition if logged */}
                 {/*{currentUsername ? (*/}
                 {/*    <>*/}

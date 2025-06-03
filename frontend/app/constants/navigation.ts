@@ -8,6 +8,7 @@ type NavigationOptions = {
     page: string;
     url: string;
     needsAuth?: boolean;
+    hiddenWhenAuth?: boolean;
     links: {
         label: string;
         link: string;
@@ -31,6 +32,20 @@ const navigation: NavigationOptions = [
         url: "/coachs",
         links: []
     },
+    {
+        page: "Connexion",
+        url: "/login",
+        needsAuth: false,
+        hiddenWhenAuth: true,
+        links: []
+    },
+    {
+        page: "Mon compte",
+        url: "/account",
+        needsAuth: true,
+        links: [
+        ]
+    }
 ]
 
 export {
