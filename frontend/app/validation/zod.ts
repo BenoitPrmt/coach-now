@@ -19,7 +19,8 @@ export const registerSchema = z.object({
     }).min(1, "Le nom est requis."),
     confirmPassword: z.string({
         required_error: "La confirmation du mot de passe est requise."
-    }).min(8, "La confirmation du mot de passe doit comporter au moins 8 caractères.")
+    }).min(8, "La confirmation du mot de passe doit comporter au moins 8 caractères."),
+    isCoach: z.boolean().optional(),
 }).refine(data => data.password === data.confirmPassword, {
     message: "Les mots de passe ne correspondent pas.",
 })

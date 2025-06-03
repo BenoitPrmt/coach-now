@@ -8,6 +8,7 @@ import {Form, FormField, FormMessage, FormItem, FormControl, FormLabel} from "~/
 import {Button} from "~/components/ui/button";
 import {cn} from "~/lib/utils";
 import {Card, CardContent} from "~/components/ui/card";
+import {Checkbox} from "~/components/ui/checkbox";
 import {Link, useNavigate} from "react-router";
 import {useMemo, useState, useEffect} from "react";
 import {animations} from "~/constants";
@@ -76,6 +77,7 @@ const AuthForm = ({
             firstName: "",
             lastName: "",
             confirmPassword: "",
+            isCoach: false,
         },
     })
 
@@ -102,9 +104,9 @@ const AuthForm = ({
                 await login({email, password});
                 navigate("/", {replace: true});
             } else {
-                if ('firstName' in values && 'lastName' in values) {
-                    const {firstName, lastName, email, password} = values;
-                    await register({firstName, lastName, email, password});
+                if ('firstName' in values && 'lastName' in values && 'isCoach' in values) {
+                    const {firstName, lastName, email, password, isCoach} = values;
+                    await register({firstName, lastName, email, password, isCoach: isCoach || false});
                     navigate("/login", {replace: true});
                 }
             }
@@ -142,7 +144,7 @@ const AuthForm = ({
                         <Form {...form}>
                             <motion.form
                                 onSubmit={form.handleSubmit(onSubmit)}
-                                className="flex flex-col gap-4 p-6 md:p-10 w-full m-auto h-full justify-center"
+                                className="flex flex-col p-6 md:p-10 w-full m-auto h-full justify-center"
                                 variants={authContainerVariants}
                                 initial="hidden"
                                 animate="visible"
@@ -193,12 +195,15 @@ const AuthForm = ({
                                                     control={form.control}
                                                     name="firstName"
                                                     render={({field}) => (
-                                                        <FormItem className='grid gap-3'>
+                                                        <FormItem className='grid gap-0'>
                                                             <FormLabel>Prénom</FormLabel>
-                                                            <FormControl>
+                                                            <FormControl className="mt-2">
                                                                 <Input placeholder="John" {...field} />
                                                             </FormControl>
-                                                            <FormMessage/>
+                                                            {/* Container fixe pour les erreurs */}
+                                                            <div className="min-h-5 flex items-start mt-1">
+                                                                <FormMessage/>
+                                                            </div>
                                                         </FormItem>
                                                     )}
                                                 />
@@ -206,12 +211,15 @@ const AuthForm = ({
                                                     control={form.control}
                                                     name="lastName"
                                                     render={({field}) => (
-                                                        <FormItem className='grid gap-3'>
+                                                        <FormItem className='grid gap-0'>
                                                             <FormLabel>Nom</FormLabel>
-                                                            <FormControl>
+                                                            <FormControl className="mt-2">
                                                                 <Input placeholder="Doe" {...field} />
                                                             </FormControl>
-                                                            <FormMessage/>
+                                                            {/* Container fixe pour les erreurs */}
+                                                            <div className="min-h-5 flex items-start mt-1">
+                                                                <FormMessage/>
+                                                            </div>
                                                         </FormItem>
                                                     )}
                                                 />
@@ -224,12 +232,14 @@ const AuthForm = ({
                                             control={form.control}
                                             name="email"
                                             render={({field}) => (
-                                                <FormItem className='grid gap-3'>
+                                                <FormItem className='grid gap-0'>
                                                     <FormLabel>Email</FormLabel>
-                                                    <FormControl>
+                                                    <FormControl className="mt-3">
                                                         <Input placeholder="john.doe@example.com" {...field} />
                                                     </FormControl>
-                                                    <FormMessage/>
+                                                    <div className="min-h-5 flex items-start mt-1">
+                                                        <FormMessage/>
+                                                    </div>
                                                 </FormItem>
                                             )}
                                         />
@@ -240,12 +250,15 @@ const AuthForm = ({
                                             control={form.control}
                                             name="password"
                                             render={({field}) => (
-                                                <FormItem className='grid gap-3'>
+                                                <FormItem className='grid gap-0'>
                                                     <FormLabel>Mot de passe</FormLabel>
-                                                    <FormControl>
+                                                    <FormControl className="mt-3">
                                                         <Input placeholder="Mot de passe" type="password" {...field} />
                                                     </FormControl>
-                                                    <FormMessage/>
+                                                    {/* Container fixe pour les erreurs */}
+                                                    <div className="min-h-5 flex items-start mt-1">
+                                                        <FormMessage/>
+                                                    </div>
                                                 </FormItem>
                                             )}
                                         />
@@ -254,22 +267,74 @@ const AuthForm = ({
                                     <AnimatePresence>
                                         {!isLogin && (
                                             <motion.div
-                                                initial={{opacity: 0, height: 0}}
-                                                animate={{opacity: 1, height: "auto"}}
-                                                exit={{opacity: 0, height: 0}}
-                                                transition={{duration: 0.4, ease: "easeInOut"}}
+                                                initial={{opacity: 0, height: 0, y: -20}}
+                                                animate={{opacity: 1, height: "auto", y: 0}}
+                                                exit={{opacity: 0, height: 0, y: -20}}
+                                                transition={{
+                                                    duration: 0.5,
+                                                    ease: "easeInOut",
+                                                    height: {delay: 0.1}
+                                                }}
+                                                className="flex flex-col gap-4"
                                             >
                                                 <FormField
                                                     control={form.control}
                                                     name="confirmPassword"
                                                     render={({field}) => (
-                                                        <FormItem>
+                                                        <FormItem className='grid gap-0'>
                                                             <FormLabel>Confirmer le mot de passe</FormLabel>
-                                                            <FormControl>
+                                                            <FormControl className="mt-3">
                                                                 <Input placeholder="Confirmer le mot de passe"
                                                                        type="password" {...field} />
                                                             </FormControl>
-                                                            <FormMessage/>
+                                                            <div className="min-h-5 flex items-start mt-1">
+                                                                <FormMessage/>
+                                                            </div>
+                                                        </FormItem>
+                                                    )}
+                                                />
+
+                                                <FormField
+                                                    control={form.control}
+                                                    name="isCoach"
+                                                    render={({field}) => (
+                                                        <FormItem>
+                                                            <motion.div
+                                                                initial={{opacity: 0, scale: 0.95}}
+                                                                animate={{opacity: 1, scale: 1}}
+                                                                transition={{
+                                                                    delay: 0.2,
+                                                                    duration: 0.3,
+                                                                    ease: "easeOut"
+                                                                }}
+                                                            >
+                                                                <FormLabel
+                                                                    className="flex items-start gap-3 rounded-lg border p-4 cursor-pointer transition-all duration-200 hover:bg-muted/50 has-[[aria-checked=true]]:border-blue-600 has-[[aria-checked=true]]:bg-blue-50 dark:has-[[aria-checked=true]]:border-blue-900 dark:has-[[aria-checked=true]]:bg-blue-950"
+                                                                    htmlFor="coach-checkbox"
+                                                                >
+                                                                    <FormControl className="mt-3">
+                                                                        <Checkbox
+                                                                            id="coach-checkbox"
+                                                                            checked={field.value === true}
+                                                                            onCheckedChange={field.onChange}
+                                                                            onBlur={field.onBlur}
+                                                                            name={field.name}
+                                                                            ref={field.ref}
+                                                                            className="mt-0.5 data-[state=checked]:border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-white dark:data-[state=checked]:border-blue-700 dark:data-[state=checked]:bg-blue-700 transition-all duration-200"
+                                                                            aria-label="Je suis coach"
+                                                                        />
+                                                                    </FormControl>
+                                                                    <div className="grid gap-1.5 font-normal flex-1">
+                                                                        <p className="text-sm leading-none font-medium">
+                                                                            Je suis coach
+                                                                        </p>
+                                                                        <p className="text-muted-foreground text-xs leading-relaxed">
+                                                                            Cochez cette case si vous êtes un coach
+                                                                            et souhaitez proposer vos services.
+                                                                        </p>
+                                                                    </div>
+                                                                </FormLabel>
+                                                            </motion.div>
                                                         </FormItem>
                                                     )}
                                                 />
@@ -285,14 +350,22 @@ const AuthForm = ({
                                             </Button>
                                         </motion.div>
 
-                                        {form.formState.errors.root?.message && (
-                                            <motion.p
-                                                variants={authItemVariants}
-                                                className="text-sm text-red-500 mt-2"
-                                            >
-                                                {form.formState.errors.root.message}
-                                            </motion.p>
-                                        )}
+                                        {/* Container fixe pour les erreurs pour éviter le redimensionnement */}
+                                        <div className="h-6 mt-2 flex items-start">
+                                            <AnimatePresence>
+                                                {form.formState.errors.root?.message && (
+                                                    <motion.p
+                                                        initial={{opacity: 0, y: -10}}
+                                                        animate={{opacity: 1, y: 0}}
+                                                        exit={{opacity: 0, y: -10}}
+                                                        transition={{duration: 0.2}}
+                                                        className="text-sm text-red-500"
+                                                    >
+                                                        {form.formState.errors.root.message}
+                                                    </motion.p>
+                                                )}
+                                            </AnimatePresence>
+                                        </div>
                                     </motion.div>
 
                                     <motion.div variants={authItemVariants} className="text-center text-sm">

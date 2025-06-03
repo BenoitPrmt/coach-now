@@ -28,7 +28,8 @@ export async function register(values: {
     firstName: string;
     lastName: string;
     email: string;
-    password: string
+    password: string,
+    isCoach?: boolean;
 }) {
     try {
         const url = getPublicEnv(import.meta.env).VITE_API_URL + "/auth/register";
@@ -36,7 +37,10 @@ export async function register(values: {
         const res = await fetch(url, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(values),
+            body: JSON.stringify({
+                ...values,
+                role: values.isCoach ? 'COACH' : 'USER',
+            }),
         });
 
         if (!res.ok) {
