@@ -36,9 +36,12 @@ const AuthForm = ({
             <Card className="overflow-hidden p-0 h-full">
                 {/*Reversing grid when register*/}
                 <CardContent
-                    className={cn("grid p-0 md:grid-cols-2 h-full", type === "register" && "md:grid-cols-2-reverse")}>
+                    className="grid p-0 md:grid-cols-2 h-full">
                     <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="p-6 md:p-8 flex flex-col m-auto w-full">
+                        <form onSubmit={form.handleSubmit(onSubmit)} className={cn(
+                            "flex flex-col gap-4 p-6 md:p-10 w-full m-auto",
+                            type === "register" ? "md:order-last" : ""
+                        )}>
                             <div className="flex flex-col gap-6">
                                 {
                                     type === "login" ?

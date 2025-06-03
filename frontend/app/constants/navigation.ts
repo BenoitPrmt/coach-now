@@ -40,11 +40,17 @@ const navigation: NavigationOptions = [
         links: []
     },
     {
+        page: "Inscription",
+        url: "/register",
+        needsAuth: false,
+        hiddenWhenAuth: true,
+        links: []
+    },
+    {
         page: "Mon compte",
         url: "/account",
         needsAuth: true,
-        links: [
-        ]
+        links: []
     }
 ]
 
