@@ -41,6 +41,17 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Rating> ratings;
+  
+    @Override
+    public String toString() {
+        return "User{" +
+                "id='" + id + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", role=" + role +
+                '}';
+    }
 
     public String getId() {
         return id;
@@ -98,11 +109,15 @@ public class User {
         this.bookings = bookings;
     }
 
+
     public List<Rating> getRatings() {
         return ratings;
     }
 
     public void setRatings(List<Rating> ratings) {
         this.ratings = ratings;
+
+    public Boolean isCoach() {
+        return this.role == Roles.COACH;
     }
 }

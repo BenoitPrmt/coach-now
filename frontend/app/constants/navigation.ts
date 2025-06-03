@@ -26,6 +26,11 @@ const navigation: NavigationOptions = [
         url: "/about",
         links: []
     },
+    {
+        page: "Coachs",
+        url: "/coachs",
+        links: []
+    },
 ]
 
 export {

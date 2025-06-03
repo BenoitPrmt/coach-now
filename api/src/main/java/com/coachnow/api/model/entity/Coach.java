@@ -4,10 +4,9 @@ import com.coachnow.api.types.Gender;
 import com.coachnow.api.types.Level;
 import com.coachnow.api.types.Roles;
 import com.coachnow.api.types.Sports;
+import com.coachnow.api.web.request.coach.CoachCreation;
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -53,7 +52,26 @@ public class Coach {
 
     @Override
     public String toString() {
-        return "";
+        return "Coach{" +
+                "id='" + id + '\'' +
+                ", birthdate=" + birthdate +
+                ", profilePictureUrl='" + profilePictureUrl + '\'' +
+                ", hourlyRate=" + hourlyRate +
+                ", sports=" + sports +
+                ", levels=" + levels +
+                ", gender=" + gender +
+                ", user=" + user.getEmail() +
+                ", bookings=" + bookings +
+                '}';
+    }
+
+    public void setCoachFromCoachCreation(CoachCreation coachData) {
+        this.birthdate = Date.valueOf(coachData.getBirthdate());
+        this.profilePictureUrl = coachData.getProfilePictureUrl();
+        this.hourlyRate = coachData.getHourlyRate();
+        this.sports = coachData.getSports();
+        this.levels = coachData.getLevels();
+        this.gender = coachData.getGender();
     }
 
     public String getId() {
