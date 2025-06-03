@@ -37,6 +37,7 @@ public class Coach {
     @Column(nullable = false)
     private Set<Level> levels;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Gender gender;
 
