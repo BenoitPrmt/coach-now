@@ -21,7 +21,9 @@ const AuthForm = ({
                       ...props
                   }: AuthFormProps) => {
     const isLogin = useMemo(() => type === "login", [type]);
-    const schema = isLogin ? loginSchema : registerSchema;
+    const schema = useMemo(() => {
+        return isLogin ? loginSchema : registerSchema;
+    }, [isLogin]);
     const form = useForm<z.infer<typeof schema>>({
         resolver: zodResolver(schema),
         defaultValues: {
