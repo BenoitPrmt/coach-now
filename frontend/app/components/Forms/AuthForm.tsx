@@ -200,7 +200,6 @@ const AuthForm = ({
                                                             <FormControl className="mt-2">
                                                                 <Input placeholder="John" {...field} />
                                                             </FormControl>
-                                                            {/* Container fixe pour les erreurs */}
                                                             <div className="min-h-5 flex items-start mt-1">
                                                                 <FormMessage/>
                                                             </div>
@@ -216,7 +215,6 @@ const AuthForm = ({
                                                             <FormControl className="mt-2">
                                                                 <Input placeholder="Doe" {...field} />
                                                             </FormControl>
-                                                            {/* Container fixe pour les erreurs */}
                                                             <div className="min-h-5 flex items-start mt-1">
                                                                 <FormMessage/>
                                                             </div>
@@ -255,7 +253,6 @@ const AuthForm = ({
                                                     <FormControl className="mt-3">
                                                         <Input placeholder="Mot de passe" type="password" {...field} />
                                                     </FormControl>
-                                                    {/* Container fixe pour les erreurs */}
                                                     <div className="min-h-5 flex items-start mt-1">
                                                         <FormMessage/>
                                                     </div>
