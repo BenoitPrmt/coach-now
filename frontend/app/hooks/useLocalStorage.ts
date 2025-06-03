@@ -2,6 +2,9 @@ import {useState} from "react";
 
 export const useLocalStorage = <T>(key: string, initialValue: T) => {
     const [storedValue, setStoredValue] = useState<T>(() => {
+        if (typeof window === "undefined") {
+            return initialValue; // Return initial value if window is not defined (e.g., during SSR)
+        }
         try {
             const item = window.localStorage.getItem(key);
             return item ? JSON.parse(item) : initialValue;
