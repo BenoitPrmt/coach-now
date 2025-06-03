@@ -79,6 +79,22 @@ const AuthForm = ({
         },
     })
 
+    const password = form.watch("password");
+    const confirmPassword = form.watch("confirmPassword");
+
+    useEffect(() => {
+        if (password.length && confirmPassword.length && !isLogin) {
+            if (confirmPassword !== password) {
+                form.setError("confirmPassword", {
+                    type: "manual",
+                    message: "Les mots de passe ne correspondent pas."
+                });
+                return;
+            }
+        }
+        form.clearErrors("confirmPassword");
+    }, [password, confirmPassword, isLogin]);
+
     const onSubmit = async (values: z.infer<typeof schema>) => {
         try {
             if (isLogin) {
@@ -262,10 +278,21 @@ const AuthForm = ({
                                     </AnimatePresence>
 
                                     <motion.div variants={authItemVariants}>
-                                        <Button type="submit" className="w-full cursor-pointer"
-                                                disabled={!form.formState.isValid}>
-                                            {isLogin ? "Se connecter" : "Créer un compte"}
-                                        </Button>
+                                        <motion.div variants={authItemVariants}>
+                                            <Button type="submit" className="w-full cursor-pointer"
+                                                    disabled={!form.formState.isValid}>
+                                                {isLogin ? "Se connecter" : "Créer un compte"}
+                                            </Button>
+                                        </motion.div>
+
+                                        {form.formState.errors.root?.message && (
+                                            <motion.p
+                                                variants={authItemVariants}
+                                                className="text-sm text-red-500 mt-2"
+                                            >
+                                                {form.formState.errors.root.message}
+                                            </motion.p>
+                                        )}
                                     </motion.div>
 
                                     <motion.div variants={authItemVariants} className="text-center text-sm">
