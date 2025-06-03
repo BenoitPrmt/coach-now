@@ -13,6 +13,7 @@ import {Link, useNavigate} from "react-router";
 import {useMemo, useState, useEffect} from "react";
 import {animations} from "~/constants";
 import {login, register} from "~/actions/auth.action";
+import {useLocalStorage} from "~/hooks/useLocalStorage";
 
 type AuthFormProps = React.ComponentProps<"div"> & {
     type?: "login" | "register";
@@ -35,6 +36,7 @@ const AuthForm = ({
     const [imageLoaded, setImageLoaded] = useState(false);
     const [preloadedImages, setPreloadedImages] = useState(new Set<string>());
     const navigate = useNavigate();
+    const [_, setLocalStorageKey] = useLocalStorage("jwt-coach-now", "");
 
     const schema = useMemo(() => {
         return isLogin ? loginSchema : registerSchema;
@@ -101,8 +103,12 @@ const AuthForm = ({
         try {
             if (isLogin) {
                 const {email, password} = values;
-                await login({email, password});
-                navigate("/", {replace: true});
+                const response = await login({email, password});
+                if (response && response.token) {
+                    // Stocker le token JWT dans le localStorage
+                    setLocalStorageKey(response.token);
+                    navigate("/", {replace: true});
+                }
             } else {
                 if ('firstName' in values && 'lastName' in values && 'isCoach' in values) {
                     const {firstName, lastName, email, password, isCoach} = values;
@@ -123,6 +129,9 @@ const AuthForm = ({
                 type: "manual",
                 message: error instanceof Error ? error.message : "An error occurred"
             });
+        } finally {
+            setImageLoaded(false);
+            setPreloadedImages(new Set());
         }
     }
 
