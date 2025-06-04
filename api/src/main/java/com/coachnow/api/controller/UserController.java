@@ -37,11 +37,11 @@ public class UserController {
 
     @PostMapping("/user")
     public UserDTO create(@RequestBody User user) {
-        return new UserDTO(userService.save(user));
+        return new UserDTO(userService.registerUser(user));
     }
 
     @PutMapping("/user/{id}")
-    public UserDTO create(@RequestBody User user, @PathVariable String id) {
+    public UserDTO update(@RequestBody User user, @PathVariable String id) {
         user.setId(id);
         return new UserDTO(userService.save(user));
     }
