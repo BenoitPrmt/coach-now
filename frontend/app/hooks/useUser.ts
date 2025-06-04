@@ -63,7 +63,10 @@ export const useUser = () => {
 
     return {
         user,
+        signOut: clearUser,
         isLoading,
-        isAuthenticated: !!user
+        isAuthenticated: !!user,
+        isCoach: user?.role === 'COACH',
+        isAdmin: user?.role === 'ADMIN',
     };
 };

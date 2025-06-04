@@ -9,6 +9,7 @@ type NavigationOptions = {
     url: string;
     needsAuth?: boolean;
     hiddenWhenAuth?: boolean;
+    adminOnly?: boolean;
     links: {
         label: string;
         link: string;
@@ -50,6 +51,13 @@ const navigation: NavigationOptions = [
         page: "Mon compte",
         url: "/account",
         needsAuth: true,
+        links: []
+    },
+    {
+        page: "Administration",
+        url: "/admin",
+        needsAuth: true,
+        adminOnly: true,
         links: []
     }
 ]

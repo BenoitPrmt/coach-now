@@ -6,12 +6,14 @@ import {navigation} from "~/constants";
 import {Menu, X} from "lucide-react";
 import {cn} from "~/lib/utils";
 import {Link, useNavigate, useLocation} from "react-router";
+import {useUser} from "~/hooks/useUser";
 
 export default function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const navigate = useNavigate();
     const {pathname} = useLocation();
+    const {user, isCoach, isAdmin, signOut, isAuthenticated} = useUser();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -80,7 +82,21 @@ export default function Header() {
 
         return (
             <>
-                {headerElements.map((headerElement, index) => {
+                {headerElements.filter((headerElement) => {
+                    if (headerElement.adminOnly) {
+                        return isAdmin;
+                    }
+
+                    if (headerElement.hiddenWhenAuth) {
+                        return !isAuthenticated;
+                    }
+
+                    if (headerElement.needsAuth) {
+                        return isAuthenticated;
+                    }
+
+                    return true;
+                }).map((headerElement, index) => {
                     const isParentActive =
                         pathname === headerElement.url || pathname.startsWith(headerElement.url + "/");
 
@@ -126,63 +142,21 @@ export default function Header() {
                         </Fragment>
                     );
                 })}
-                {/* Condition if logged */}
-                {/*{currentUsername ? (*/}
-                {/*    <>*/}
-                {/*        <motion.button*/}
-                {/*            onClick={() => {*/}
-                {/*                setIsMenuOpen(false);*/}
-                {/*                navigate("/profile/", {replace: true});*/}
-                {/*            }}*/}
-                {/*            className="text-sm font-medium hover:text-primary transition-colors text-center"*/}
-                {/*            whileHover={{scale: 1.05}}*/}
-                {/*            initial={{opacity: 0, x: -20}}*/}
-                {/*            animate={{opacity: 1, x: 0}}*/}
-                {/*            transition={{...transitionBase, delay: links.length * 0.1}}*/}
-                {/*        >*/}
-                {/*            Mon profil*/}
-                {/*        </motion.button>*/}
-                {/*        /!* Verification if admin to implement *!/*/}
-                {/*        /!*{*!/*/}
-                {/*        /!*    (currentUser?.role && currentUser?.role === "ADMIN") && (*!/*/}
-                {/*        /!*        <motion.button*!/*/}
-                {/*        /!*            onClick={() => {*!/*/}
-                {/*        /!*                setIsMenuOpen(false);*!/*/}
-                {/*        /!*                navigate.push("/admin");*!/*/}
-                {/*        /!*            }}*!/*/}
-                {/*        /!*            className="text-sm font-medium hover:text-primary transition-colors text-center"*!/*/}
-                {/*        /!*            whileHover={{scale: 1.05}}*!/*/}
-                {/*        /!*            initial={{opacity: 0, x: -20}}*!/*/}
-                {/*        /!*            animate={{opacity: 1, x: 0}}*!/*/}
-                {/*        /!*            transition={{...transitionBase, delay: links.length * 0.1}}*!/*/}
-                {/*        /!*        >*!/*/}
-                {/*        /!*            Admin*!/*/}
-                {/*        /!*        </motion.button>*!/*/}
-                {/*        /!*    )*!/*/}
-                {/*        /!*}*!/*/}
-                {/*        <motion.button*/}
-                {/*            onClick={handleSignOut}*/}
-                {/*            className="text-sm font-medium hover:text-primary transition-colors"*/}
-                {/*            whileHover={{scale: 1.05}}*/}
-                {/*            initial={{opacity: 0, x: -20}}*/}
-                {/*            animate={{opacity: 1, x: 0}}*/}
-                {/*            transition={{...transitionBase, delay: links.length * 0.1}}*/}
-                {/*        >*/}
-                {/*            Déconnexion*/}
-                {/*        </motion.button>*/}
-                {/*    </>*/}
-                {/*) : (*/}
-                {/*    <motion.a*/}
-                {/*        href="/login"*/}
-                {/*        className="text-sm font-medium hover:text-primary transition-colors"*/}
-                {/*        whileHover={{scale: 1.05}}*/}
-                {/*        initial={{opacity: 0, x: -20}}*/}
-                {/*        animate={{opacity: 1, x: 0}}*/}
-                {/*        transition={{...transitionBase, delay: links.length * 0.1}}*/}
-                {/*    >*/}
-                {/*        Se connecter*/}
-                {/*    </motion.a>*/}
-                {/*)}*/}
+                {isAuthenticated && (
+                    <>
+
+                        <motion.button
+                            onClick={signOut}
+                            className="text-sm font-medium hover:text-primary transition-colors"
+                            whileHover={{scale: 1.05}}
+                            initial={{opacity: 0, x: -20}}
+                            animate={{opacity: 1, x: 0}}
+                            transition={{...transitionBase, delay: headerElements.length * 0.1}}
+                        >
+                            Déconnexion
+                        </motion.button>
+                    </>
+                )}
             </>
         );
     };
