@@ -11,7 +11,7 @@ type DecodedUser = JwtPayload & {
 };
 
 export const useUser = () => {
-    const [userToken] = useLocalStorage("jwt-coach-now", null);
+    const [userToken, setUserToken] = useLocalStorage("jwt-coach-now", null);
     const user = userStore((state) => state.user);
     const setUser = userStore((state) => state.setUser);
     const clearUser = userStore((state) => state.clearUser);
@@ -61,9 +61,16 @@ export const useUser = () => {
         setIsLoading(false);
     }, [userToken, setUser, clearUser]);
 
+
+    const signOut = () => {
+        clearUser();
+        setUserToken(null);
+    }
+
+
     return {
         user,
-        signOut: clearUser,
+        signOut,
         isLoading,
         isAuthenticated: !!user,
         isCoach: user?.role === 'COACH',
