@@ -24,7 +24,7 @@ public class CoachDTO {
 
     private Gender gender;
 
-    private String userId;
+    private UserDTO user;
     private List<RatingDTO> ratings;
 
     public CoachDTO(Coach coach) {
@@ -35,7 +35,7 @@ public class CoachDTO {
         this.sports = coach.getSports();
         this.levels = coach.getLevels();
         this.gender = coach.getGender();
-        this.userId = coach.getUser() != null ? coach.getUser().getId() : null;
+        this.user = coach.getUser() != null ? new UserDTO(coach.getUser()) : null;
 
         if (coach.getRatings() != null) {
             this.ratings = coach.getRatings().stream()
@@ -75,8 +75,8 @@ public class CoachDTO {
         return gender;
     }
 
-    public String getUserId() {
-        return userId;
+    public UserDTO getUserId() {
+        return user;
     }
 
     public List<RatingDTO> getRatings() {
