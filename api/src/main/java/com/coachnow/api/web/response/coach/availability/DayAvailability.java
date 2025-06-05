@@ -44,8 +44,8 @@ public class DayAvailability {
     public DayAvailability(Date date, List<HourAvailability> hours) {
         this.date = date;
         this.isWorkingDay =
-                Calendar.getInstance().get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY ||
-                Calendar.getInstance().get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY;
+                Calendar.getInstance().get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY &&
+                Calendar.getInstance().get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY;
         this.hours = hours;
     }
 
