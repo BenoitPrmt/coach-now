@@ -85,67 +85,65 @@ const CoachesPage = () => {
     }, []);
 
     return (
-        <div className="min-h-screen">
-            <div className="max-w-7xl mx-auto">
-                <motion.div
-                    initial="hidden"
-                    animate="visible"
-                    variants={titleTransition}
-                    className="text-center mb-12"
-                >
-                    <h1 className="text-4xl font-bold text-gray-900 sm:text-5xl md:text-6xl">
-                        Nos Coachs
-                    </h1>
-                    <p className="mt-4 text-xl text-gray-600 max-w-2xl mx-auto">
-                        Découvrez nos coachs professionnels prêts à vous accompagner dans votre parcours sportif.
-                    </p>
-                </motion.div>
+        <div className="max-w-7xl mx-auto">
+            <motion.div
+                initial="hidden"
+                animate="visible"
+                variants={titleTransition}
+                className="text-center mb-12"
+            >
+                <h1 className="text-4xl font-bold text-gray-900 sm:text-5xl md:text-6xl">
+                    Nos Coachs
+                </h1>
+                <p className="mt-4 text-xl text-gray-600 max-w-2xl mx-auto">
+                    Découvrez nos coachs professionnels prêts à vous accompagner dans votre parcours sportif.
+                </p>
+            </motion.div>
 
-                {
-                    isLoading && (
-                        <div className="flex items-center justify-center h-64">
-                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
-                        </div>
-                    )
-                }
-                {
-                    !isLoading && coaches && coaches.length === 0 && (
-                        <div className="text-center text-gray-500">
-                            Aucun coach disponible pour le moment.
-                        </div>
-                    )
-                }
+            {
+                isLoading && (
+                    <div className="flex items-center justify-center h-64">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+                    </div>
+                )
+            }
+            {
+                !isLoading && coaches && coaches.length === 0 && (
+                    <div className="text-center text-gray-500">
+                        Aucun coach disponible pour le moment.
+                    </div>
+                )
+            }
 
-                {
-                    !isLoading && coaches && coaches.length > 0 && (
-                        <motion.div
-                            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-                            initial="hidden"
-                            animate="visible"
-                            variants={gridTransition}
-                        >
-                            {coaches.map((coach) => (
-                                <motion.div
-                                    key={coach.id}
-                                    variants={gridElementTransition}
-                                    className="flex"
-                                >
-                                    <CoachCard coach={
-                                        {
-                                            profilePictureUrl: coach.profilePictureUrl,
-                                            name: coach.user.firstName + ' ' + coach.user.lastName,
-                                            age: calculateAgeFromBirthdate(coach.birthdate),
-                                            gender: coach.gender,
-                                            sports: coach.sports,
-                                            levels: coach.levels,
-                                        }
-                                    }/>
-                                </motion.div>
-                            ))}
-                        </motion.div>
-                    )
-                }
-            </div>
+            {
+                !isLoading && coaches && coaches.length > 0 && (
+                    <motion.div
+                        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                        initial="hidden"
+                        animate="visible"
+                        variants={gridTransition}
+                    >
+                        {coaches.map((coach) => (
+                            <motion.div
+                                key={coach.id}
+                                variants={gridElementTransition}
+                                className="flex"
+                            >
+                                <CoachCard coach={
+                                    {
+                                        profilePictureUrl: coach.profilePictureUrl,
+                                        name: coach.user.firstName + ' ' + coach.user.lastName,
+                                        age: calculateAgeFromBirthdate(coach.birthdate),
+                                        gender: coach.gender,
+                                        sports: coach.sports,
+                                        levels: coach.levels,
+                                    }
+                                }/>
+                            </motion.div>
+                        ))}
+                    </motion.div>
+                )
+            }
         </div>
     );
 };
