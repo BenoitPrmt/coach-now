@@ -19,7 +19,6 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "${frontend.url}")
 @RequestMapping("/api")
 public class CoachController {
 
