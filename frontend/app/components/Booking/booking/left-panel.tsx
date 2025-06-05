@@ -5,23 +5,21 @@ import {
 } from "~/components/ui/tooltip";
 import { useLocale } from "@react-aria/i18n";
 import { CalendarIcon, Clock4 } from "lucide-react";
-import {useSearchParams} from "react-router";
 
 export function LeftPanel({
 	showForm,
 	timeZone,
 	setTimeZone,
+	selectedDate,
+	selectedSlot,
 }: {
 	showForm: boolean | null;
 	timeZone: string;
 	setTimeZone: (timeZone: string) => void;
+	selectedDate: string | null;
+	selectedSlot: string | null;
 }) {
 	const { locale } = useLocale();
-	const [searchParams] = useSearchParams();
-
-	const slotParam = searchParams.get("slot");
-
-	console.log("LeftPanel slotParam", slotParam);
 
 	return (
 		<div className="flex flex-col gap-4 w-[280px] border-r pr-6">
@@ -47,12 +45,12 @@ export function LeftPanel({
 						<CalendarIcon className="size-4 mr-2" />
 						<div className="flex flex-col text-sm font-semibold">
 							<p>
-								{new Date(slotParam as string).toLocaleString(locale, {
+								{new Date(selectedSlot as string).toLocaleString(locale, {
 									dateStyle: "full",
 								})}
 							</p>
 							<p>
-								{new Date(slotParam as string).toLocaleString(locale, {
+								{new Date(selectedSlot as string).toLocaleString(locale, {
 									timeStyle: "short",
 								})}
 							</p>

@@ -1,6 +1,15 @@
 "use client";
 
 import { Calendar } from "~/components/Booking/calendar";
+import { Button } from "~/components/ui/button";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from "~/components/ui/dialog";
 
 import {
 	type CalendarDate,
@@ -14,15 +23,16 @@ import * as React from "react";
 import { FormPanel } from "./form-panel";
 import { LeftPanel } from "./left-panel";
 import { RightPanel } from "./right-panel";
-import {useNavigate, useSearchParams} from "react-router";
+import {CalendarCheckIcon} from "lucide-react";
+import {useEffect, useState} from "react";
 
 export function Booking() {
-	let navigate = useNavigate();
-	const [searchParams] = useSearchParams();
+	const [isOpen, setIsOpen] = React.useState(false);
 	const { locale } = useLocale();
 
-	const dateParam = searchParams.get("date");
-	const slotParam = searchParams.get("slot");
+	const [selectedDate, setSelectedDate] = useState<string | null>(new Date(Date.now()).toISOString().split("T")[0]);
+	const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
+	const [showForm, setShowForm] = useState(false);
 
 	const [timeZone, setTimeZone] = React.useState("America/New_York");
 	const [date, setDate] = React.useState(today(getLocalTimeZone()));
@@ -34,16 +44,10 @@ export function Booking() {
 
 	const handleChangeDate = (date: DateValue) => {
 		setDate(date as CalendarDate);
-		const url = new URL(window.location.href);
-		url.searchParams.set(
-			"date",
-			date.toDate(timeZone).toISOString().split("T")[0],
-		);
-		navigate(url.pathname + url.search);
+		setSelectedDate(date.toDate(timeZone).toISOString().split("T")[0]);
 	};
 
 	const handleChangeAvailableTime = (time: string) => {
-		console.log("handleChangeAvailableTime", time);
 		const timeValue = time.split(":").join(" ");
 
 		const match = timeValue.match(/^(\d{1,2}) (\d{2})([ap]m)?$/i);
@@ -70,40 +74,59 @@ export function Booking() {
 		const currentDate = date.toDate(timeZone);
 		currentDate.setHours(hours, minutes);
 
-		console.log(window.location)
-		const url = new URL(window.location.href);
-		url.searchParams.set("slot", currentDate.toISOString());
-		console.log(url);
-		navigate(url.pathname + url.search);
+		setSelectedSlot(currentDate.toISOString());
 	};
 
-	const showForm = !!dateParam && !!slotParam;
+	const handleCancelForm = () => {
+		console.log("handleCancelForm");
+		setShowForm(false);
+	}
+
+	useEffect(() => {
+		setSelectedSlot(null);
+	}, [selectedDate]);
+
+	useEffect(() => {
+		setShowForm(!!selectedDate && !!selectedSlot);
+	}, [selectedSlot]);
 
 	return (
-		<div className="w-full bg-gray-50 px-8 py-6 rounded-md max-w-max mx-auto">
-			<div className="flex gap-6">
-				<LeftPanel
-					showForm={showForm}
-					timeZone={timeZone}
-					setTimeZone={setTimeZone}
-				/>
-				{!showForm ? (
-					<>
-						<Calendar
-							minValue={today(getLocalTimeZone())}
-							defaultValue={today(getLocalTimeZone())}
-							value={date}
-							onChange={handleChangeDate}
-							onFocusChange={(focused: any) => setFocusedDate(focused)}
+		<Dialog open={isOpen} onOpenChange={setIsOpen}>
+			<DialogTrigger asChild>
+				<Button>
+					<CalendarCheckIcon />
+					Réserver
+				</Button>
+			</DialogTrigger>
+			<DialogContent className="!max-w-none !w-fit max-w-[95vw] max-h-[90vh] overflow-auto p-0">
+				<div className="w-full bg-gray-50 px-8 py-6 rounded-md max-w-max mx-auto">
+					<div className="flex gap-6">
+						<LeftPanel
+							showForm={showForm}
+							timeZone={timeZone}
+							setTimeZone={setTimeZone}
+							selectedDate={selectedDate}
+							selectedSlot={selectedSlot}
 						/>
-						<RightPanel
-							{...{ date, timeZone, weeksInMonth, handleChangeAvailableTime }}
-						/>
-					</>
-				) : (
-					<FormPanel />
-				)}
-			</div>
-		</div>
+						{!showForm ? (
+							<>
+								<Calendar
+									minValue={today(getLocalTimeZone())}
+									defaultValue={today(getLocalTimeZone())}
+									value={date}
+									onChange={handleChangeDate}
+									onFocusChange={(focused: any) => setFocusedDate(focused)}
+								/>
+								<RightPanel
+									{...{ date, timeZone, weeksInMonth, handleChangeAvailableTime }}
+								/>
+							</>
+						) : (
+							<FormPanel handleCancelForm={handleCancelForm} />
+						)}
+					</div>
+				</div>
+			</DialogContent>
+		</Dialog>
 	);
 }

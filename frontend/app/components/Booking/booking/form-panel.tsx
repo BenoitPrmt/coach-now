@@ -1,24 +1,25 @@
 import {Button} from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
-import { Textarea } from "~/components/ui/textarea";
-import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/ui/tooltip";
-
-import { UserPlus, X } from "lucide-react";
-
+import {BadgeCheckIcon} from "lucide-react";
 import * as React from "react";
-import {useNavigate} from "react-router";
 import {toast} from "sonner";
 
-type Guest = {
-	email: string;
-};
+type Props = {
+	handleCancelForm: () => void;
+}
 
-export function FormPanel() {
-	let navigate = useNavigate();
-
+export function FormPanel({ handleCancelForm }: Props) {
 	const handleBookCoach = () => {
 		toast.success("Booking coach");
+	}
+
+	const handleCancel = () => {
+		console.log("handleCancel");
+		const queryParams = new URLSearchParams(location.search)
+		queryParams.delete("slot");
+
+		const newUrl = `${location.pathname}?${queryParams.toString()}`;
+		window.history.pushState(null, '', newUrl);
+		handleCancelForm();
 	}
 
 	return (
@@ -33,14 +34,16 @@ export function FormPanel() {
 			</p>
 			<div className="flex justify-end gap-2">
 				<Button
-					variant="ghost"
+					variant="outline"
 					onClick={() => {
-						navigate(-1);
+						handleCancel()
 					}}
+					type="button"
 				>
 					Retour
 				</Button>
 				<Button type="button" onClick={handleBookCoach}>
+					<BadgeCheckIcon />
 					Réserver ce coach
 				</Button>
 			</div>
