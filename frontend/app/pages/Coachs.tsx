@@ -110,8 +110,6 @@ const CoachesPage = () => {
                             key={coach.id}
                             variants={gridElementTransition}
                             className="flex"
-                            whileHover={{scale: 1.02}}
-                            transition={{duration: 0.2}}
                         >
                             <CoachCard coach={coach}/>
                         </motion.div>

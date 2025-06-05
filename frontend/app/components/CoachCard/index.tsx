@@ -21,7 +21,6 @@ const UserInfo = ({avatar, name, position, isModal = false}: UserInfoProps) => {
                     "rounded-lg object-cover shadow-2xs",
                     isModal ? "hidden" : "w-10 h-10"
                 )}
-                layout
             />
             <div className="flex flex-col">
                 <motion.h6
@@ -29,7 +28,6 @@ const UserInfo = ({avatar, name, position, isModal = false}: UserInfoProps) => {
                         "font-semibold text-neutral-900 dark:text-neutral-200",
                         isModal ? "text-lg" : "text-sm"
                     )}
-                    layout
                 >
                     {name}
                 </motion.h6>
@@ -38,7 +36,6 @@ const UserInfo = ({avatar, name, position, isModal = false}: UserInfoProps) => {
                         "text-neutral-500 dark:text-neutral-400",
                         isModal ? "text-sm" : "text-xs"
                     )}
-                    layout
                 >
                     {position}
                 </motion.p>
@@ -124,7 +121,7 @@ const CoachCard = ({
                 >
                     {/* Modal Content */}
                     <motion.div
-                        className="bg-neutral-100 dark:bg-neutral-800 rounded-2xl p-6 w-full max-w-md mx-auto relative"
+                        className="bg-neutral-100 dark:bg-neutral-800 rounded-2xl p-6 w-full max-w-md relative "
                         onClick={(e) => e.stopPropagation()}
                         initial={{scale: 0.9}}
                         animate={{scale: 1}}
