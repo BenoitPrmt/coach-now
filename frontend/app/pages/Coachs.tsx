@@ -1,5 +1,35 @@
 import React from 'react';
 import CoachCard from "~/components/CoachCard";
+import {motion, type Variants} from "motion/react";
+
+const gridTransition: Variants = {
+    hidden: {
+        opacity: 0,
+        y: 20,
+    },
+    visible: {
+        opacity: 1,
+        y: 0,
+        transition: {
+            duration: 0.3,
+            staggerChildren: 0.1,
+        },
+    },
+}
+
+const gridElementTransition: Variants = {
+    hidden: {
+        opacity: 0,
+        scale: 0.95,
+    },
+    visible: {
+        opacity: 1,
+        scale: 1,
+        transition: {
+            duration: 0.3,
+        },
+    },
+}
 
 const CoachesPage = () => {
     const coaches = [
@@ -35,11 +65,21 @@ const CoachesPage = () => {
 
     return (
         <div className="flex sm:pt-20 items-center justify-center">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-6">
+            <motion.div
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-6"
+                initial="hidden"
+                animate="visible" variants={gridTransition}
+            >
                 {coaches.map((coach) => (
-                    <CoachCard coach={coach} key={coach.id}/>
+                    <motion.div
+                        key={coach.id}
+                        variants={gridElementTransition}
+                        className="flex h-full items-stretch justify-center"
+                    >
+                        <CoachCard coach={coach}/>
+                    </motion.div>
                 ))}
-            </div>
+            </motion.div>
         </div>
     );
 };

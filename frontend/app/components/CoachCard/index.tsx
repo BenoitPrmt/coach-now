@@ -107,11 +107,9 @@ const CoachCard = ({
                 </motion.div>
 
                 <motion.div
-                    className="bg-neutral-50 dark:bg-neutral-700 border border-neutral-400/20 border-dashed rounded-md shadow-2xs flex flex-col gap-2 p-4"
+                    className="bg-neutral-50 dark:bg-neutral-700 border border-neutral-400/20 border-dashed rounded-md shadow-2xs flex flex-col gap-2 p-4 h-full"
                 >
-                    <motion.div>
-                        <Description message={message}/>
-                    </motion.div>
+                    <Description message={message}/>
                 </motion.div>
             </motion.div>
 
