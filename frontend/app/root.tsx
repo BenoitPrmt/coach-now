@@ -13,6 +13,7 @@ import Header from "app/components/Layout/Header";
 import "./app.css";
 import type {ReactNode} from "react";
 import Footer from "~/components/Layout/Footer";
+import {Toaster} from "sonner";
 
 export const links: Route.LinksFunction = () => [
     {rel: "preconnect", href: "https://fonts.googleapis.com"},
@@ -29,10 +30,11 @@ export const links: Route.LinksFunction = () => [
 
 export function Layout({children}: { children: ReactNode }) {
     return (
-        <html lang="en">
+        <html lang="fr">
         <head>
             <meta charSet="utf-8"/>
             <meta name="viewport" content="width=device-width, initial-scale=1"/>
+            <title>CoachNow</title>
             <Meta/>
             <Links/>
         </head>
@@ -45,6 +47,7 @@ export function Layout({children}: { children: ReactNode }) {
                 <Scripts/>
             </BaseLayout>
         </main>
+        <Toaster richColors position="top-right" />
         <Footer/>
         </body>
         </html>
