@@ -30,6 +30,7 @@ export async function register(values: {
     email: string;
     password: string,
     isCoach?: boolean;
+    gender: string;
 }) {
     try {
         const url = getPublicEnv(import.meta.env).VITE_API_URL + "/auth/register";

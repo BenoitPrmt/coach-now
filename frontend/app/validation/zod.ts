@@ -21,6 +21,20 @@ export const registerSchema = z.object({
         required_error: "La confirmation du mot de passe est requise."
     }).min(8, "La confirmation du mot de passe doit comporter au moins 8 caractères."),
     isCoach: z.boolean().optional(),
+    gender: z.enum(["male", "female", "other"], {
+        required_error: "Le genre est requis."
+    }),
+    hourlyRate: z.coerce.number().min(10, "Le taux doit être au minimum de 10€"),
+    sports: z.string({
+        required_error: "Le sport est requis."
+    }).min(1, "Le prénom est requis."),
+    profilePicture: z.any().optional(),
+    birthDate: z.date({
+        required_error: "La date de naissance est requise."
+    }),
+    level: z.enum(["BEGINNER", "MEDIUM", "HIGHLEVEL"]),
+
+
 }).refine(data => data.password === data.confirmPassword, {
     message: "Les mots de passe ne correspondent pas.",
 })

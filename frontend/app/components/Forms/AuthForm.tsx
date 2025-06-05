@@ -15,6 +15,14 @@ import {animations} from "~/constants";
 import {login, register} from "~/actions/auth.action";
 import {useLocalStorage} from "~/hooks/useLocalStorage";
 import {userStore} from "~/store/userStore";
+import {Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle} from "~/components/ui/dialog";
+import { Label } from "~/components/ui/label";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { Calendar } from "~/components/ui/calendar";
+import {Popover, PopoverContent, PopoverTrigger,} from "~/components/ui/popover";
+import {Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue} from "~/components/ui/select";
+import {RadioGroup, RadioGroupItem,} from "~/components/ui/radio-group";
 
 type AuthFormProps = ComponentProps<"div"> & {
     type?: "login" | "register";
@@ -39,6 +47,9 @@ const AuthForm = ({
     const [preloadedImages, setPreloadedImages] = useState(new Set<string>());
     const navigate = useNavigate();
     const [_, setLocalStorageKey] = useLocalStorage("jwt-coach-now", "");
+    const [date, setDate] = useState<Date>();
+    const [value, setValue] = useState<number | ''>('');
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     const schema = useMemo(() => {
         return isLogin ? loginSchema : registerSchema;
@@ -75,13 +86,20 @@ const AuthForm = ({
 
     const form = useForm<z.infer<typeof schema>>({
         resolver: zodResolver(schema),
+        mode: "onChange",
         defaultValues: {
             email: "",
             password: "",
+            confirmPassword: "",
             firstName: "",
             lastName: "",
-            confirmPassword: "",
             isCoach: false,
+            gender: "male",
+            hourlyRate: undefined,
+            sports: "",
+            profilePicture: undefined,
+            birthDate: undefined,
+            level: "BEGINNER",
         },
     })
 
@@ -102,6 +120,7 @@ const AuthForm = ({
     }, [password, confirmPassword, isLogin]);
 
     const onSubmit = async (values: z.infer<typeof schema>) => {
+        console.log("Données du formulaire soumises :", values);
         try {
             if (isLogin) {
                 const {email, password} = values;
@@ -113,8 +132,8 @@ const AuthForm = ({
                 }
             } else {
                 if ('firstName' in values && 'lastName' in values && 'isCoach' in values) {
-                    const {firstName, lastName, email, password, isCoach} = values;
-                    await register({firstName, lastName, email, password, isCoach: isCoach || false});
+                    const {firstName, lastName, email, password, isCoach, gender} = values;
+                    await register({firstName, lastName, email, password, isCoach: isCoach || false, gender});
                     navigate("/login", {replace: true});
                 }
             }
@@ -138,6 +157,7 @@ const AuthForm = ({
     }
 
     return (
+      <>
         <div className={cn("flex flex-col gap-6 h-full", className)} {...props}>
             <Card className="overflow-hidden p-0 h-full flex-1">
                 <CardContent className="grid p-0 md:grid-cols-2 h-full flex-1 relative">
@@ -324,7 +344,12 @@ const AuthForm = ({
                                                                         <Checkbox
                                                                             id="coach-checkbox"
                                                                             checked={field.value === true}
-                                                                            onCheckedChange={field.onChange}
+                                                                            onCheckedChange={(checked) => {
+                                                                                field.onChange(checked);
+                                                                                if (checked === true) {
+                                                                                    setIsDialogOpen(true);
+                                                                                }
+                                                                            }}
                                                                             onBlur={field.onBlur}
                                                                             name={field.name}
                                                                             ref={field.ref}
@@ -458,6 +483,206 @@ const AuthForm = ({
                 </CardContent>
             </Card>
         </div>
+
+              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                  <Form {...form}>
+              <form>
+                  <DialogContent className="sm:max-w-[425px]">
+                      <DialogHeader>
+                          <DialogTitle>Espace Coach</DialogTitle>
+                          <DialogDescription>
+                              Veuillez remplir ses informations afin de finaliser votre inscription :)
+                          </DialogDescription>
+                      </DialogHeader>
+
+                      <FormField
+                        control={form.control}
+                        name="gender"
+                        render={({ field }) => (
+                          <FormItem className="grid w-full max-w-sm gap-3">
+                              <FormLabel>Votre sexe</FormLabel>
+                              <FormControl>
+                                  <RadioGroup
+                                    onValueChange={field.onChange}
+                                    value={field.value}
+                                    name={field.name}
+                                    className="flex gap-5"
+                                  >
+                                      <div className="flex items-center gap-2">
+                                          <RadioGroupItem value="male" id="gender-male" />
+                                          <Label htmlFor="gender-male">Homme</Label>
+                                      </div>
+                                      <div className="flex items-center gap-2">
+                                          <RadioGroupItem value="female" id="gender-female" />
+                                          <Label htmlFor="gender-female">Femme</Label>
+                                      </div>
+                                      <div className="flex items-center gap-2">
+                                          <RadioGroupItem value="other" id="gender-other" />
+                                          <Label htmlFor="gender-other">Autre</Label>
+                                      </div>
+                                  </RadioGroup>
+                              </FormControl>
+                              <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                          {/*Input hourlyrate*/}
+                          <div className="grid w-full max-w-sm items-center gap-3">
+                              <FormField
+                                control={form.control}
+                                name="hourlyRate"
+                                render={({ field }) => (
+                                  <FormItem>
+                                      <FormLabel>Taux horaires (€)</FormLabel>
+                                      <FormControl>
+                                          <Input type="number" step="0.01" placeholder="45.99€" {...field} />
+                                      </FormControl>
+                                      <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+
+                          </div>
+
+                          {/*Profil Picture*/}
+                          <div className="grid w-full max-w-sm items-center gap-3">
+                              <FormField
+                                control={form.control}
+                                name="profilePicture"
+                                render={({ field }) => (
+                                  <FormItem className="grid w-full max-w-sm gap-3">
+                                      <FormLabel>Photo de profil</FormLabel>
+                                      <FormControl>
+                                          <Input
+                                            type="file"
+                                            onChange={(e) => field.onChange(e.target.files?.[0])}
+                                          />
+                                      </FormControl>
+                                      <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+
+                          </div>
+
+                          {/*Birthday date*/}
+                          <div className="grid w-full max-w-sm items-center gap-3">
+                              <FormField
+                                control={form.control}
+                                name="birthDate"
+                                render={({ field }) => (
+                                  <FormItem className="grid w-full max-w-sm gap-3">
+                                      <FormLabel>Date de naissance</FormLabel>
+                                      <Popover>
+                                          <PopoverTrigger asChild>
+                                              <FormControl>
+                                                  <Button
+                                                    variant="outline"
+                                                    className={cn(
+                                                      "justify-start text-left font-normal",
+                                                      !field.value && "text-muted-foreground"
+                                                    )}
+                                                  >
+                                                      <CalendarIcon />
+                                                      {field.value ? format(field.value, "PPP") : <span>Choisir une date</span>}
+                                                  </Button>
+                                              </FormControl>
+                                          </PopoverTrigger>
+                                          <PopoverContent className="w-auto p-0" align="start">
+                                              <Calendar
+                                                mode="single"
+                                                selected={field.value}
+                                                onSelect={field.onChange}
+                                                initialFocus
+                                              />
+                                          </PopoverContent>
+                                      </Popover>
+                                      <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+
+                          </div>
+
+                          {/*Sports list*/}
+                          <div className="grid w-full max-w-sm items-center gap-3">
+                              <FormField
+                                control={form.control}
+                                name="sports"
+                                render={({ field }) => (
+                                  <FormItem className="grid w-full max-w-sm gap-3">
+                                      <FormLabel>Choix des sports</FormLabel>
+                                      <Select value={field.value} onValueChange={field.onChange}>
+                                          <FormControl>
+                                              <SelectTrigger className="w-full">
+                                                  <SelectValue placeholder="Choisir des sports" />
+                                              </SelectTrigger>
+                                          </FormControl>
+                                          <SelectContent>
+                                              <SelectGroup>
+                                                  <SelectLabel>Sports</SelectLabel>
+                                                  <SelectItem value="apple">Apple</SelectItem>
+                                                  <SelectItem value="banana">Banana</SelectItem>
+                                                  <SelectItem value="blueberry">Blueberry</SelectItem>
+                                                  <SelectItem value="grapes">Grapes</SelectItem>
+                                                  <SelectItem value="pineapple">Pineapple</SelectItem>
+                                              </SelectGroup>
+                                          </SelectContent>
+                                      </Select>
+                                      <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+
+                          </div>
+
+                          {/*Levels */}
+                          <div className="grid gap-3">
+                          <FormField
+                            control={form.control}
+                            name="level"
+                            render={({ field }) => (
+                              <FormItem className="grid gap-3">
+                                  <FormLabel>Votre niveau</FormLabel>
+                                  <FormControl>
+                                      <RadioGroup
+                                        className="flex gap-5"
+                                        onValueChange={field.onChange}
+                                        value={field.value}
+                                      >
+                                          <div className="flex items-center gap-3">
+                                              <RadioGroupItem value="BEGINNER" id="r1" />
+                                              <Label htmlFor="r1">BEGINNER</Label>
+                                          </div>
+                                          <div className="flex items-center gap-3">
+                                              <RadioGroupItem value="MEDIUM" id="r2" />
+                                              <Label htmlFor="r2">MEDIUM</Label>
+                                          </div>
+                                          <div className="flex items-center gap-3">
+                                              <RadioGroupItem value="HIGHLEVEL" id="r3" />
+                                              <Label htmlFor="r3">HIGHLEVEL</Label>
+                                          </div>
+                                      </RadioGroup>
+                                  </FormControl>
+                                  <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                          </div>
+
+                      <DialogFooter>
+                          <DialogClose asChild>
+                              <Button variant="outline">Annuler</Button>
+                          </DialogClose>
+                          <Button type="submit">Valider</Button>
+                      </DialogFooter>
+                  </DialogContent>
+              </form>
+                  </Form>
+          </Dialog>
+      </>
     );
 };
 
