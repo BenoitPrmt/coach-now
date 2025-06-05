@@ -1,43 +1,74 @@
 import {cn} from "~/lib/utils";
 import {motion} from "motion/react";
-import {useState} from "react";
-import {XIcon} from "lucide-react";
+import {useMemo, useState} from "react";
+import {MarsIcon, VenusIcon, XIcon} from "lucide-react";
 import {Button} from "~/components/ui/button";
+import type {Gender, Level} from "~/types";
+import {formatGender} from "~/lib/formatting";
+import CoachBadge from "~/components/CoachCard/CoachBadge";
 
 interface UserInfoProps {
-    avatar: string;
+    profilePictureUrl: string;
     name: string;
-    position: string;
+    age: number;
+    gender: Gender
     isModal?: boolean;
 }
 
-const UserInfo = ({avatar, name, position, isModal = false}: UserInfoProps) => {
+const UserInfo = (
+    {
+        profilePictureUrl,
+        name,
+        age,
+        gender,
+        isModal = false
+    }: UserInfoProps) => {
+
+    const renderGenderSpan = useMemo(() => {
+        switch (gender) {
+            case "FEMALE":
+                return <span className="text-pink-500 flex items-center">
+                <VenusIcon className="inline w-4 h-4 mr-1"/>
+                    {formatGender(gender)}
+            </span>;
+            case "MALE":
+                return <span className="text-blue-500 flex items-center">
+                <MarsIcon className="inline w-4 h-4 mr-1"/>
+                    {formatGender(gender)}
+            </span>;
+            default:
+                return <span className="text-neutral-500 flex items-center">
+                <XIcon className="inline w-4 h-4 mr-1"/>
+                    {formatGender(gender)}
+            </span>;
+        }
+    }, [gender])
+
     return (
         <div className={cn("flex items-center gap-3", isModal && "mb-4 justify-center")}>
             <motion.img
-                src={avatar}
+                src={profilePictureUrl}
                 alt={name}
                 className={cn(
-                    "rounded-lg object-cover shadow-2xs",
-                    isModal ? "hidden" : "w-10 h-10"
+                    "rounded-lg object-cover shadow-2xs ml-2 mt-2",
+                    isModal ? "hidden" : "w-14 h-14"
                 )}
             />
             <div className="flex flex-col">
                 <motion.h6
                     className={cn(
-                        "font-semibold text-neutral-900 dark:text-neutral-200",
-                        isModal ? "text-lg" : "text-sm"
+                        "font-semibold text-neutral-900 dark:text-neutral-200 text-lg"
                     )}
                 >
                     {name}
                 </motion.h6>
                 <motion.p
                     className={cn(
-                        "text-neutral-500 dark:text-neutral-400",
-                        isModal ? "text-sm" : "text-xs"
+                        "inline-flex text-neutral-500 dark:text-neutral-400 items-center gap-1 text-sm",
+                        isModal && "mx-auto"
                     )}
                 >
-                    {position}
+                    {age} ans | {renderGenderSpan}
                 </motion.p>
             </div>
         </div>
@@ -45,36 +76,55 @@ const UserInfo = ({avatar, name, position, isModal = false}: UserInfoProps) => {
 };
 
 interface DescriptionProps {
-    message: string;
+    levels: Level[];
+    sports: string[];
     isModal?: boolean;
 }
 
-const Description = ({message, isModal = false}: DescriptionProps) => {
+const Description = ({levels, sports, isModal = false}: DescriptionProps) => {
     return (
         <motion.p
             className={cn(
-                "text-neutral-700 dark:text-neutral-300 leading-5",
+                "text-neutral-700 dark:text-neutral-300 leading-5 mx-auto",
                 isModal ? "text-base" : "text-sm"
             )}
             layout
         >
-            {message}
+            {levels.length > 0 && (
+                levels.map((level, index) => (
+                    <CoachBadge value={level} className="mr-1 my-0.5" key={index}/>
+                ))
+            )}
+            {sports.length > 0 && (
+                sports.map((sport, index) => (
+                    <CoachBadge value={sport} className="mr-1 my-0.5" key={index}/>
+                ))
+            )}
         </motion.p>
     );
 };
 
 interface CoachCardProps {
     coach: {
-        avatar: string;
+        profilePictureUrl: string;
         name: string;
-        position: string;
-        message: string;
+        age: number;
+        gender: Gender;
+        sports: string[];
+        levels: Level[];
     }
     className?: string;
 }
 
 const CoachCard = ({
-                       coach: {avatar, name, position, message},
+                       coach: {
+                           profilePictureUrl,
+                           name,
+                           age,
+                           gender,
+                           sports,
+                           levels
+                       },
                        className
                    }: CoachCardProps) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -100,13 +150,13 @@ const CoachCard = ({
                 whileTap={{scale: 1.0}}
             >
                 <motion.div>
-                    <UserInfo avatar={avatar} name={name} position={position}/>
+                    <UserInfo profilePictureUrl={profilePictureUrl} name={name} age={age} gender={gender}/>
                 </motion.div>
 
                 <motion.div
                     className="bg-neutral-50 dark:bg-neutral-700 border border-neutral-400/20 border-dashed rounded-md shadow-2xs flex flex-col gap-2 p-4 h-full"
                 >
-                    <Description message={message}/>
+                    <Description levels={levels} sports={sports}/>
                 </motion.div>
             </motion.div>
 
@@ -148,7 +198,7 @@ const CoachCard = ({
                             exit={{scale: 0.8, opacity: 0}}
                         >
                             <img
-                                src={avatar}
+                                src={profilePictureUrl}
                                 alt={name}
                                 className="w-24 h-24 rounded-2xl object-cover shadow-lg"
                             />
@@ -158,7 +208,13 @@ const CoachCard = ({
                         <motion.div
                             className="text-center mb-6"
                         >
-                            <UserInfo avatar={avatar} name={name} position={position} isModal={true}/>
+                            <UserInfo
+                                profilePictureUrl={profilePictureUrl}
+                                name={name}
+                                age={age}
+                                gender={gender}
+                                isModal={true}
+                            />
                         </motion.div>
 
                         {/* Description agrandie */}
@@ -166,7 +222,7 @@ const CoachCard = ({
                             className="bg-neutral-50 dark:bg-neutral-700 border border-neutral-400/20 border-dashed rounded-md shadow-2xs flex flex-col gap-2 p-6"
                         >
                             <motion.div>
-                                <Description message={message} isModal={true}/>
+                                <Description levels={levels} sports={sports} isModal={true}/>
                             </motion.div>
                         </motion.div>
 

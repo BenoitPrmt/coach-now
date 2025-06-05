@@ -1,7 +1,6 @@
 import {create} from 'zustand'
 import {isOfTypeUserRole} from "~/validation/typesValidations";
-
-export type UserRole = 'USER' | 'COACH' | 'ADMIN';
+import type {UserRole} from "~/types";
 
 type User = {
     name: string;
