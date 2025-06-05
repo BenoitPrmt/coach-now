@@ -24,21 +24,17 @@ import {
   DialogHeader,
   DialogTitle
 } from "~/components/ui/dialog";
-import {Label} from "~/components/ui/label";
-import {format} from "date-fns";
-import {CalendarIcon} from "lucide-react";
-import {Calendar} from "~/components/ui/calendar";
-import {Popover, PopoverContent, PopoverTrigger,} from "~/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue
-} from "~/components/ui/select";
-import {RadioGroup, RadioGroupItem,} from "~/components/ui/radio-group";
+import {GenderField} from "~/components/Forms/FormFields/form-fields/GenderField";
+import {HourlyRateField} from "~/components/Forms/FormFields/form-fields/HourlyRate";
+import {ProfilePictureField} from "~/components/Forms/FormFields/form-fields/ProfilPicture";
+import {BirthdayDateField} from "~/components/Forms/FormFields/form-fields/BirthdayDate";
+import {SportsField} from "~/components/Forms/FormFields/form-fields/Sports";
+import {LevelField} from "~/components/Forms/FormFields/form-fields/Levels";
+import {FirstNameField} from "~/components/Forms/FormFields/form-fields/FirstName";
+import {LastNameField} from "~/components/Forms/FormFields/form-fields/LastName";
+import {EmailField} from "~/components/Forms/FormFields/form-fields/Email";
+import {PasswordField} from "~/components/Forms/FormFields/form-fields/Password";
+import {ConfirmPasswordField} from "~/components/Forms/FormFields/form-fields/ConfirmPassword";
 
 type AuthFormProps = ComponentProps<"div"> & {
   type?: "login" | "register";
@@ -63,10 +59,8 @@ const AuthForm = ({
   const [preloadedImages, setPreloadedImages] = useState(new Set<string>());
   const navigate = useNavigate();
   const [_, setLocalStorageKey] = useLocalStorage("jwt-coach-now", "");
-  const [date, setDate] = useState<Date>();
   const [value, setValue] = useState<number | ''>('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-
 
 
   const schema = useMemo(() => {
@@ -245,74 +239,18 @@ const AuthForm = ({
                           transition={{duration: 0.4, ease: "easeInOut"}}
                           className="grid grid-cols-2 gap-3"
                         >
-                          <FormField
-                            control={form.control}
-                            name="firstName"
-                            render={({field}) => (
-                              <FormItem className='grid gap-0'>
-                                <FormLabel>Prénom</FormLabel>
-                                <FormControl className="mt-2">
-                                  <Input placeholder="John" {...field} />
-                                </FormControl>
-                                <div className="min-h-5 flex items-start mt-1">
-                                  <FormMessage/>
-                                </div>
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name="lastName"
-                            render={({field}) => (
-                              <FormItem className='grid gap-0'>
-                                <FormLabel>Nom</FormLabel>
-                                <FormControl className="mt-2">
-                                  <Input placeholder="Doe" {...field} />
-                                </FormControl>
-                                <div className="min-h-5 flex items-start mt-1">
-                                  <FormMessage/>
-                                </div>
-                              </FormItem>
-                            )}
-                          />
+                          <FirstNameField control={form.control}/>
+                          <LastNameField control={form.control}/>
                         </motion.div>
                       )}
                     </AnimatePresence>
 
                     <motion.div variants={authItemVariants}>
-                      <FormField
-                        control={form.control}
-                        name="email"
-                        render={({field}) => (
-                          <FormItem className='grid gap-0'>
-                            <FormLabel>Email</FormLabel>
-                            <FormControl className="mt-3">
-                              <Input placeholder="john.doe@example.com" {...field} />
-                            </FormControl>
-                            <div className="min-h-5 flex items-start mt-1">
-                              <FormMessage/>
-                            </div>
-                          </FormItem>
-                        )}
-                      />
+                      <EmailField control={form.control}/>
                     </motion.div>
 
                     <motion.div variants={authItemVariants}>
-                      <FormField
-                        control={form.control}
-                        name="password"
-                        render={({field}) => (
-                          <FormItem className='grid gap-0'>
-                            <FormLabel>Mot de passe</FormLabel>
-                            <FormControl className="mt-3">
-                              <Input placeholder="Mot de passe" type="password" {...field} />
-                            </FormControl>
-                            <div className="min-h-5 flex items-start mt-1">
-                              <FormMessage/>
-                            </div>
-                          </FormItem>
-                        )}
-                      />
+                      <PasswordField control={form.control}/>
                     </motion.div>
 
                     <AnimatePresence>
@@ -328,23 +266,7 @@ const AuthForm = ({
                           }}
                           className="flex flex-col gap-4"
                         >
-                          <FormField
-                            control={form.control}
-                            name="confirmPassword"
-                            render={({field}) => (
-                              <FormItem className='grid gap-0'>
-                                <FormLabel>Confirmer le mot de passe</FormLabel>
-                                <FormControl className="mt-3">
-                                  <Input placeholder="Confirmer le mot de passe"
-                                         type="password" {...field} />
-                                </FormControl>
-                                <div className="min-h-5 flex items-start mt-1">
-                                  <FormMessage/>
-                                </div>
-                              </FormItem>
-                            )}
-                          />
-
+                        <ConfirmPasswordField control={form.control}/>
                           <FormField
                             control={form.control}
                             name="isCoach"
@@ -394,6 +316,7 @@ const AuthForm = ({
                               </FormItem>
                             )}
                           />
+
                         </motion.div>
                       )}
                     </AnimatePresence>
@@ -517,192 +440,22 @@ const AuthForm = ({
                 </DialogDescription>
               </DialogHeader>
 
-              {/*Gender*/}
-              <div className="grid w-full max-w-sm items-center gap-3">
-                <FormField
-                  control={form.control}
-                  name="gender"
-                  render={({field}) => (
-                    <FormItem className="grid w-full max-w-sm gap-3">
-                      <FormLabel>Votre sexe</FormLabel>
-                      <FormControl>
-                        <RadioGroup
-                          onValueChange={field.onChange}
-                          value={field.value}
-                          name={field.name}
-                          className="flex gap-5"
-                        >
-                          <div className="flex items-center gap-2">
-                            <RadioGroupItem value="male" id="gender-male"/>
-                            <Label htmlFor="gender-male">Homme</Label>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <RadioGroupItem value="female" id="gender-female"/>
-                            <Label htmlFor="gender-female">Femme</Label>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <RadioGroupItem value="other" id="gender-other"/>
-                            <Label htmlFor="gender-other">Autre</Label>
-                          </div>
-                        </RadioGroup>
-                      </FormControl>
-                      <FormMessage/>
-                    </FormItem>
-                  )}
-                />
-              </div>
+              <GenderField control={form.control}/>
 
-              {/*Input hourlyrate*/}
-              <div className="grid w-full max-w-sm items-center gap-3">
-                <FormField
-                  control={form.control}
-                  name="hourlyRate"
-                  render={({field}) => (
-                    <FormItem>
-                      <FormLabel>Taux horaires (€)</FormLabel>
-                      <FormControl>
-                        <Input type="number" step="0.01" placeholder="45.99€" {...field} />
-                      </FormControl>
-                      <FormMessage/>
-                    </FormItem>
-                  )}
-                />
+              <HourlyRateField control={form.control}/>
 
-              </div>
+              <ProfilePictureField control={form.control}/>
 
-              {/*Profil Picture*/}
-              <div className="grid w-full max-w-sm items-center gap-3">
-                <FormField
-                  control={form.control}
-                  name="profilePicture"
-                  render={({field}) => (
-                    <FormItem className="grid w-full max-w-sm gap-3">
-                      <FormLabel>Photo de profil (URL)</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="text"
-                          placeholder="https://exemple.com/monimage.jpg"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage/>
-                    </FormItem>
-                  )}
-                />
+              <BirthdayDateField control={form.control}/>
 
-              </div>
+              <SportsField control={form.control}/>
 
-              {/*Birthday date*/}
-              <div className="grid w-full max-w-sm items-center gap-3">
-                <FormField
-                  control={form.control}
-                  name="birthDate"
-                  render={({field}) => (
-                    <FormItem className="grid w-full max-w-sm gap-3">
-                      <FormLabel>Date de naissance</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant="outline"
-                              className={cn(
-                                "justify-start text-left font-normal",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              <CalendarIcon/>
-                              {field.value ? format(field.value, "PPP") : <span>Choisir une date</span>}
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage/>
-                    </FormItem>
-                  )}
-                />
-
-              </div>
-
-              {/*Sports list*/}
-              <div className="grid w-full max-w-sm items-center gap-3">
-                <FormField
-                  control={form.control}
-                  name="sports"
-                  render={({field}) => (
-                    <FormItem className="grid w-full max-w-sm gap-3">
-                      <FormLabel>Choix des sports</FormLabel>
-                      <Select value={field.value} onValueChange={field.onChange}>
-                        <FormControl>
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Choisir des sports"/>
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectLabel>Sports</SelectLabel>
-                            <SelectItem value="apple">Apple</SelectItem>
-                            <SelectItem value="banana">Banana</SelectItem>
-                            <SelectItem value="blueberry">Blueberry</SelectItem>
-                            <SelectItem value="grapes">Grapes</SelectItem>
-                            <SelectItem value="pineapple">Pineapple</SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage/>
-                    </FormItem>
-                  )}
-                />
-
-              </div>
-
-              {/*Levels */}
-              <div className="grid gap-3">
-                <FormField
-                  control={form.control}
-                  name="level"
-                  render={({field}) => (
-                    <FormItem className="grid gap-3">
-                      <FormLabel>Votre niveau</FormLabel>
-                      <FormControl>
-                        <RadioGroup
-                          className="flex gap-5"
-                          onValueChange={field.onChange}
-                          value={field.value}
-                        >
-                          <div className="flex items-center gap-3">
-                            <RadioGroupItem value="BEGINNER" id="r1"/>
-                            <Label htmlFor="r1">BEGINNER</Label>
-                          </div>
-                          <div className="flex items-center gap-3">
-                            <RadioGroupItem value="MEDIUM" id="r2"/>
-                            <Label htmlFor="r2">MEDIUM</Label>
-                          </div>
-                          <div className="flex items-center gap-3">
-                            <RadioGroupItem value="HIGHLEVEL" id="r3"/>
-                            <Label htmlFor="r3">HIGHLEVEL</Label>
-                          </div>
-                        </RadioGroup>
-                      </FormControl>
-                      <FormMessage/>
-                    </FormItem>
-                  )}
-                />
-
-              </div>
+              <LevelField control={form.control}/>
 
               <DialogFooter>
                 <DialogClose asChild>
-                  <Button variant="outline">Annuler</Button>
+                  <Button>Valider</Button>
                 </DialogClose>
-                <Button type="submit">Valider</Button>
               </DialogFooter>
             </DialogContent>
           </form>
