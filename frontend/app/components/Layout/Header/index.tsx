@@ -148,7 +148,7 @@ export default function Header() {
 
                         <motion.button
                             onClick={signOut}
-                            className="text-sm font-medium hover:text-primary transition-colors"
+                            className="text-sm font-medium hover:text-primary transition-colors cursor-pointer"
                             whileHover={{scale: 1.05}}
                             initial={{opacity: 0, x: -20}}
                             animate={{opacity: 1, x: 0}}
