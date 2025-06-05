@@ -75,7 +75,7 @@ public class CoachDTO {
         return gender;
     }
 
-    public UserDTO getUserId() {
+    public UserDTO getUser() {
         return user;
     }
 
