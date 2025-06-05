@@ -9,9 +9,13 @@ import com.coachnow.api.model.service.CoachService;
 import com.coachnow.api.model.service.UserService;
 import com.coachnow.api.web.request.booking.BookingCreation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,31 +51,46 @@ public class BookingController {
     }
 
     @PostMapping("/booking")
-    public BookingDTO create(@RequestBody BookingCreation bookingData) throws ParseException {
-        Coach coach = coachService.select(bookingData.getCoachId());
-        if (coach == null) {
-            throw new IllegalArgumentException("Coach with id " + bookingData.getCoachId() + " does not exist.");
+    public ResponseEntity<BookingDTO> create(@RequestBody BookingCreation bookingData) throws ParseException {
+        try {
+            Coach coach = coachService.select(bookingData.getCoachId());
+            if (coach == null) {
+                throw new IllegalArgumentException("Coach with id " + bookingData.getCoachId() + " does not exist.");
+            }
+
+            User user = userService.select(bookingData.getUserId());
+            if (user == null) {
+                throw new IllegalArgumentException("User with id " + bookingData.getUserId() + " does not exist.");
+            }
+
+            DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+            Boolean isCoachAvailable = coachService.isCoachAvailable(
+                    bookingData.getCoachId(),
+                    formatter.parse(bookingData.getStartDate()),
+                    formatter.parse(bookingData.getEndDate())
+            );
+            if (!isCoachAvailable) {
+                throw new IllegalArgumentException("Coach is not available for the selected time.");
+            }
+
+            Booking booking = new Booking();
+            booking.setBookingWithBookingCreation(bookingData);
+            booking.setCoach(coach);
+            booking.setUser(user);
+
+            if (booking.getStartDate().after(booking.getEndDate())) {
+                throw new IllegalArgumentException("Start date cannot be after end date.");
+            }
+
+            if (booking.getStartDate().before(new java.util.Date())) {
+                throw new IllegalArgumentException("Start date cannot be in the past.");
+            }
+
+            return new ResponseEntity<>(new BookingDTO(bookingService.save(booking)), HttpStatus.CREATED);
+        } catch (IllegalArgumentException | ParseException e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
-        User user = userService.select(bookingData.getUserId());
-        if (user == null) {
-            throw new IllegalArgumentException("User with id " + bookingData.getUserId() + " does not exist.");
-        }
-
-        Booking booking = new Booking();
-        booking.setBookingWithBookingCreation(bookingData);
-        booking.setCoach(coach);
-        booking.setUser(user);
-
-        if (booking.getStartDate().after(booking.getEndDate())) {
-            throw new IllegalArgumentException("Start date cannot be after end date.");
-        }
-
-        if (booking.getStartDate().before(new java.util.Date())) {
-            throw new IllegalArgumentException("Start date cannot be in the past.");
-        }
-
-        return new BookingDTO(bookingService.save(booking));
     }
 
     @PutMapping("/booking/{id}")
