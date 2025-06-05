@@ -85,7 +85,7 @@ const Description = ({levels, sports, isModal = false}: DescriptionProps) => {
     return (
         <motion.p
             className={cn(
-                "text-neutral-700 dark:text-neutral-300 leading-5 mx-auto",
+                "text-neutral-700 dark:text-neutral-300 leading-5 flex flex-wrap justify-center",
                 isModal ? "text-base" : "text-sm"
             )}
             layout
