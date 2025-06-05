@@ -25,6 +25,7 @@ import { LeftPanel } from "./left-panel";
 import { RightPanel } from "./right-panel";
 import {CalendarCheckIcon} from "lucide-react";
 import {useEffect, useState} from "react";
+import {getAvailabilities} from "~/actions/coach.action";
 
 export function Booking() {
 	const [isOpen, setIsOpen] = React.useState(false);
@@ -39,6 +40,16 @@ export function Booking() {
 	const [focusedDate, setFocusedDate] = React.useState<CalendarDate | null>(
 		date,
 	);
+
+	useEffect(() => {
+		const getCoachAvailabilities = async () => {
+			const todayDate: string = new Date(Date.now()).toISOString().split("T")[0];
+			const lastDayOfMonth: string = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toISOString().split("T")[0];
+			const response = await getAvailabilities("304cad21-c1a2-456d-a1fe-6f3b5485aa5b", todayDate, lastDayOfMonth);
+			console.log("Coach availabilities response:", response);
+		}
+		getCoachAvailabilities();
+	}, []);
 
 	const weeksInMonth = getWeeksInMonth(focusedDate as DateValue, locale);
 

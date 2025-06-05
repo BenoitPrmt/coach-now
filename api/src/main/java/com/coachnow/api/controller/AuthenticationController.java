@@ -8,7 +8,6 @@ import com.coachnow.api.web.request.AuthRequest;
 import com.coachnow.api.web.response.AuthResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,8 +19,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-//Using @CrossOrigin to allow requests from the frontend URL environment variable
-@CrossOrigin(origins = "${frontend.url}")
 public class AuthenticationController {
     @Autowired
     private UserService userService;
