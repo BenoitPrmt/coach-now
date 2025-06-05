@@ -34,6 +34,7 @@ public class CoachDTO {
         this.hourlyRate = coach.getHourlyRate();
         this.sports = coach.getSports();
         this.levels = coach.getLevels();
+        this.gender = coach.getGender();
         this.userId = coach.getUser() != null ? coach.getUser().getId() : null;
 
         if (coach.getRatings() != null) {
