@@ -10,26 +10,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-//@CrossOrigin(origins = "http://localhost:8000")
 @RequestMapping("/api")
+@CrossOrigin(origins = "${frontend.url}")
 public class UserController {
 
-    @Autowired UserService userService;
+    @Autowired
+    UserService userService;
 
     @GetMapping("/users")
     public List<UserDTO> all() {
         List<User> users = userService.selectAll();
         List<UserDTO> listDTO = new ArrayList<UserDTO>();
-        for(User user : users) {
+        for (User user : users) {
             listDTO.add(new UserDTO(user));
         }
         return listDTO;
     }
 
     @GetMapping("/user/{id}")
-    public UserDTO get(
-            @PathVariable String id
-    ) {
+    public UserDTO get(@PathVariable String id) {
         User user = userService.select(id);
 
         return user != null ? new UserDTO(user) : null;
@@ -38,17 +37,18 @@ public class UserController {
 
     @PostMapping("/user")
     public UserDTO create(@RequestBody User user) {
-        return new UserDTO(userService.save(user));
+        return new UserDTO(userService.registerUser(user));
     }
 
     @PutMapping("/user/{id}")
-    public UserDTO create(@RequestBody User user, @PathVariable String id) {
+    public UserDTO update(@RequestBody User user, @PathVariable String id) {
         user.setId(id);
         return new UserDTO(userService.save(user));
     }
 
     @DeleteMapping("/user/{id}")
-    public void deletePlayer(@PathVariable String id) {userService.delete(id);
+    public void deletePlayer(@PathVariable String id) {
+        userService.delete(id);
     }
 
 }

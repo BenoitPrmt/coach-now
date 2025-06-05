@@ -1,0 +1,32 @@
+package com.coachnow.api.model.entity.dto;
+
+import com.coachnow.api.model.entity.Rating;
+import lombok.Data;
+
+import java.util.Date;
+
+@Data
+public class RatingDTO {
+    private String id;
+    private Date date;
+    private Float rating;
+    private String comment;
+    private String coach;
+    private String user;
+
+    public RatingDTO(Rating rating) {
+        this.id = rating.getId();
+        this.date = rating.getDate();
+        this.rating = rating.getRating();
+        this.comment = rating.getComment();
+        this.coach = rating.getCoach().getId();
+        this.user = rating.getUser().getId();
+    }
+
+    public String getId() { return id; }
+    public Date getDate() { return date; }
+    public Float getRating() { return rating; }
+    public String getComment() { return comment; }
+    public String getCoach() { return coach; }
+    public String getUser() { return user; }
+}

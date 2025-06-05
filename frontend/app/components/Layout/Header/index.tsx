@@ -5,12 +5,16 @@ import {useState, useEffect, Fragment} from "react";
 import {navigation} from "~/constants";
 import {Menu, X} from "lucide-react";
 import {cn} from "~/lib/utils";
-import {Link, useNavigate} from "react-router";
+import {Link, useNavigate, useLocation} from "react-router";
+import {useUser} from "~/hooks/useUser";
 
 export default function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const navigate = useNavigate();
+    const {pathname} = useLocation();
+    // Didn't remove the user import because it might be used in the future for Header info
+    const {user, isCoach, isAdmin, signOut, isAuthenticated} = useUser();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -79,12 +83,33 @@ export default function Header() {
 
         return (
             <>
-                {
-                    headerElements.map((headerElement, index) => (
+                {headerElements.filter((headerElement) => {
+                    if (headerElement.adminOnly) {
+                        return isAdmin;
+                    }
+
+                    if (headerElement.hiddenWhenAuth) {
+                        return !isAuthenticated;
+                    }
+
+                    if (headerElement.needsAuth) {
+                        return isAuthenticated;
+                    }
+
+                    return true;
+                }).map((headerElement, index) => {
+                    const isParentActive =
+                        pathname === headerElement.url || pathname.startsWith(headerElement.url + "/");
+
+                    return (
                         <Fragment key={index}>
                             <motion.button
+                                layout
                                 onClick={() => handleNavigation(headerElement.url)}
-                                className="text-sm font-medium hover:text-primary transition-colors text-center cursor-pointer"
+                                className={cn(
+                                    "text-sm font-medium transition-colors text-center cursor-pointer",
+                                    isParentActive ? "text-primary font-semibold" : "hover:text-primary"
+                                )}
                                 whileHover={{scale: 1.05}}
                                 initial={{opacity: 0, x: -20}}
                                 animate={{opacity: 1, x: 0}}
@@ -92,79 +117,47 @@ export default function Header() {
                             >
                                 {headerElement.page}
                             </motion.button>
-                            {headerElement.links.map((item, index) => (
-                                <motion.button
-                                    key={item.link}
-                                    onClick={() => handleNavigation(item.link)}
-                                    className="text-sm font-medium hover:text-primary transition-colors cursor-pointer"
-                                    whileHover={{scale: 1.05}}
-                                    initial={{opacity: 0, x: -20}}
-                                    animate={{opacity: 1, x: 0}}
-                                    transition={{...transitionBase, delay: index * 0.1}}
-                                >
-                                    {item.label}
-                                </motion.button>
-                            ))}
+
+                            {isParentActive &&
+                                headerElement.links.map((item, subIndex) => {
+                                    const isSubActive = pathname === item.link;
+
+                                    return (
+                                        <motion.button
+                                            layout
+                                            key={item.link}
+                                            onClick={() => handleNavigation(item.link)}
+                                            className={cn(
+                                                "text-sm font-medium transition-colors cursor-pointer ml-4",
+                                                isSubActive ? "text-primary font-semibold" : "hover:text-primary"
+                                            )}
+                                            whileHover={{scale: 1.05}}
+                                            initial={{opacity: 0, x: -20}}
+                                            animate={{opacity: 1, x: 0}}
+                                            transition={{...transitionBase, delay: subIndex * 0.1}}
+                                        >
+                                            {item.label}
+                                        </motion.button>
+                                    );
+                                })}
                         </Fragment>
-                    ))
-                }
-                {/* Condition if logged */}
-                {/*{currentUsername ? (*/}
-                {/*    <>*/}
-                {/*        <motion.button*/}
-                {/*            onClick={() => {*/}
-                {/*                setIsMenuOpen(false);*/}
-                {/*                navigate("/profile/", {replace: true});*/}
-                {/*            }}*/}
-                {/*            className="text-sm font-medium hover:text-primary transition-colors text-center"*/}
-                {/*            whileHover={{scale: 1.05}}*/}
-                {/*            initial={{opacity: 0, x: -20}}*/}
-                {/*            animate={{opacity: 1, x: 0}}*/}
-                {/*            transition={{...transitionBase, delay: links.length * 0.1}}*/}
-                {/*        >*/}
-                {/*            Mon profil*/}
-                {/*        </motion.button>*/}
-                {/*        /!* Verification if admin to implement *!/*/}
-                {/*        /!*{*!/*/}
-                {/*        /!*    (currentUser?.role && currentUser?.role === "ADMIN") && (*!/*/}
-                {/*        /!*        <motion.button*!/*/}
-                {/*        /!*            onClick={() => {*!/*/}
-                {/*        /!*                setIsMenuOpen(false);*!/*/}
-                {/*        /!*                navigate.push("/admin");*!/*/}
-                {/*        /!*            }}*!/*/}
-                {/*        /!*            className="text-sm font-medium hover:text-primary transition-colors text-center"*!/*/}
-                {/*        /!*            whileHover={{scale: 1.05}}*!/*/}
-                {/*        /!*            initial={{opacity: 0, x: -20}}*!/*/}
-                {/*        /!*            animate={{opacity: 1, x: 0}}*!/*/}
-                {/*        /!*            transition={{...transitionBase, delay: links.length * 0.1}}*!/*/}
-                {/*        /!*        >*!/*/}
-                {/*        /!*            Admin*!/*/}
-                {/*        /!*        </motion.button>*!/*/}
-                {/*        /!*    )*!/*/}
-                {/*        /!*}*!/*/}
-                {/*        <motion.button*/}
-                {/*            onClick={handleSignOut}*/}
-                {/*            className="text-sm font-medium hover:text-primary transition-colors"*/}
-                {/*            whileHover={{scale: 1.05}}*/}
-                {/*            initial={{opacity: 0, x: -20}}*/}
-                {/*            animate={{opacity: 1, x: 0}}*/}
-                {/*            transition={{...transitionBase, delay: links.length * 0.1}}*/}
-                {/*        >*/}
-                {/*            Déconnexion*/}
-                {/*        </motion.button>*/}
-                {/*    </>*/}
-                {/*) : (*/}
-                {/*    <motion.a*/}
-                {/*        href="/login"*/}
-                {/*        className="text-sm font-medium hover:text-primary transition-colors"*/}
-                {/*        whileHover={{scale: 1.05}}*/}
-                {/*        initial={{opacity: 0, x: -20}}*/}
-                {/*        animate={{opacity: 1, x: 0}}*/}
-                {/*        transition={{...transitionBase, delay: links.length * 0.1}}*/}
-                {/*    >*/}
-                {/*        Se connecter*/}
-                {/*    </motion.a>*/}
-                {/*)}*/}
+                    );
+                })}
+                {isAuthenticated && (
+                    <>
+
+                        <motion.button
+                            onClick={signOut}
+                            className="text-sm font-medium hover:text-primary transition-colors cursor-pointer"
+                            whileHover={{scale: 1.05}}
+                            initial={{opacity: 0, x: -20}}
+                            animate={{opacity: 1, x: 0}}
+                            transition={{...transitionBase, delay: headerElements.length * 0.1}}
+                        >
+                            Déconnexion
+                        </motion.button>
+                    </>
+                )}
             </>
         );
     };

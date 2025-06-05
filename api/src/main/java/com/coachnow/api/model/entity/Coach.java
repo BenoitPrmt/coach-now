@@ -2,11 +2,11 @@ package com.coachnow.api.model.entity;
 
 import com.coachnow.api.types.Gender;
 import com.coachnow.api.types.Level;
+import com.coachnow.api.types.Roles;
 import com.coachnow.api.types.Sports;
+import com.coachnow.api.web.request.coach.CoachCreation;
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -29,12 +29,15 @@ public class Coach {
     @Column(nullable = false)
     private Float hourlyRate;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Set<Sports> sports;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Set<Level> levels;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Gender gender;
 
@@ -45,9 +48,31 @@ public class Coach {
     @OneToMany(mappedBy = "coach")
     private List<Booking> bookings = new ArrayList<Booking>();
 
+    @OneToMany(mappedBy = "coach", fetch = FetchType.EAGER)
+    private List<Rating> ratings;
+
     @Override
     public String toString() {
-        return "";
+        return "Coach{" +
+                "id='" + id + '\'' +
+                ", birthdate=" + birthdate +
+                ", profilePictureUrl='" + profilePictureUrl + '\'' +
+                ", hourlyRate=" + hourlyRate +
+                ", sports=" + sports +
+                ", levels=" + levels +
+                ", gender=" + gender +
+                ", user=" + user.getEmail() +
+                ", bookings=" + bookings +
+                '}';
+    }
+
+    public void setCoachFromCoachCreation(CoachCreation coachData) {
+        this.birthdate = Date.valueOf(coachData.getBirthdate());
+        this.profilePictureUrl = coachData.getProfilePictureUrl();
+        this.hourlyRate = coachData.getHourlyRate();
+        this.sports = coachData.getSports();
+        this.levels = coachData.getLevels();
+        this.gender = coachData.getGender();
     }
 
     public String getId() {
@@ -121,4 +146,13 @@ public class Coach {
     public void setBookings(List<Booking> bookings) {
         this.bookings = bookings;
     }
+
+    public List<Rating> getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(List<Rating> ratings) {
+        this.ratings = ratings;
+    }
+
 }

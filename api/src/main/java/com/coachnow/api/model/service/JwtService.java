@@ -1,5 +1,6 @@
 package com.coachnow.api.model.service;
 
+import com.coachnow.api.model.entity.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,10 +26,13 @@ public class JwtService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(User user) {
         return Jwts.builder()
                 .setClaims(new HashMap<>())
-                .setSubject(userDetails.getUsername())
+                .setSubject(user.getEmail())
+                .claim("email", user.getEmail())
+                .claim("role", user.getRole())
+                .claim("name", user.getFirstName() + " " + user.getLastName().charAt(0))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration)) // 24h
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
