@@ -64,22 +64,25 @@ const CoachesPage = () => {
     ];
 
     return (
-        <div className="flex sm:pt-20 items-center justify-center">
-            <motion.div
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-6"
-                initial="hidden"
-                animate="visible" variants={gridTransition}
-            >
-                {coaches.map((coach) => (
-                    <motion.div
-                        key={coach.id}
-                        variants={gridElementTransition}
-                        className="flex h-full items-stretch justify-center"
-                    >
-                        <CoachCard coach={coach}/>
-                    </motion.div>
-                ))}
-            </motion.div>
+        <div className="flex justify-center min-h-screen">
+            <div>
+                <motion.div
+                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-6"
+                    initial="hidden"
+                    animate="visible"
+                    variants={gridTransition}
+                >
+                    {coaches.map((coach) => (
+                        <motion.div
+                            key={coach.id}
+                            variants={gridElementTransition}
+                            className="flex"
+                        >
+                            <CoachCard coach={coach}/>
+                        </motion.div>
+                    ))}
+                </motion.div>
+            </div>
         </div>
     );
 };
