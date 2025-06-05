@@ -1,0 +1,60 @@
+import {create} from 'zustand'
+import {isOfTypeUserRole} from "~/validation/typesValidations";
+
+export type UserRole = 'USER' | 'COACH' | 'ADMIN';
+
+type User = {
+    name: string;
+    email: string;
+    role: UserRole;
+}
+
+type DecodedUser = {
+    name?: string;
+    email?: string;
+    role?: string;
+    exp?: number;
+};
+
+type UserStore = {
+    user: User | null;
+    setUser: (user: User) => void;
+    clearUser: () => void;
+    setUserFromToken: (token: string) => void;
+}
+
+export const userStore = create<UserStore>((set) => ({
+    user: null,
+    setUser: (user) => set({user}),
+    clearUser: () => set({user: null}),
+    setUserFromToken: (token: string) => {
+        try {
+            const tokenParts = token.split('.');
+
+            if (tokenParts.length !== 3) {
+                throw new Error("Token JWT invalide - format incorrect");
+            }
+
+            const payload = tokenParts[1];
+            const paddedPayload = payload + '='.repeat((4 - payload.length % 4) % 4);
+            const decodedUser = JSON.parse(atob(paddedPayload)) as DecodedUser;
+
+            if (decodedUser.exp && Date.now() / 1000 > decodedUser.exp) {
+                console.log("Token expiré");
+                set({user: null});
+                return;
+            }
+
+            set({
+                user: {
+                    name: decodedUser.name || 'Guest',
+                    email: decodedUser.email || '',
+                    role: isOfTypeUserRole(decodedUser.role) ? decodedUser.role : 'USER',
+                }
+            });
+        } catch (error) {
+            console.error("Failed to decode user token:", error);
+            set({user: null});
+        }
+    }
+}))

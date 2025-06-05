@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "${frontend.url}")
 @RequestMapping("/api")
 public class BookingController {
 
