@@ -10,12 +10,13 @@ import {cn} from "~/lib/utils";
 import {Card, CardContent} from "~/components/ui/card";
 import {Checkbox} from "~/components/ui/checkbox";
 import {Link, useNavigate} from "react-router";
-import {useMemo, useState, useEffect} from "react";
+import {useMemo, useState, useEffect, type ComponentProps} from "react";
 import {animations} from "~/constants";
 import {login, register} from "~/actions/auth.action";
 import {useLocalStorage} from "~/hooks/useLocalStorage";
+import {userStore} from "~/store/userStore";
 
-type AuthFormProps = React.ComponentProps<"div"> & {
+type AuthFormProps = ComponentProps<"div"> & {
     type?: "login" | "register";
 }
 
@@ -32,6 +33,7 @@ const AuthForm = ({
         authImageContainerVariants
     } = animations;
 
+    const setUserFromToken = userStore((state) => state.setUserFromToken);
     const isLogin = useMemo(() => type === "login", [type]);
     const [imageLoaded, setImageLoaded] = useState(false);
     const [preloadedImages, setPreloadedImages] = useState(new Set<string>());
@@ -105,8 +107,8 @@ const AuthForm = ({
                 const {email, password} = values;
                 const response = await login({email, password});
                 if (response && response.token) {
-                    // Stocker le token JWT dans le localStorage
                     setLocalStorageKey(response.token);
+                    setUserFromToken(response.token);
                     navigate("/", {replace: true});
                 }
             } else {

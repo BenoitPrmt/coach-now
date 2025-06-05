@@ -13,6 +13,7 @@ export default function Header() {
     const [scrolled, setScrolled] = useState(false);
     const navigate = useNavigate();
     const {pathname} = useLocation();
+    // Didn't remove the user import because it might be used in the future for Header info
     const {user, isCoach, isAdmin, signOut, isAuthenticated} = useUser();
 
     useEffect(() => {
