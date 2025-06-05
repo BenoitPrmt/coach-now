@@ -84,14 +84,6 @@ const CoachesPage = () => {
         fetchCoaches().catch(console.error);
     }, []);
 
-    useEffect(() => {
-        if (coaches && coaches.length > 0) {
-            console.log("Fetched coaches:", coaches);
-        } else {
-            console.log("No coaches found or still loading.");
-        }
-    }, [coaches]);
-
     return (
         <div className="min-h-screen">
             <div className="max-w-7xl mx-auto">
