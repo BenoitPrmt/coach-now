@@ -145,46 +145,56 @@ const CoachProfile = ({coachId}: Props) => {
                     animate={{opacity: 1, y: 0}}
                     transition={{duration: 0.5}}
                 >
-                    <div className="flex flex-col items-center">
-                        {coach && (
-                            <>
-                                <UserInfo
-                                    profilePictureUrl={coach.profilePictureUrl}
-                                    firstName={coach.user.firstName}
-                                    lastName={coach.user.lastName}
-                                    birthdate={coach.birthdate}
-                                    gender={coach.gender}
-                                />
-
-                                <motion.div
-                                    className="mt-6 w-full bg-neutral-50 dark:bg-neutral-700 border border-neutral-400/20 border-dashed rounded-md shadow-2xs flex flex-col gap-2 p-6"
-                                >
-                                    <Description
-                                        levels={coach.levels}
-                                        sports={coach.sports}
-                                        isModal={true}
+                    <div className="flex flex-col justify-between items-center mb-6 h-full">
+                        <div className="flex flex-col items-center w-full">
+                            {coach && (
+                                <>
+                                    <UserInfo
+                                        profilePictureUrl={coach.profilePictureUrl}
+                                        firstName={coach.user.firstName}
+                                        lastName={coach.user.lastName}
+                                        birthdate={coach.birthdate}
+                                        gender={coach.gender}
                                     />
-                                </motion.div>
-                                <motion.div
-                                    className="mt-6 flex flex-col items-center gap-4"
-                                    initial={{opacity: 0, y: 20}}
-                                    animate={{opacity: 1, y: 0}}
-                                    transition={{duration: 0.5, delay: 0.2}}
-                                >
-                                    <h3 className="text-xl font-semibold text-neutral-900 dark:text-neutral-200">
-                                        Note moyenne
-                                    </h3>
-                                    {averageRating !== null ? (
-                                        <Rating value={averageRating} className="text-2xl"/>
-                                    ) : (
-                                        <p className="text-neutral-500">Aucune note disponible</p>
-                                    )}
-                                    <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                                        {coach.ratings.length} avis
-                                    </p>
-                                </motion.div>
-                            </>
-                        )}
+
+                                    <motion.div
+                                        className="mt-6 w-full bg-neutral-50 dark:bg-neutral-700 border border-neutral-400/20 border-dashed rounded-md shadow-2xs flex flex-col gap-2 p-6"
+                                    >
+                                        <Description
+                                            levels={coach.levels}
+                                            sports={coach.sports}
+                                            isModal={true}
+                                        />
+                                    </motion.div>
+                                    <motion.div
+                                        className="mt-6 flex flex-col items-center gap-4"
+                                        initial={{opacity: 0, y: 20}}
+                                        animate={{opacity: 1, y: 0}}
+                                        transition={{duration: 0.5, delay: 0.2}}
+                                    >
+                                        <h3 className="text-xl font-semibold text-neutral-900 dark:text-neutral-200">
+                                            Note moyenne
+                                        </h3>
+                                        {averageRating !== null ? (
+                                            <Rating value={averageRating} className="text-2xl"/>
+                                        ) : (
+                                            <p className="text-neutral-500">Aucune note disponible</p>
+                                        )}
+                                        <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                                            {coach.ratings.length} avis
+                                        </p>
+                                    </motion.div>
+                                </>
+                            )}
+                        </div>
+                        <motion.div
+                            className="flex-shrink-0"
+                            initial={{scale: 0.8, opacity: 0}}
+                            animate={{scale: 1, opacity: 1}}
+                            transition={{delay: 0.1}}
+                        >
+                            Réserver un créneau (Benoit)
+                        </motion.div>
                     </div>
                 </motion.div>
 
