@@ -18,7 +18,7 @@ export type Rating = {
     date: string;
     comment: string;
     coach: string;
-    user: string;
+    user: User;
 }
 
 export type Coach = {

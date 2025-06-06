@@ -5,6 +5,7 @@ import {getPublicEnv} from "../../env.common";
 import type {Coach} from "~/types";
 import {useUser} from "~/hooks/useUser";
 import {calculateAgeFromBirthdate} from "~/lib/calculations";
+import Loader from "~/components/Loader";
 
 const titleTransition: Variants = {
     hidden: {
@@ -102,9 +103,7 @@ const CoachesPage = () => {
 
             {
                 isLoading && (
-                    <div className="flex items-center justify-center h-64">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
-                    </div>
+                    <Loader/>
                 )
             }
             {
@@ -131,6 +130,7 @@ const CoachesPage = () => {
                             >
                                 <CoachCard coach={
                                     {
+                                        id: coach.id,
                                         profilePictureUrl: coach.profilePictureUrl,
                                         name: coach.user.firstName + ' ' + coach.user.lastName,
                                         age: calculateAgeFromBirthdate(coach.birthdate),
