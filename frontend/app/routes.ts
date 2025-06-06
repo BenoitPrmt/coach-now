@@ -8,8 +8,8 @@ export default [
     route("register", "routes/register.tsx"),
 
     // Protected routes : need to be authenticated
-    layout("routes/protected/layout.tsx", [
-        route("account", "routes/protected/account.tsx"),
+    layout("routes/user/layout.tsx", [
+        route("account", "routes/user/account.tsx"),
     ]),
 
     // Protected routes : need to be ADMIN
