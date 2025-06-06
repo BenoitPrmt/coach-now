@@ -77,13 +77,17 @@ public class RatingController {
             if (!bookingService.userHasBookedWithCoach(ratingData.getUserId(), ratingData.getCoachId())) {
                 throw new IllegalArgumentException("User with id " + ratingData.getUserId() + " has not booked with this coach.");
             }
-            // Verification if the booking is in the past if so the user can rate the coach
-            if (bookingService.getBookingByCoachAndUser(ratingData.getCoachId(), ratingData.getUserId()).getStartDate().after(new Date())) {
+            // Verification if the booking is in the future
+            if (
+                    bookingService.getBookingByCoachAndUser(ratingData.getCoachId(), ratingData.getUserId()).getStartDate().after(new Date())
+                            || bookingService.getBookingByCoachAndUser(ratingData.getCoachId(), ratingData.getUserId()).getEndDate().after(new Date())
+            ) {
                 throw new IllegalArgumentException("User with id " + ratingData.getUserId() + " cannot rate a coach for a future booking.");
             }
             Rating rating = getRating(ratingData, coach, user);
             return new ResponseEntity<>(new RatingDTO(ratingService.save(rating)), HttpStatus.CREATED);
         } catch (IllegalArgumentException | ParseException e) {
+            System.err.println("Error creating rating: " + e.getMessage());
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
@@ -94,6 +98,7 @@ public class RatingController {
         rating.setComment(ratingData.getComment());
         rating.setCoach(coach);
         rating.setUser(user);
+        rating.setDate(new Date());
         return rating;
     }
 
