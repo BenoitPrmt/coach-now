@@ -4,8 +4,9 @@ import {useMemo, useState} from "react";
 import {MarsIcon, VenusIcon, XIcon} from "lucide-react";
 import type {Gender, Level} from "~/types";
 import {formatGender} from "~/lib/formatting";
-import CoachBadge from "~/components/CoachCard/CoachBadge";
-import CoachModal from "~/components/CoachModal";
+import CoachBadge from "~/components/Coach/CoachCard/CoachBadge";
+import CoachModal from "~/components/Coach/CoachModal";
+import CoachImage from "~/components/Coach/CoachImage";
 
 interface UserInfoProps {
     profilePictureUrl: string;
@@ -46,9 +47,10 @@ const UserInfo = (
 
     return (
         <div className={cn("flex items-center gap-3", isModal && "mb-4 justify-center")}>
-            <motion.img
+            <CoachImage
                 src={profilePictureUrl}
                 alt={name}
+                animateOnHover={isModal}
                 className={cn(
                     "rounded-lg object-cover shadow-2xs ml-2 mt-2",
                     isModal ? "hidden" : "w-14 h-14"

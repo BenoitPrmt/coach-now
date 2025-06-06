@@ -6,13 +6,14 @@ import {motion} from "motion/react";
 import {MarsIcon, VenusIcon, XIcon} from "lucide-react";
 import {formatGender} from "~/lib/formatting";
 import {useMemo} from "react";
-import {Description} from "~/components/CoachCard";
+import {Description} from "app/components/Coach/CoachCard";
 import {useUser} from "~/hooks/useUser";
 import {Link} from "react-router";
 import Rating from "~/components/Rating";
 import {FaClock} from "react-icons/fa";
 import {timeAgo} from "~/lib/time";
 import {Speech} from "lucide-react";
+import CoachImage from "~/components/Coach/CoachImage";
 
 type Props = {
     coachId: string;
@@ -66,14 +67,15 @@ const UserInfo = ({
 
     return (
         <div className="flex flex-col items-center gap-3">
-            <motion.img
+            <CoachImage
                 src={profilePictureUrl}
                 alt={`${firstName} ${lastName}`}
+                animateOnHover
                 className="w-24 h-24 rounded-2xl object-cover shadow-lg"
             />
             <div className="flex flex-col items-center">
                 <motion.h2
-                    className="font-semibold text-neutral-900 dark:text-neutral-200 text-2xl"
+                    className="font-semibold text-neutral-900 dark:text-neutral-200 text-2xl pt-2"
                 >
                     {`${firstName} ${lastName}`}
                 </motion.h2>

@@ -7,7 +7,8 @@ import type {Gender, Level} from "~/types";
 import {formatGender} from "~/lib/formatting";
 import {MarsIcon, VenusIcon, XIcon as XIcon2} from "lucide-react";
 import {useMemo} from "react";
-import {Description} from "~/components/CoachCard";
+import {Description} from "~/components/Coach/CoachCard";
+import CoachImage from "../CoachImage";
 
 interface CoachModalProps {
     isOpen: boolean;
@@ -61,9 +62,10 @@ const UserInfo = ({
 
     return (
         <div className={cn("flex items-center gap-3", isModal && "mb-4 justify-center")}>
-            <motion.img
+            <CoachImage
                 src={profilePictureUrl}
                 alt={name}
+                animateOnHover={isModal}
                 className={cn(
                     "rounded-lg object-cover shadow-2xs ml-2 mt-2",
                     isModal ? "hidden" : "w-14 h-14"
@@ -136,10 +138,10 @@ const CoachModal = ({
                     transition={{delay: 0.1}}
                     exit={{scale: 0.8, opacity: 0}}
                 >
-                    <img
+                    <CoachImage
+                        animateOnHover
                         src={coach.profilePictureUrl}
                         alt={coach.name}
-                        className="w-24 h-24 rounded-2xl object-cover shadow-lg"
                     />
                 </motion.div>
 
