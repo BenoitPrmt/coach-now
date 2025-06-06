@@ -55,7 +55,7 @@ public class AuthenticationController {
                     .body("User already exists with email: " + user.getEmail());
         }
 
-        User savedUser = userService.save(user);
+        User savedUser = userService.registerUser(user);
         return ResponseEntity
                 .status(HttpStatus.CREATED) // 201 Created
                 .body(savedUser);
