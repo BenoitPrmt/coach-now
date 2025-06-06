@@ -60,7 +60,7 @@ public class CoachService {
             throw new IllegalArgumentException("Start date cannot be after end date.");
         }
 
-        if (TimeUnit.DAYS.convert(endDate.getTime() - startDate.getTime(), TimeUnit.MILLISECONDS) > 30) {
+        if (TimeUnit.DAYS.convert(endDate.getTime() - startDate.getTime(), TimeUnit.MILLISECONDS) > 45) {
             throw new IllegalArgumentException("The date range cannot exceed 30 days.");
         }
 
@@ -78,8 +78,8 @@ public class CoachService {
             DayAvailability dayAvailability = new DayAvailability(formatter.parse(rawDate + " 00:00:00"), new ArrayList<>());
             for (int hour = 9; hour <= 20; hour++) {
                 HourAvailability hourAvailability = new HourAvailability(
-                        String.format("%02d:00:00", hour),
-                        String.format("%02d:00:00", hour + 1),
+                        String.format("%02d:00", hour),
+                        String.format("%02d:00", hour + 1),
                         true
                 );
                 String date = rawDate + " " + hour + ":00:00.0";
@@ -121,8 +121,8 @@ public class CoachService {
     public Boolean isCoachAvailable(String coachId, Date startDate, Date endDate) throws ParseException {
         List<DayAvailability> availabilities = getAvailabilities(coachId, startDate, endDate);
 
-        String hourStart = new SimpleDateFormat("HH:mm:ss").format(startDate);
-        String hourEnd = new SimpleDateFormat("HH:mm:ss").format(endDate);
+        String hourStart = new SimpleDateFormat("HH:mm").format(startDate);
+        String hourEnd = new SimpleDateFormat("HH:mm").format(endDate);
 
         for (DayAvailability dayAvailability : availabilities) {
             for (HourAvailability hourAvailability : dayAvailability.getHours()) {
