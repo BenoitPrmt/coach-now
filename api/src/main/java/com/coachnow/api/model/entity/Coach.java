@@ -2,7 +2,6 @@ package com.coachnow.api.model.entity;
 
 import com.coachnow.api.types.Gender;
 import com.coachnow.api.types.Level;
-import com.coachnow.api.types.Roles;
 import com.coachnow.api.types.Sports;
 import com.coachnow.api.web.request.coach.CoachCreation;
 import jakarta.persistence.*;
@@ -10,8 +9,8 @@ import lombok.Data;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Data
@@ -29,13 +28,15 @@ public class Coach {
     @Column(nullable = false)
     private Float hourlyRate;
 
+    @ElementCollection
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Set<Sports> sports;
+    private Collection<Sports> sports;
 
+    @ElementCollection
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Set<Level> levels;
+    private Collection<Level> levels;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -107,19 +108,19 @@ public class Coach {
         this.hourlyRate = hourlyRate;
     }
 
-    public Set<Sports> getSports() {
+    public Collection<Sports> getSports() {
         return sports;
     }
 
-    public void setSports(Set<Sports> sports) {
+    public void setSports(Collection<Sports> sports) {
         this.sports = sports;
     }
 
-    public Set<Level> getLevels() {
+    public Collection<Level> getLevels() {
         return levels;
     }
 
-    public void setLevels(Set<Level> levels) {
+    public void setLevels(Collection<Level> levels) {
         this.levels = levels;
     }
 

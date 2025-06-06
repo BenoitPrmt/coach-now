@@ -1,10 +1,9 @@
 import {zodResolver} from "@hookform/resolvers/zod"
-import {useForm} from "react-hook-form"
+import {Controller, useForm} from "react-hook-form"
 import {z} from "zod";
 import {AnimatePresence, motion} from "motion/react";
 import {loginSchema, registerSchema} from "~/validation/zod";
-import {Input} from "../ui/input";
-import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "~/components/ui/form";
+import {Form, FormControl, FormField, FormItem, FormLabel} from "~/components/ui/form";
 import {Button} from "~/components/ui/button";
 import {cn} from "~/lib/utils";
 import {Card, CardContent} from "~/components/ui/card";
@@ -28,13 +27,20 @@ import {GenderField} from "~/components/Forms/FormFields/form-fields/GenderField
 import {HourlyRateField} from "~/components/Forms/FormFields/form-fields/HourlyRate";
 import {ProfilePictureField} from "~/components/Forms/FormFields/form-fields/ProfilPicture";
 import {BirthdayDateField} from "~/components/Forms/FormFields/form-fields/BirthdayDate";
-import {SportsField} from "~/components/Forms/FormFields/form-fields/Sports";
 import {LevelField} from "~/components/Forms/FormFields/form-fields/Levels";
 import {FirstNameField} from "~/components/Forms/FormFields/form-fields/FirstName";
 import {LastNameField} from "~/components/Forms/FormFields/form-fields/LastName";
 import {EmailField} from "~/components/Forms/FormFields/form-fields/Email";
 import {PasswordField} from "~/components/Forms/FormFields/form-fields/Password";
 import {ConfirmPasswordField} from "~/components/Forms/FormFields/form-fields/ConfirmPassword";
+import {MultiSelect} from "~/components/Forms/FormFields/form-fields/Sports";
+import type {DataRegisterInterface} from "~/interfaces/interfaces";
+
+const sportsOptions = [
+  {label: "Football", value: "football"},
+  {label: "Basketball", value: "basketball"},
+  {label: "Tennis", value: "tennis"},
+];
 
 type AuthFormProps = ComponentProps<"div"> & {
   type?: "login" | "register";
@@ -59,7 +65,6 @@ const AuthForm = ({
   const [preloadedImages, setPreloadedImages] = useState(new Set<string>());
   const navigate = useNavigate();
   const [_, setLocalStorageKey] = useLocalStorage("jwt-coach-now", "");
-  const [value, setValue] = useState<number | ''>('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
 
@@ -97,8 +102,8 @@ const AuthForm = ({
   }, [currentImage, preloadedImages]);
 
 
-  const form = useForm<z.infer<typeof registerSchema>>({
-    resolver: zodResolver(registerSchema),
+  const form = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
     mode: "onChange",
     defaultValues: {
       email: "",
@@ -108,13 +113,18 @@ const AuthForm = ({
       lastName: "",
       isCoach: false,
       gender: "male",
-      hourlyRate: undefined,
-      sports: "",
-      profilePicture: undefined,
-      birthDate: undefined,
-      level: undefined,
+      hourlyRate: 0,
+      sports: [],
+      profilePicture: "",
+      birthDate: new Date(),
+      level: "BEGINNER",
     },
   });
+
+
+  const handleChange = (selected: string[]) => {
+    console.log("Selected sports:", selected);
+  }
 
   const password = form.watch("password");
   const confirmPassword = form.watch("confirmPassword");
@@ -145,11 +155,24 @@ const AuthForm = ({
           navigate("/", {replace: true});
         }
       } else {
-
         if (values.isCoach) {
+          const data = {
+            firstName: values.firstName,
+            lastName: values.lastName,
+            email: values.email,
+            password: values.password,
+
+          }
           await registerCoach(values);
         } else {
-          await register(values);
+          const data: DataRegisterInterface = {
+            firstName: values.firstName,
+            lastName: values.lastName,
+            email: values.email,
+            password: values.password,
+            isCoach: values.isCoach,
+          }
+          await register(data);
         }
         navigate("/login");
       }
@@ -266,7 +289,7 @@ const AuthForm = ({
                           }}
                           className="flex flex-col gap-4"
                         >
-                        <ConfirmPasswordField control={form.control}/>
+                          <ConfirmPasswordField control={form.control}/>
                           <FormField
                             control={form.control}
                             name="isCoach"
@@ -448,9 +471,23 @@ const AuthForm = ({
 
               <BirthdayDateField control={form.control}/>
 
-              <SportsField control={form.control}/>
-
               <LevelField control={form.control}/>
+
+
+              <Controller
+                control={form.control}
+                name="sports"
+                render={({field}) => (
+                  <MultiSelect
+                    options={sportsOptions}
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    maxCount={2}
+                    placeholder="Sélectionnez vos sports"
+                  />
+                )}
+              />
+
 
               <DialogFooter>
                 <DialogClose asChild>
