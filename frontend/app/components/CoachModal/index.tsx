@@ -7,7 +7,7 @@ import type {Gender, Level} from "~/types";
 import {formatGender} from "~/lib/formatting";
 import {MarsIcon, VenusIcon, XIcon as XIcon2} from "lucide-react";
 import {useMemo} from "react";
-import CoachBadge from "~/components/CoachCard/CoachBadge";
+import {Description} from "~/components/CoachCard";
 
 interface CoachModalProps {
     isOpen: boolean;
@@ -87,29 +87,6 @@ const UserInfo = ({
                 </motion.p>
             </div>
         </div>
-    );
-};
-
-const Description = ({levels, sports, isModal = false}: { levels: Level[]; sports: string[]; isModal?: boolean }) => {
-    return (
-        <motion.p
-            className={cn(
-                "text-neutral-700 dark:text-neutral-300 leading-5 flex flex-wrap justify-center",
-                isModal ? "text-base" : "text-sm"
-            )}
-            layout
-        >
-            {levels.length > 0 && (
-                levels.map((level, index) => (
-                    <CoachBadge value={level} className="mr-1 my-0.5" key={index}/>
-                ))
-            )}
-            {sports.length > 0 && (
-                sports.map((sport, index) => (
-                    <CoachBadge value={sport} className="mr-1 my-0.5" key={index}/>
-                ))
-            )}
-        </motion.p>
     );
 };
 

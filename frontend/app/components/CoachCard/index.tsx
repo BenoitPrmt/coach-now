@@ -81,7 +81,7 @@ interface DescriptionProps {
     isModal?: boolean;
 }
 
-const Description = ({levels, sports, isModal = false}: DescriptionProps) => {
+export const Description = ({levels, sports, isModal = false}: DescriptionProps) => {
     return (
         <motion.p
             className={cn(

@@ -25,8 +25,6 @@ export default function Layout() {
     return !isLoading && isAdmin ? (
         <Outlet />
     ) : (
-        <div className="flex items-center justify-center h-screen">
             <Loader/>
-        </div>
     );
 }
