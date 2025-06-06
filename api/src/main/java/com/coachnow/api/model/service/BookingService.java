@@ -33,4 +33,13 @@ public class BookingService {
     public void delete(Booking booking) {
         bookingRepository.delete(booking);
     }
+
+    public boolean userHasBookedWithCoach(String userId, String coachId) {
+        return bookingRepository.existsByUserIdAndCoachId(userId, coachId);
+    }
+
+    public Booking getBookingByCoachAndUser(String coachId, String userId) {
+        return bookingRepository.findByCoachIdAndUserId(coachId, userId)
+                .orElse(null);
+    }
 }

@@ -14,10 +14,10 @@ export const registerSchema = z.object({
     firstName: z.string().min(1, "Le prénom est requis."),
     lastName: z.string().min(1, "Le nom est requis."),
     confirmPassword: z.string().min(8, "La confirmation du mot de passe doit comporter au moins 8 caractères."),
-    isCoach: z.boolean().optional(),
+    isCoach: z.boolean().default(false),
     gender: z.enum(["male", "female", "other"], { required_error: "Le genre est requis." }),
     hourlyRate: z.coerce.number().optional(),
-    sports: z.string().optional(), // plus de .min(1) ici
+    sports: z.string().array().optional(),
     profilePicture: z.string().optional(),
     birthDate: z.date().optional(),
     level: z.enum(["BEGINNER", "MEDIUM", "HIGHLEVEL"]).optional(),
@@ -32,11 +32,11 @@ export const registerSchema = z.object({
     }
 
     if (data.isCoach) {
-        if (data.hourlyRate === undefined || data.hourlyRate < 10) {
+        if (data.hourlyRate === undefined) {
             ctx.addIssue({
                 code: "custom",
                 path: ["hourlyRate"],
-                message: "Le taux doit être au minimum de 10€"
+                message: "Veuillez renseigner un taux horaires."
             });
         }
         if (!data.sports || data.sports.length === 0) {

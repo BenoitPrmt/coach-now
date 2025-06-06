@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RatingRepository extends CrudRepository<Rating, String> {
+    boolean existsByUserIdAndCoachId(String userId, String coachId);
 }

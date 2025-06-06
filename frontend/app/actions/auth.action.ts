@@ -30,9 +30,9 @@ export async function register(values: {
     email: string;
     password: string,
     isCoach?: boolean;
-    gender: string;
 }) {
     try {
+        console.log("User Form", values);
         const url = getPublicEnv(import.meta.env).VITE_API_URL + "/auth/register";
 
         const res = await fetch(url, {
@@ -70,6 +70,7 @@ export async function registerCoach(values: {
     level?: "BEGINNER" | "MEDIUM" | "HIGHLEVEL";
 }) {
     try {
+        console.log("Coach Form", values);
         const url = getPublicEnv(import.meta.env).VITE_API_URL + "/auth/register/coach";
 
         const res = await fetch(url, {

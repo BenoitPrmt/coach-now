@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import CoachCard from "~/components/CoachCard";
+import CoachCard from "app/components/Coach/CoachCard";
 import {motion, type Variants} from "motion/react";
 import {getPublicEnv} from "../../env.common";
 import type {Coach} from "~/types";
