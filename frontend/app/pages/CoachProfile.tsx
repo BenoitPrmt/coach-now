@@ -237,7 +237,8 @@ const CoachProfile = ({coachId}: Props) => {
                                     <p className="text-sm text-neutral-600 dark:text-neutral-300">
                                         {rating.comment}
                                     </p>
-                                    <p className="flex max-lg:flex-col text-xs text-neutral-500 dark:text-neutral-400 mt-2">
+                                    <div
+                                        className="flex max-lg:flex-col text-xs text-neutral-500 dark:text-neutral-400 mt-2">
                                         <Link
                                             to={`/user/${rating.user.id}`}
                                             className="text-blue-500 hover:underline"
@@ -255,7 +256,7 @@ const CoachProfile = ({coachId}: Props) => {
                                                 className="ml-2"
                                             />
                                         </div>
-                                    </p>
+                                    </div>
                                 </motion.div>
                             ))
                         ) : (
