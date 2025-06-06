@@ -5,6 +5,7 @@ import type { CalendarState } from "@react-stately/calendar";
 import type { DOMAttributes, FocusableElement } from "@react-types/shared";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { Button } from "./calendar-button";
+import {useBooking} from "~/hooks/useBooking";
 
 export function CalendarHeader({
 	state,
@@ -27,6 +28,19 @@ export function CalendarHeader({
 		.formatToParts(state.visibleRange.start.toDate(state.timeZone))
 		.map((part) => part.value);
 
+	const { handleMonthChange } = useBooking({
+		coachId: "304cad21-c1a2-456d-a1fe-6f3b5485aa5b",
+	});
+
+	const handleChange = (direction: "prev" | "next") => {
+		if (direction === "prev") {
+			state.focusPreviousPage();
+		} else {
+			state.focusNextPage();
+		}
+		handleMonthChange(direction);
+	}
+
 	return (
 		<div className="flex items-center pb-4">
 			<VisuallyHidden>
@@ -39,10 +53,10 @@ export function CalendarHeader({
 			>
 				{monthName} <span className="text-gray-11">{year}</span>
 			</h2>
-			<Button {...prevButtonProps}>
+			<Button {...prevButtonProps} onClick={() => handleChange("prev")}>
 				<ChevronLeftIcon className="size-4" />
 			</Button>
-			<Button {...nextButtonProps}>
+			<Button {...nextButtonProps} onClick={() => handleChange("next")}>
 				<ChevronRightIcon className="size-4" />
 			</Button>
 		</div>

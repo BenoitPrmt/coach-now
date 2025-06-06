@@ -10,15 +10,18 @@ import { useFocusRing } from "@react-aria/focus";
 import { mergeProps } from "@react-aria/utils";
 import type { CalendarState } from "@react-stately/calendar";
 import { useRef } from "react";
+import type {CoachAvailabilities} from "~/store/bookingStore";
 
 export function CalendarCell({
 	state,
 	date,
 	currentMonth,
+    availability
 }: {
 	state: CalendarState;
 	date: CalendarDate;
 	currentMonth: CalendarDate;
+    availability?: CoachAvailabilities
 }) {
 	const ref = useRef<HTMLDivElement>(null);
 	const { cellProps, buttonProps, isSelected, isDisabled, formattedDate } =
@@ -45,7 +48,8 @@ export function CalendarCell({
 					className={cn(
 						"size-full rounded-md flex items-center justify-center",
 						"text-gray-950 text-sm font-semibold",
-						isDisabled
+						(isDisabled || (availability && !availability.isWorkingDay))
+                        // isDisabled
 							? isDateToday
 								? "cursor-defaut"
 								: "text-gray-400 cursor-defaut"
@@ -56,7 +60,7 @@ export function CalendarCell({
 						// Darker selection background for the start and end.
 						isSelected && "bg-gray-950 text-gray-100",
 						// Hover state for non-selected cells.
-						!isSelected && !isDisabled && "hover:ring-2 hover:ring-gray-950",
+						!isSelected && (!isDisabled && !(availability && !availability.isWorkingDay)) && "hover:ring-2 hover:ring-gray-950",
 						// isDateToday && "bg-gray-1 text-primary ring-0 ring-offset-0",
 					)}
 				>

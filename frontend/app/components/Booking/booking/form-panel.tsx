@@ -13,7 +13,6 @@ export function FormPanel({ handleCancelForm }: Props) {
 	}
 
 	const handleCancel = () => {
-		console.log("handleCancel");
 		const queryParams = new URLSearchParams(location.search)
 		queryParams.delete("slot");
 

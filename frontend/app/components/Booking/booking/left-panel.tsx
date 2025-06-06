@@ -5,21 +5,22 @@ import {
 } from "~/components/ui/tooltip";
 import { useLocale } from "@react-aria/i18n";
 import { CalendarIcon, Clock4 } from "lucide-react";
+import {useBooking} from "~/hooks/useBooking";
 
 export function LeftPanel({
 	showForm,
 	timeZone,
 	setTimeZone,
-	selectedDate,
-	selectedSlot,
 }: {
 	showForm: boolean | null;
 	timeZone: string;
 	setTimeZone: (timeZone: string) => void;
-	selectedDate: string | null;
-	selectedSlot: string | null;
 }) {
 	const { locale } = useLocale();
+
+	const { selectedSlot } = useBooking({
+		coachId: "304cad21-c1a2-456d-a1fe-6f3b5485aa5b",
+	});
 
 	return (
 		<div className="flex flex-col gap-4 w-[280px] border-r pr-6">
