@@ -8,6 +8,31 @@ import lombok.Data;
 public class UserDTO {
     private String id;
     private String firstName;
+
+    public String getId() {
+        return id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public Roles getRole() {
+        return role;
+    }
+
     private String lastName;
     private String email;
     private String password;

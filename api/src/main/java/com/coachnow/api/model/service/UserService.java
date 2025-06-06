@@ -2,12 +2,10 @@ package com.coachnow.api.model.service;
 
 import com.coachnow.api.model.entity.User;
 import com.coachnow.api.model.repository.UserRepository;
-import com.coachnow.api.types.Roles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 

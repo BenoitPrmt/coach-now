@@ -4,7 +4,11 @@ import com.coachnow.api.model.entity.Booking;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface BookingRepository extends CrudRepository<Booking, String> {
+    boolean existsByUserIdAndCoachId(String userId, String coachId);
 
+    Optional<Booking> findByCoachIdAndUserId(String coachId, String userId);
 }
