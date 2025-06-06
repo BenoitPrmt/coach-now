@@ -5,4 +5,18 @@ export default [
     route("coachs", "routes/coachs.tsx"),
     route("login", "routes/login.tsx"),
     route("register", "routes/register.tsx"),
+
+    // Protected routes : need to be ADMIN
+    ...prefix("admin", [
+        layout("routes/admin/layout.tsx", [
+            route("users", "routes/admin/users.tsx"),
+        ]),
+    ]),
+
+    // Protected routes : need to be COACH or ADMIN
+    ...prefix("coach", [
+        layout("routes/coach/layout.tsx", [
+            route(":coachId", "routes/coach/profile.tsx"),
+        ]),
+    ]),
 ] satisfies RouteConfig;

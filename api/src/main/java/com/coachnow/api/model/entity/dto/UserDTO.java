@@ -7,16 +7,16 @@ import lombok.Data;
 @Data
 public class UserDTO {
     private String id;
-    private String first_name;
-    private String last_name;
+    private String firstName;
+    private String lastName;
     private String email;
     private String password;
     private Roles role;
 
     public UserDTO(User user) {
         this.id = user.getId();
-        this.first_name = user.getFirstName();
-        this.last_name = user.getLastName();
+        this.firstName = user.getFirstName();
+        this.lastName = user.getLastName();
         this.email = user.getEmail();
         this.role = user.getRole();
     }

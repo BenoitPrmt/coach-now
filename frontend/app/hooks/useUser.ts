@@ -5,7 +5,6 @@ import {useLocalStorage} from "~/hooks/useLocalStorage";
 export const useUser = () => {
     const [userToken, setUserToken] = useLocalStorage("jwt-coach-now", null);
     const user = userStore((state) => state.user);
-    const setUser = userStore((state) => state.setUser);
     const clearUser = userStore((state) => state.clearUser);
     const setUserFromToken = userStore((state) => state.setUserFromToken);
 
@@ -35,6 +34,7 @@ export const useUser = () => {
 
     return {
         user,
+        userToken,
         signOut,
         setAuthToken,
         isLoading,
