@@ -36,7 +36,7 @@ public class BookingController {
     @GetMapping("/bookings")
     public List<BookingDTO> all() {
         List<Booking> bookings = bookingService.selectAll();
-        List<BookingDTO> listDTO = new ArrayList<BookingDTO>();
+        List<BookingDTO> listDTO = new ArrayList<>();
         for(Booking booking : bookings) {
             listDTO.add(new BookingDTO(booking));
         }
@@ -101,6 +101,10 @@ public class BookingController {
             throw new IllegalArgumentException("Start date cannot be in the past.");
         }
         return booking;
+    }
+
+    public Booking getBookingByCoachAndUser(String coachId, String userId) {
+        return bookingService.getBookingByCoachAndUser(coachId, userId);
     }
 
     @PutMapping("/booking/{id}")
