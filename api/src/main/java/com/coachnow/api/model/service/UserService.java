@@ -1,6 +1,10 @@
 package com.coachnow.api.model.service;
 
+import com.coachnow.api.model.entity.Booking;
+import com.coachnow.api.model.entity.Rating;
 import com.coachnow.api.model.entity.User;
+import com.coachnow.api.model.repository.BookingRepository;
+import com.coachnow.api.model.repository.RatingRepository;
 import com.coachnow.api.model.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,6 +20,10 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private BookingRepository bookingRepository;
+    @Autowired
+    private RatingRepository ratingRepository;
 
     public List<User> selectAll() {
         return (List<User>) userRepository.findAll();
@@ -23,7 +31,16 @@ public class UserService {
 
     public User select(String id) {
         Optional<User> optionalPlayer = userRepository.findById(id);
-        return optionalPlayer.orElse(null);
+        if (optionalPlayer.isEmpty()) {
+            return null;
+        }
+        List<Booking> booking = bookingRepository.findBookingsByUser(optionalPlayer.get());
+        optionalPlayer.get().setBookings(booking);
+        List<Rating> ratings = ratingRepository.findRatingsByUser(optionalPlayer.get());
+        if (ratings != null) {
+            optionalPlayer.get().setRatings(ratings);
+        }
+        return optionalPlayer.get();
     }
 
     public User registerUser(User user) {
