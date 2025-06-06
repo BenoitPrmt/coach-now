@@ -2,10 +2,10 @@ import {cn} from "~/lib/utils";
 import {motion} from "motion/react";
 import {useMemo, useState} from "react";
 import {MarsIcon, VenusIcon, XIcon} from "lucide-react";
-import {Button} from "~/components/ui/button";
 import type {Gender, Level} from "~/types";
 import {formatGender} from "~/lib/formatting";
 import CoachBadge from "~/components/CoachCard/CoachBadge";
+import CoachModal from "~/components/CoachModal";
 
 interface UserInfoProps {
     profilePictureUrl: string;
@@ -28,19 +28,19 @@ const UserInfo = (
         switch (gender) {
             case "FEMALE":
                 return <span className="text-pink-500 flex items-center">
-                <VenusIcon className="inline w-4 h-4 mr-1"/>
+          <VenusIcon className="inline w-4 h-4 mr-1"/>
                     {formatGender(gender)}
-            </span>;
+        </span>;
             case "MALE":
                 return <span className="text-blue-500 flex items-center">
-                <MarsIcon className="inline w-4 h-4 mr-1"/>
+          <MarsIcon className="inline w-4 h-4 mr-1"/>
                     {formatGender(gender)}
-            </span>;
+        </span>;
             default:
                 return <span className="text-neutral-500 flex items-center">
-                <XIcon className="inline w-4 h-4 mr-1"/>
+          <XIcon className="inline w-4 h-4 mr-1"/>
                     {formatGender(gender)}
-            </span>;
+        </span>;
         }
     }, [gender])
 
@@ -106,6 +106,7 @@ const Description = ({levels, sports, isModal = false}: DescriptionProps) => {
 
 interface CoachCardProps {
     coach: {
+        id: string;
         profilePictureUrl: string;
         name: string;
         age: number;
@@ -117,14 +118,7 @@ interface CoachCardProps {
 }
 
 const CoachCard = ({
-                       coach: {
-                           profilePictureUrl,
-                           name,
-                           age,
-                           gender,
-                           sports,
-                           levels
-                       },
+                       coach,
                        className
                    }: CoachCardProps) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -133,13 +127,8 @@ const CoachCard = ({
         setIsOpen(true);
     };
 
-    const handleCloseModal = () => {
-        setIsOpen(false);
-    };
-
     return (
         <>
-            {/* Card normale */}
             <motion.div
                 className={cn(
                     "flex-col w-full sm:max-w-sm p-2 bg-neutral-100 dark:bg-neutral-800 rounded-xl flex gap-2 cursor-pointer hover:scale-[1.02] active:scale-[1.0] transition-transform duration-200 ease-out",
@@ -150,102 +139,22 @@ const CoachCard = ({
                 whileTap={{scale: 1.0}}
             >
                 <motion.div>
-                    <UserInfo profilePictureUrl={profilePictureUrl} name={name} age={age} gender={gender}/>
+                    <UserInfo profilePictureUrl={coach.profilePictureUrl} name={coach.name} age={coach.age}
+                              gender={coach.gender}/>
                 </motion.div>
 
                 <motion.div
                     className="bg-neutral-50 dark:bg-neutral-700 border border-neutral-400/20 border-dashed rounded-md shadow-2xs flex flex-col gap-2 p-4 h-full"
                 >
-                    <Description levels={levels} sports={sports}/>
+                    <Description levels={coach.levels} sports={coach.sports}/>
                 </motion.div>
             </motion.div>
 
-            {/* Modal */}
-            {isOpen && (
-                <motion.div
-                    className="fixed inset-0 bg-black/50 z-40 flex items-center justify-center p-4"
-                    initial={{opacity: 0}}
-                    animate={{opacity: 1}}
-                    exit={{opacity: 0}}
-                    onClick={handleCloseModal}
-                >
-                    {/* Modal Content */}
-                    <motion.div
-                        className="bg-neutral-100 dark:bg-neutral-800 rounded-2xl p-6 w-full max-w-md relative "
-                        onClick={(e) => e.stopPropagation()}
-                        initial={{scale: 0.9}}
-                        animate={{scale: 1}}
-                        exit={{scale: 0.9}}
-                        transition={{type: "spring", damping: 25, stiffness: 300}}
-                    >
-                        {/* Bouton de fermeture */}
-                        <button
-                            onClick={handleCloseModal}
-                            className="absolute top-4 right-4 w-8 h-8 rounded-full bg-neutral-200 dark:bg-neutral-700 flex items-center justify-center hover:bg-neutral-300 dark:hover:bg-neutral-600 transition-colors z-10 cursor-pointer"
-                        >
-                            <XIcon
-                                className="w-4 h-4 text-neutral-600 dark:text-neutral-300"
-                                strokeWidth={2}
-                            />
-                        </button>
-
-                        {/* Image agrandie en haut */}
-                        <motion.div
-                            className="mb-6 flex justify-center"
-                            initial={{scale: 0.8, opacity: 0}}
-                            animate={{scale: 1, opacity: 1}}
-                            transition={{delay: 0.1}}
-                            exit={{scale: 0.8, opacity: 0}}
-                        >
-                            <img
-                                src={profilePictureUrl}
-                                alt={name}
-                                className="w-24 h-24 rounded-2xl object-cover shadow-lg"
-                            />
-                        </motion.div>
-
-                        {/* Informations utilisateur */}
-                        <motion.div
-                            className="text-center mb-6"
-                        >
-                            <UserInfo
-                                profilePictureUrl={profilePictureUrl}
-                                name={name}
-                                age={age}
-                                gender={gender}
-                                isModal={true}
-                            />
-                        </motion.div>
-
-                        {/* Description agrandie */}
-                        <motion.div
-                            className="bg-neutral-50 dark:bg-neutral-700 border border-neutral-400/20 border-dashed rounded-md shadow-2xs flex flex-col gap-2 p-6"
-                        >
-                            <motion.div>
-                                <Description levels={levels} sports={sports} isModal={true}/>
-                            </motion.div>
-                        </motion.div>
-
-                        {/* Actions supplémentaires */}
-                        <motion.div
-                            className="mt-6 flex gap-3"
-                            initial={{opacity: 0, y: 20}}
-                            animate={{opacity: 1, y: 0}}
-                            transition={{delay: 0.2}}
-                            exit={{opacity: 0, y: 20}}
-                        >
-                            <Button
-                                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium h-11 rounded-lg transition-colors cursor-pointer">
-                                Réserver
-                            </Button>
-                            <Button
-                                className="flex-1 bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600 text-neutral-700 dark:text-neutral-200 font-medium h-11 rounded-lg transition-colors cursor-pointer">
-                                Voir profil
-                            </Button>
-                        </motion.div>
-                    </motion.div>
-                </motion.div>
-            )}
+            <CoachModal
+                isOpen={isOpen}
+                onClose={() => setIsOpen(false)}
+                coach={coach}
+            />
         </>
     );
 };
