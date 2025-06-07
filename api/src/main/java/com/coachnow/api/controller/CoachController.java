@@ -43,27 +43,27 @@ public class CoachController {
         return new CoachDTO(coachService.select(id));
     }
 
-    @PostMapping("/coach")
-    public CoachDTO create(@RequestBody CoachCreation coachData) {
-        User coachUser = userService.select(coachData.getUserId());
-        if (coachUser == null) {
-            throw new IllegalArgumentException("User with id " + coachData.getUserId() + " does not exist.");
-        }
-
-        if (!coachUser.isCoach()) {
-            throw new IllegalArgumentException("User with id " + coachData.getUserId() + " is not a coach.");
-        }
-
-        if (coachService.userHasCoach(coachData.getUserId())) {
-            throw new IllegalArgumentException("User with id " + coachData.getUserId() + " is already a coach.");
-        }
-
-        Coach coach = new Coach();
-        coach.setCoachFromCoachCreation(coachData);
-        coach.setUser(coachUser);
-
-        return new CoachDTO(coachService.save(coach));
-    }
+//    @PostMapping("/coach")
+//    public CoachDTO create(@RequestBody CoachCreation coachData) {
+//        User coachUser = userService.select(coachData.getUserId());
+//        if (coachUser == null) {
+//            throw new IllegalArgumentException("User with id " + coachData.getUserId() + " does not exist.");
+//        }
+//
+//        if (!coachUser.isCoach()) {
+//            throw new IllegalArgumentException("User with id " + coachData.getUserId() + " is not a coach.");
+//        }
+//
+//        if (coachService.userHasCoach(coachData.getUserId())) {
+//            throw new IllegalArgumentException("User with id " + coachData.getUserId() + " is already a coach.");
+//        }
+//
+//        Coach coach = new Coach();
+//        coach.setCoachFromCoachCreation(coachData);
+//        coach.setUser(coachUser);
+//
+//        return new CoachDTO(coachService.save(coach));
+//    }
 
     @PutMapping("/coach/{id}")
     public CoachDTO create(@RequestBody Coach coach, @PathVariable String id) {

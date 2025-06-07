@@ -1,19 +1,19 @@
-import {zodResolver} from "@hookform/resolvers/zod"
-import {Controller, useForm} from "react-hook-form"
-import {z} from "zod";
-import {AnimatePresence, motion} from "motion/react";
-import {loginSchema, registerSchema} from "~/validation/zod";
-import {Form, FormControl, FormField, FormItem, FormLabel} from "~/components/ui/form";
-import {Button} from "~/components/ui/button";
-import {cn} from "~/lib/utils";
-import {Card, CardContent} from "~/components/ui/card";
-import {Checkbox} from "~/components/ui/checkbox";
-import {Link, useNavigate} from "react-router";
-import {type ComponentProps, useEffect, useMemo, useState} from "react";
-import {animations} from "~/constants";
-import {login, register, registerCoach} from "~/actions/auth.action";
-import {useLocalStorage} from "~/hooks/useLocalStorage";
-import {userStore} from "~/store/userStore";
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Controller, useForm } from "react-hook-form"
+import { z } from "zod";
+import { AnimatePresence, motion } from "motion/react";
+import { loginSchema, registerSchema } from "~/validation/zod";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "~/components/ui/form";
+import { Button } from "~/components/ui/button";
+import { cn } from "~/lib/utils";
+import { Card, CardContent } from "~/components/ui/card";
+import { Checkbox } from "~/components/ui/checkbox";
+import { Link, useNavigate } from "react-router";
+import { type ComponentProps, useEffect, useMemo, useState } from "react";
+import { animations } from "~/constants";
+import { login, register, registerCoach } from "~/actions/auth.action";
+import { useLocalStorage } from "~/hooks/useLocalStorage";
+import { userStore } from "~/store/userStore";
 import {
   Dialog,
   DialogClose,
@@ -23,23 +23,22 @@ import {
   DialogHeader,
   DialogTitle
 } from "~/components/ui/dialog";
-import {GenderField} from "~/components/Forms/FormFields/form-fields/GenderField";
-import {HourlyRateField} from "~/components/Forms/FormFields/form-fields/HourlyRate";
-import {ProfilePictureField} from "~/components/Forms/FormFields/form-fields/ProfilPicture";
-import {BirthdayDateField} from "~/components/Forms/FormFields/form-fields/BirthdayDate";
-import {LevelField} from "~/components/Forms/FormFields/form-fields/Levels";
-import {FirstNameField} from "~/components/Forms/FormFields/form-fields/FirstName";
-import {LastNameField} from "~/components/Forms/FormFields/form-fields/LastName";
-import {EmailField} from "~/components/Forms/FormFields/form-fields/Email";
-import {PasswordField} from "~/components/Forms/FormFields/form-fields/Password";
-import {ConfirmPasswordField} from "~/components/Forms/FormFields/form-fields/ConfirmPassword";
-import {MultiSelect} from "~/components/Forms/FormFields/form-fields/Sports";
-import type {DataRegisterInterface} from "~/interfaces/interfaces";
+import { GenderField } from "~/components/Forms/FormFields/form-fields/GenderField";
+import { HourlyRateField } from "~/components/Forms/FormFields/form-fields/HourlyRate";
+import { ProfilePictureField } from "~/components/Forms/FormFields/form-fields/ProfilPicture";
+import { BirthdayDateField } from "~/components/Forms/FormFields/form-fields/BirthdayDate";
+import { LevelField } from "~/components/Forms/FormFields/form-fields/Levels";
+import { FirstNameField } from "~/components/Forms/FormFields/form-fields/FirstName";
+import { LastNameField } from "~/components/Forms/FormFields/form-fields/LastName";
+import { EmailField } from "~/components/Forms/FormFields/form-fields/Email";
+import { PasswordField } from "~/components/Forms/FormFields/form-fields/Password";
+import { ConfirmPasswordField } from "~/components/Forms/FormFields/form-fields/ConfirmPassword";
+import { MultiSelect } from "~/components/Forms/FormFields/form-fields/Sports";
+import type { DataRegisterCoachInterface, DataRegisterInterface } from "~/interfaces/interfaces";
 
 const sportsOptions = [
-  {label: "Football", value: "football"},
-  {label: "Basketball", value: "basketball"},
-  {label: "Tennis", value: "tennis"},
+  { label: "Fitness", value: "FITNESS" },
+  { label: "Running", value: "RUNNING" },
 ];
 
 type AuthFormProps = ComponentProps<"div"> & {
@@ -47,10 +46,10 @@ type AuthFormProps = ComponentProps<"div"> & {
 }
 
 const AuthForm = ({
-                    type = "login",
-                    className,
-                    ...props
-                  }: AuthFormProps) => {
+  type = "login",
+  className,
+  ...props
+}: AuthFormProps) => {
   const {
     authFormVariants,
     authContainerVariants,
@@ -112,7 +111,7 @@ const AuthForm = ({
       firstName: "",
       lastName: "",
       isCoach: false,
-      gender: "male",
+      gender: "MALE",
       hourlyRate: 0,
       sports: [],
       profilePicture: "",
@@ -120,11 +119,6 @@ const AuthForm = ({
       level: "BEGINNER",
     },
   });
-
-
-  const handleChange = (selected: string[]) => {
-    console.log("Selected sports:", selected);
-  }
 
   const password = form.watch("password");
   const confirmPassword = form.watch("confirmPassword");
@@ -143,36 +137,23 @@ const AuthForm = ({
   }, [password, confirmPassword, isLogin]);
 
   const onSubmit = async (values: z.infer<typeof registerSchema>) => {
-    console.log("Données du formulaire soumises :", values);
+    const {firstName, lastName, email, password, isCoach, gender, hourlyRate, sports, profilePicture, birthDate, level} = values;
+
+    const commonData = { firstName, lastName, email, password, isCoach };
 
     try {
       if (isLogin) {
-        const {email, password} = values;
-        const response = await login({email, password});
-        if (response && response.token) {
+        const response = await login({ email, password });
+        if (response?.token) {
           setLocalStorageKey(response.token);
           setUserFromToken(response.token);
-          navigate("/", {replace: true});
+          navigate("/", { replace: true });
         }
       } else {
-        if (values.isCoach) {
-          const data = {
-            firstName: values.firstName,
-            lastName: values.lastName,
-            email: values.email,
-            password: values.password,
-
-          }
-          await registerCoach(values);
+        if (isCoach) {
+          await registerCoach({ ...commonData, gender, hourlyRate, sports, profilePicture, birthDate, level });
         } else {
-          const data: DataRegisterInterface = {
-            firstName: values.firstName,
-            lastName: values.lastName,
-            email: values.email,
-            password: values.password,
-            isCoach: values.isCoach,
-          }
-          await register(data);
+          await register(commonData);
         }
         navigate("/login");
       }
@@ -186,6 +167,7 @@ const AuthForm = ({
         });
         return;
       }
+
       form.setError("root", {
         type: "manual",
         message: error instanceof Error ? error.message : "Une erreur est survenue",
@@ -194,6 +176,7 @@ const AuthForm = ({
       setImageLoaded(false);
       setPreloadedImages(new Set());
     }
+
   };
 
   return (
@@ -225,10 +208,10 @@ const AuthForm = ({
                     <AnimatePresence mode="wait">
                       <motion.div
                         key={`header-${type}`}
-                        initial={{opacity: 0, y: -20}}
-                        animate={{opacity: 1, y: 0}}
-                        exit={{opacity: 0, y: 20}}
-                        transition={{duration: 0.3}}
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 20 }}
+                        transition={{ duration: 0.3 }}
                         className="flex flex-col items-center text-center"
                       >
                         {isLogin ? (
@@ -256,48 +239,48 @@ const AuthForm = ({
                     <AnimatePresence>
                       {!isLogin && (
                         <motion.div
-                          initial={{opacity: 0, height: 0}}
-                          animate={{opacity: 1, height: "auto"}}
-                          exit={{opacity: 0, height: 0}}
-                          transition={{duration: 0.4, ease: "easeInOut"}}
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.4, ease: "easeInOut" }}
                           className="grid grid-cols-2 gap-3"
                         >
-                          <FirstNameField control={form.control}/>
-                          <LastNameField control={form.control}/>
+                          <FirstNameField control={form.control} />
+                          <LastNameField control={form.control} />
                         </motion.div>
                       )}
                     </AnimatePresence>
 
                     <motion.div variants={authItemVariants}>
-                      <EmailField control={form.control}/>
+                      <EmailField control={form.control} />
                     </motion.div>
 
                     <motion.div variants={authItemVariants}>
-                      <PasswordField control={form.control}/>
+                      <PasswordField control={form.control} />
                     </motion.div>
 
                     <AnimatePresence>
                       {!isLogin && (
                         <motion.div
-                          initial={{opacity: 0, height: 0, y: -20}}
-                          animate={{opacity: 1, height: "auto", y: 0}}
-                          exit={{opacity: 0, height: 0, y: -20}}
+                          initial={{ opacity: 0, height: 0, y: -20 }}
+                          animate={{ opacity: 1, height: "auto", y: 0 }}
+                          exit={{ opacity: 0, height: 0, y: -20 }}
                           transition={{
                             duration: 0.5,
                             ease: "easeInOut",
-                            height: {delay: 0.1}
+                            height: { delay: 0.1 }
                           }}
                           className="flex flex-col gap-4"
                         >
-                          <ConfirmPasswordField control={form.control}/>
+                          <ConfirmPasswordField control={form.control} />
                           <FormField
                             control={form.control}
                             name="isCoach"
-                            render={({field}) => (
+                            render={({ field }) => (
                               <FormItem>
                                 <motion.div
-                                  initial={{opacity: 0, scale: 0.95}}
-                                  animate={{opacity: 1, scale: 1}}
+                                  initial={{ opacity: 0, scale: 0.95 }}
+                                  animate={{ opacity: 1, scale: 1 }}
                                   transition={{
                                     delay: 0.2,
                                     duration: 0.3,
@@ -356,10 +339,10 @@ const AuthForm = ({
                         <AnimatePresence>
                           {form.formState.errors.root?.message && (
                             <motion.p
-                              initial={{opacity: 0, y: -10}}
-                              animate={{opacity: 1, y: 0}}
-                              exit={{opacity: 0, y: -10}}
-                              transition={{duration: 0.2}}
+                              initial={{ opacity: 0, y: -10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0, y: -10 }}
+                              transition={{ duration: 0.2 }}
                               className="text-sm text-red-500"
                             >
                               {form.formState.errors.root.message}
@@ -373,10 +356,10 @@ const AuthForm = ({
                       <AnimatePresence mode="wait">
                         <motion.span
                           key={`link-${type}`}
-                          initial={{opacity: 0}}
-                          animate={{opacity: 1}}
-                          exit={{opacity: 0}}
-                          transition={{duration: 0.2}}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.2 }}
                         >
                           {isLogin ? (
                             <>
@@ -411,14 +394,14 @@ const AuthForm = ({
               <AnimatePresence>
                 {!imageLoaded && (
                   <motion.div
-                    initial={{opacity: 0}}
-                    animate={{opacity: 1}}
-                    exit={{opacity: 0}}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
                     className="absolute inset-0 bg-gradient-to-br from-muted via-muted/80 to-muted/60 flex items-center justify-center"
                   >
                     {/* Skeleton loader */}
                     <div
-                      className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin"/>
+                      className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -443,9 +426,9 @@ const AuthForm = ({
 
               <motion.div
                 className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"
-                initial={{opacity: 0}}
-                animate={{opacity: imageLoaded ? 1 : 0}}
-                transition={{delay: 0.3, duration: 0.4}}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: imageLoaded ? 1 : 0 }}
+                transition={{ delay: 0.3, duration: 0.4 }}
               />
             </motion.div>
           </CardContent>
@@ -463,21 +446,21 @@ const AuthForm = ({
                 </DialogDescription>
               </DialogHeader>
 
-              <GenderField control={form.control}/>
+              <GenderField control={form.control} />
 
-              <HourlyRateField control={form.control}/>
+              <HourlyRateField control={form.control} />
 
-              <ProfilePictureField control={form.control}/>
+              <ProfilePictureField control={form.control} />
 
-              <BirthdayDateField control={form.control}/>
+              <BirthdayDateField control={form.control} />
 
-              <LevelField control={form.control}/>
+              <LevelField control={form.control} />
 
 
               <Controller
                 control={form.control}
                 name="sports"
-                render={({field}) => (
+                render={({ field }) => (
                   <MultiSelect
                     options={sportsOptions}
                     value={field.value}
