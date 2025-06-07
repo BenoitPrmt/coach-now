@@ -34,7 +34,7 @@ import { EmailField } from "~/components/Forms/FormFields/form-fields/Email";
 import { PasswordField } from "~/components/Forms/FormFields/form-fields/Password";
 import { ConfirmPasswordField } from "~/components/Forms/FormFields/form-fields/ConfirmPassword";
 import { MultiSelect } from "~/components/Forms/FormFields/form-fields/Sports";
-import type { DataRegisterCoachInterface, DataRegisterInterface } from "~/interfaces/interfaces";
+import { toast } from "sonner";
 
 const sportsOptions = [
   { label: "Fitness", value: "FITNESS" },
@@ -137,7 +137,7 @@ const AuthForm = ({
   }, [password, confirmPassword, isLogin]);
 
   const onSubmit = async (values: z.infer<typeof registerSchema>) => {
-    const {firstName, lastName, email, password, isCoach, gender, hourlyRate, sports, profilePicture, birthDate, level} = values;
+    const { firstName, lastName, email, password, isCoach, gender, hourlyRate, sports, profilePicture, birthDate, level } = values;
 
     const commonData = { firstName, lastName, email, password, isCoach };
 
@@ -155,7 +155,14 @@ const AuthForm = ({
         } else {
           await register(commonData);
         }
-        navigate("/login");
+
+        toast("Création du compte réussit 🎉", {
+          description: "Bienvenue sur CoachNow !",
+          action: {
+            label: "Se connecter",
+            onClick: () => navigate("/login"),
+          },
+        });
       }
 
       form.reset();
@@ -438,24 +445,20 @@ const AuthForm = ({
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <Form {...form}>
           <form>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-[425px] gap-5">
               <DialogHeader>
-                <DialogTitle>Espace Coach</DialogTitle>
+                <DialogTitle className="text-xl">Espace Coach</DialogTitle>
                 <DialogDescription>
-                  Veuillez remplir ses informations afin de finaliser votre inscription :)
                 </DialogDescription>
               </DialogHeader>
 
               <GenderField control={form.control} />
 
-              <HourlyRateField control={form.control} />
+              <BirthdayDateField control={form.control} />
 
               <ProfilePictureField control={form.control} />
 
-              <BirthdayDateField control={form.control} />
-
-              <LevelField control={form.control} />
-
+              <HourlyRateField control={form.control} />
 
               <Controller
                 control={form.control}
@@ -471,6 +474,7 @@ const AuthForm = ({
                 )}
               />
 
+              <LevelField control={form.control} />
 
               <DialogFooter>
                 <DialogClose asChild>

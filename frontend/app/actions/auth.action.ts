@@ -58,7 +58,7 @@ export const registerCoach = (values: {
 async function postRegister<T>(endpoint: string, values: T & { isCoach?: boolean }) {
   const url = getPublicEnv(import.meta.env).VITE_API_URL + endpoint;
 
-  console.log("Données enoyées", values)
+  console.log("Données envoyés:", values)
   try {
     const res = await fetch(url, {
       method: 'POST',
@@ -74,7 +74,8 @@ async function postRegister<T>(endpoint: string, values: T & { isCoach?: boolean
       throw new Error(`Registration failed: ${error}`);
     }
 
-    console.log("Données reçu :", await res.json());
+    console.log("Données reçu :", await res.json())
+
   } catch (err) {
     console.error("Registration action failed:", err);
     throw err;
