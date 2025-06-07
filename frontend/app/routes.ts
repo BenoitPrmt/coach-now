@@ -10,6 +10,9 @@ export default [
     // Protected routes : need to be authenticated
     layout("routes/user/layout.tsx", [
         route("account", "routes/user/account.tsx"),
+        ...prefix("coach", [
+            route(":coachId", "routes/coach/profile.tsx"),
+        ]),
     ]),
 
     // Protected routes : need to be ADMIN
@@ -20,9 +23,9 @@ export default [
     ]),
 
     // Protected routes : need to be COACH or ADMIN
-    ...prefix("coach", [
-        layout("routes/coach/layout.tsx", [
-            route(":coachId", "routes/coach/profile.tsx"),
-        ]),
-    ]),
+    // ...prefix("coach", [
+    //     layout("routes/coach/layout.tsx", [
+    //         route(":coachId", "routes/coach/profile.tsx"),
+    //     ]),
+    // ]),
 ] satisfies RouteConfig;

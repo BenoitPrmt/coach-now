@@ -1,13 +1,198 @@
 import React, {useEffect, useState} from 'react';
 import {useUser} from "~/hooks/useUser";
 import Loader from "~/components/Loader";
-import type {User} from "~/types";
+import type {User, Booking} from "~/types";
 import {getPublicEnv} from "../../../env.common";
+import {motion, AnimatePresence} from "motion/react";
+import {Info, Calendar, Star, Clock, Euro, User as UserIcon, Mail} from "lucide-react";
+import {Tabs, TabsContent, TabsList, TabsTrigger} from "~/components/ui/tabs"
+import CoachImage from "~/components/Coach/CoachImage";
+import {Link} from "react-router";
+import RatingCards from "~/components/Rating/RatingCards";
+
+const UserInfo = ({user}: { user: User }) => {
+    const totalBookings = user.bookings?.length || 0;
+    const totalRatings = user.ratings?.length || 0;
+
+    return (
+        <motion.div
+            className="flex flex-col items-center space-y-6"
+            initial={{opacity: 0, scale: 0.9}}
+            animate={{opacity: 1, scale: 1}}
+            transition={{duration: 0.6, ease: "easeOut"}}
+        >
+            {/* Avatar */}
+            <motion.div
+                className="relative"
+                whileHover={{scale: 1.05}}
+                transition={{type: "spring", stiffness: 300}}
+            >
+                <div
+                    className="w-24 h-24 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center shadow-lg">
+                    <UserIcon className="w-10 h-10 text-white"/>
+                </div>
+                <div
+                    className="absolute -bottom-2 -right-2 w-6 h-6 bg-green-500 rounded-full border-2 border-white"></div>
+            </motion.div>
+
+            {/* User Details */}
+            <div className="text-center space-y-2">
+                <motion.h2
+                    className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent"
+                    initial={{y: 20, opacity: 0}}
+                    animate={{y: 0, opacity: 1}}
+                    transition={{delay: 0.2}}
+                >
+                    {user.firstName} {user.lastName}
+                </motion.h2>
+                <motion.div
+                    className="flex items-center justify-center space-x-2 text-gray-600"
+                    initial={{y: 20, opacity: 0}}
+                    animate={{y: 0, opacity: 1}}
+                    transition={{delay: 0.3}}
+                >
+                    <Mail className="w-4 h-4"/>
+                    <p className="text-sm">{user.email}</p>
+                </motion.div>
+                <motion.div
+                    className="inline-flex px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium"
+                    initial={{y: 20, opacity: 0}}
+                    animate={{y: 0, opacity: 1}}
+                    transition={{delay: 0.4}}
+                >
+                    {user.role}
+                </motion.div>
+            </div>
+
+            {/* Stats */}
+            <motion.div
+                className="grid grid-cols-2 gap-4 w-full"
+                initial={{y: 30, opacity: 0}}
+                animate={{y: 0, opacity: 1}}
+                transition={{delay: 0.5}}
+            >
+                <div className="text-center">
+                    <div className="text-2xl font-bold text-blue-600">{totalBookings}</div>
+                    <div className="text-xs text-gray-500">Réservations</div>
+                </div>
+                <div className="text-center">
+                    <div className="text-2xl font-bold text-yellow-600">{totalRatings}</div>
+                    <div className="text-xs text-gray-500">Avis</div>
+                </div>
+                {/*<div className="text-center">*/}
+                {/*    <div className="flex items-center justify-center space-x-1">*/}
+                {/*        <Star className="w-4 h-4 text-yellow-400 fill-current"/>*/}
+                {/*        <span className="text-2xl font-bold text-yellow-600">{averageRating}</span>*/}
+                {/*    </div>*/}
+                {/*    <div className="text-xs text-gray-500">Moyenne</div>*/}
+                {/*</div>*/}
+            </motion.div>
+        </motion.div>
+    );
+}
+
+const BookingCard = ({booking, index}: { booking: Booking; index: number }) => {
+    const startDate = new Date(booking.startDate);
+    const endDate = new Date(booking.endDate);
+    const duration = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+
+    return (
+        <motion.div
+            className="bg-white dark:bg-neutral-700 rounded-xl p-6"
+            initial={{opacity: 0, y: 20}}
+            animate={{opacity: 1, y: 0}}
+            transition={{delay: index * 0.1}}
+        >
+            <div className="flex justify-between items-start mb-4">
+                <Link to={`/coach/${booking.coach.id}`} className="flex items-center space-x-3 hover:underline">
+                    <CoachImage
+                        src={booking.coach.profilePictureUrl}
+                        alt={`${booking.coach.user.firstName} ${booking.coach.user.lastName}`}
+                        className="w-12 h-12 rounded-full object-cover shadow-sm"
+                    />
+                    <div>
+                        <h4 className="font-semibold text-gray-900 dark:text-white">
+                            Coach {booking.coach.user.firstName} {booking.coach.user.lastName}
+                        </h4>
+                    </div>
+                </Link>
+                <div className={`px-3 py-1 rounded-full text-xs font-medium ${
+                    booking.isActive
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-gray-100 text-gray-800'
+                }`}>
+                    {booking.isActive ? 'Actif' : 'Terminé'}
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div className="flex items-center md:justify-center space-x-2">
+                    <Calendar className="w-4 h-4 text-gray-400"/>
+                    <div>
+                        <p className="text-sm font-medium">Début</p>
+                        <p className="text-xs text-gray-500">{startDate.toLocaleDateString()}</p>
+                    </div>
+                </div>
+                <div className="flex items-center md:justify-center space-x-2">
+                    <Clock className="w-4 h-4 text-gray-400"/>
+                    <div>
+                        <p className="text-sm font-medium">Durée</p>
+                        <p className="text-xs text-gray-500">{duration} jour{duration > 1 ? 's' : ''}</p>
+                    </div>
+                </div>
+                <div className="flex items-center md:justify-center space-x-2">
+                    <Calendar className="w-4 h-4 text-gray-400"/>
+                    <div>
+                        <p className="text-sm font-medium">Fin</p>
+                        <p className="text-xs text-gray-500">{endDate.toLocaleDateString()}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div className="flex justify-between items-center pt-4 border-t border-gray-200 dark:border-neutral-600">
+                <div className="flex items-center space-x-2">
+                    <Euro className="w-4 h-4 text-green-600"/>
+                    <span className="font-bold text-green-600">{booking.totalPrice}€</span>
+                </div>
+                <div className="text-xs text-gray-500">
+                    {booking.coach.hourlyRate}€/h
+                </div>
+                {
+                    booking.coach.levels && booking.coach.levels.length > 0 && (
+                        <div className="flex items-center space-x-1">
+                            {booking.coach.levels.map((level, i) => (
+                                <span
+                                    key={`${level}-${i}`}
+                                    className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+                                    {level}
+                                </span>
+                            ))}
+                        </div>
+                    )
+                }
+                {
+                    booking.coach.sports && booking.coach.sports.length > 0 && (
+                        <div className="flex items-center space-x-1">
+                            {booking.coach.sports.map((sport, i) => (
+                                <span
+                                    key={`${sport}-${i}`}
+                                    className="px-2 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-medium">
+                                    {sport}
+                                </span>
+                            ))}
+                        </div>
+                    )
+                }
+            </div>
+        </motion.div>
+    );
+};
 
 const Account = () => {
     const {user, userToken, isLoading} = useUser();
     const [userProfile, setUserProfile] = useState<User | null>(null);
     const [userProfileLoading, setUserProfileLoading] = useState(true);
+    const [activeTab, setActiveTab] = useState("bookings");
 
     useEffect(() => {
         const fetchUserProfile = async () => {
@@ -32,25 +217,155 @@ const Account = () => {
                 setUserProfileLoading(false);
             }
         }
-        fetchUserProfile()
-    }, [userToken]);
+        if (user && userToken) {
+            fetchUserProfile();
+        }
+    }, [user, userToken]);
 
     if (isLoading) return <Loader/>
     if (userProfileLoading) return <Loader/>
+
     if (!userProfileLoading && !userProfile) {
         return (
-            <div>
-                <h1 className="text-2xl font-bold mb-4">Mon compte</h1>
-                <p className="text-red-500">Votre profil n'est pas disponible.</p>
-            </div>
+            <motion.div
+                initial={{opacity: 0, y: 20}}
+                animate={{opacity: 1, y: 0}}
+                className="max-w-md mx-auto mt-8 p-6 bg-white rounded-xl shadow-lg"
+            >
+                <h1 className="text-2xl font-bold mb-4 text-gray-900">Mon compte</h1>
+                <div className="flex items-center space-x-2 text-red-600">
+                    <Info className="w-5 h-5"/>
+                    <p>Votre profil n'est pas disponible.</p>
+                </div>
+            </motion.div>
         );
     }
+
     return (
-        <div>
-            <h1 className="text-2xl font-bold mb-4">Mon compte</h1>
-            <p className="text-gray-700">
-                Bienvenue, {userProfile?.firstName} {userProfile?.lastName}!
-            </p>
+        <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+            <motion.div
+                className="max-w-7xl mx-auto"
+                initial={{opacity: 0}}
+                animate={{opacity: 1}}
+                transition={{duration: 0.8}}
+            >
+                {/* Header */}
+                <motion.div
+                    className="text-center mb-8"
+                    initial={{y: -20, opacity: 0}}
+                    animate={{y: 0, opacity: 1}}
+                    transition={{delay: 0.2}}
+                >
+                    <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-secondary via-accent bg-clip-text text-transparent mb-2">
+                        Mon Compte
+                    </h1>
+                    <p className="text-gray-600">Gérez votre profil et consultez votre activité</p>
+                </motion.div>
+
+                <div className="flex flex-col w-full gap-8">
+                    {/* Left Side - Profile Card */}
+                    <motion.div
+                        className="lg:col-span-1"
+                        initial={{opacity: 0, x: -50}}
+                        animate={{opacity: 1, x: 0}}
+                        transition={{duration: 0.6, delay: 0.3}}
+                    >
+                        <div
+                            className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-white/20 sticky top-8">
+                            {userProfile && <UserInfo user={userProfile}/>}
+                        </div>
+                    </motion.div>
+
+                    {/* Right Side - Content */}
+                    <motion.div
+                        className="lg:col-span-2"
+                        initial={{opacity: 0, x: 50}}
+                        animate={{opacity: 1, x: 0}}
+                        transition={{duration: 0.6, delay: 0.4}}
+                    >
+                        <div
+                            className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-white/20 overflow-hidden">
+                            <div className="p-8">
+                                <div className="flex items-center space-x-3 mb-6">
+                                    <div
+                                        className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                                        <Info className="w-5 h-5 text-white"/>
+                                    </div>
+                                    <h3 className="text-2xl font-bold text-gray-900">
+                                        Informations supplémentaires
+                                    </h3>
+                                </div>
+
+                                <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                                    <TabsList className="grid w-full grid-cols-2 mb-8 bg-gray-100 p-1 rounded-xl">
+                                        <TabsTrigger
+                                            value="bookings"
+                                            className="cursor-pointer rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm transition-all duration-300"
+                                        >
+                                            <Calendar className="w-4 h-4 mr-2"/>
+                                            Réservations
+                                        </TabsTrigger>
+                                        <TabsTrigger
+                                            value="ratings"
+                                            className="cursor-pointer rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm transition-all duration-300"
+                                        >
+                                            <Star className="w-4 h-4 mr-2"/>
+                                            Avis
+                                        </TabsTrigger>
+                                    </TabsList>
+
+                                    <AnimatePresence>
+                                        <TabsContent value="bookings">
+                                            <motion.div
+                                                key="bookings"
+                                                initial={{opacity: 0, y: 20}}
+                                                animate={{opacity: 1, y: 0}}
+                                                exit={{opacity: 0, y: -20}}
+                                                transition={{duration: 0.3}}
+                                                className="space-y-4 max-h-[60vh] overflow-y-auto pr-2"
+                                            >
+                                                {userProfile?.bookings && userProfile.bookings.length > 0 ? (
+                                                    userProfile.bookings.map((booking, index) => (
+                                                        <BookingCard key={booking.id} booking={booking} index={index}/>
+                                                    ))
+                                                ) : (
+                                                    <motion.div
+                                                        className="text-center py-12"
+                                                        initial={{opacity: 0, scale: 0.9}}
+                                                        animate={{opacity: 1, scale: 1}}
+                                                    >
+                                                        <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4"/>
+                                                        <p className="text-gray-500 text-lg">Aucune réservation pour le
+                                                            moment.</p>
+                                                        <p className="text-gray-400 text-sm mt-2">Vos réservations
+                                                            apparaîtront ici</p>
+                                                    </motion.div>
+                                                )}
+                                            </motion.div>
+                                        </TabsContent>
+
+                                        <TabsContent value="ratings">
+                                            <motion.div
+                                                key="ratings"
+                                                initial={{opacity: 0, y: 20}}
+                                                animate={{opacity: 1, y: 0}}
+                                                exit={{opacity: 0, y: -20}}
+                                                transition={{duration: 0.3}}
+                                                className="space-y-4 max-h-[60vh] overflow-y-auto pr-2"
+                                            >
+                                                <RatingCards
+                                                    ratings={userProfile?.ratings}
+                                                    delay={0}
+                                                />
+                                            </motion.div>
+                                        </TabsContent>
+                                    </AnimatePresence>
+                                </Tabs>
+                            </div>
+                        </div>
+                    </motion.div>
+                </div>
+            </motion.div>
         </div>
     );
 };

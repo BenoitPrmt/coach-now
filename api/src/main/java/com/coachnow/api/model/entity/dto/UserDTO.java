@@ -2,6 +2,7 @@ package com.coachnow.api.model.entity.dto;
 
 import com.coachnow.api.model.entity.User;
 import com.coachnow.api.types.Roles;
+import com.coachnow.api.model.entity.dto.simple.SimpleRatingDTO;
 import lombok.Data;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public class UserDTO {
     private String password;
     private Roles role;
     private List<BookingDTO> bookings;
-    private List<RatingDTO> ratings;
+    private List<SimpleRatingDTO> ratings;
 
     public String getId() {
         return id;
@@ -45,7 +46,7 @@ public class UserDTO {
         return bookings;
     }
 
-    public List<RatingDTO> getRatings() {
+    public List<SimpleRatingDTO> getRatings() {
         return ratings;
     }
 
@@ -59,7 +60,7 @@ public class UserDTO {
                 .map(BookingDTO::new)
                 .toList();
         this.ratings = user.getRatings().stream()
-                .map(RatingDTO::new)
+                .map(SimpleRatingDTO::new)
                 .toList();
     }
 
