@@ -81,13 +81,6 @@ const UserInfo = ({user}: { user: User }) => {
                     <div className="text-2xl font-bold text-secondary">{totalRatings}</div>
                     <div className="text-xs text-gray-500">Avis</div>
                 </div>
-                {/*<div className="text-center">*/}
-                {/*    <div className="flex items-center justify-center space-x-1">*/}
-                {/*        <Star className="w-4 h-4 text-yellow-400 fill-current"/>*/}
-                {/*        <span className="text-2xl font-bold text-yellow-600">{averageRating}</span>*/}
-                {/*    </div>*/}
-                {/*    <div className="text-xs text-gray-500">Moyenne</div>*/}
-                {/*</div>*/}
             </motion.div>
         </motion.div>
     );
@@ -114,6 +107,11 @@ const BookingCard = ({booking, index}: { booking: Booking; index: number }) => {
     }, [hours, minutes]);
 
     const bookingStatus = useMemo(() => {
+        // Si la réservation est annulée (isActive === false)
+        if (booking.isActive === false) {
+            return "Annulée";
+        }
+
         const now = new Date();
         if (startDate > now) {
             return "À venir";
@@ -122,32 +120,51 @@ const BookingCard = ({booking, index}: { booking: Booking; index: number }) => {
         } else {
             return "Terminée";
         }
-    }, [booking]);
+    }, [booking, startDate, endDate]);
+
+    // Déterminer si la carte doit être grisée
+    const isBookingCancelled = booking.isActive === false;
 
     return (
         <motion.div
-            className="bg-white dark:bg-neutral-700 rounded-xl p-6"
+            className={cn(
+                "bg-white dark:bg-neutral-700 rounded-xl p-6 transition-all duration-300",
+                isBookingCancelled && "opacity-60 grayscale bg-gray-50 dark:bg-gray-800"
+            )}
             initial={{opacity: 0, y: 20}}
             animate={{opacity: 1, y: 0}}
             transition={{delay: index * 0.1}}
         >
             <div className="flex justify-between items-start mb-4">
-                <Link to={`/coach/${booking.coach.id}`} className="flex items-center space-x-3 hover:underline">
+                <Link
+                    to={`/coach/${booking.coach.id}`}
+                    className={cn(
+                        "flex items-center space-x-3 hover:underline",
+                        isBookingCancelled && "pointer-events-none"
+                    )}
+                >
                     <CoachImage
                         src={booking.coach.profilePictureUrl}
                         alt={`${booking.coach.user.firstName} ${booking.coach.user.lastName}`}
-                        className="w-12 h-12 rounded-full object-cover shadow-sm"
+                        className={cn(
+                            "w-12 h-12 rounded-full object-cover shadow-sm",
+                            isBookingCancelled && "grayscale opacity-70"
+                        )}
                     />
                     <div>
-                        <h4 className="font-semibold text-gray-900 dark:text-white">
+                        <h4 className={cn(
+                            "font-semibold text-gray-900 dark:text-white",
+                            isBookingCancelled && "text-gray-500 dark:text-gray-400"
+                        )}>
                             Coach {booking.coach.user.firstName} {booking.coach.user.lastName}
                         </h4>
                     </div>
                 </Link>
                 <div className={cn('px-3 py-1 rounded-full text-xs font-medium',
-                    bookingStatus === "À venir" ? "bg-yellow-100 text-yellow-800" :
-                        bookingStatus === "En cours" ? "bg-green-100 text-green-800" :
-                            "bg-gray-100 text-gray-800"
+                    bookingStatus === "Annulée" ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200" :
+                        bookingStatus === "À venir" ? "bg-yellow-100 text-yellow-800" :
+                            bookingStatus === "En cours" ? "bg-green-100 text-green-800" :
+                                "bg-gray-100 text-gray-800"
                 )}>
                     {bookingStatus}
                 </div>
@@ -155,38 +172,74 @@ const BookingCard = ({booking, index}: { booking: Booking; index: number }) => {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                 <div className="flex items-center md:justify-center space-x-2">
-                    <Calendar className="w-4 h-4 text-gray-400"/>
+                    <Calendar className={cn(
+                        "w-4 h-4 text-gray-400",
+                        isBookingCancelled && "text-gray-300"
+                    )}/>
                     <div>
-                        <p className="text-sm font-medium">Début</p>
-                        <p className="text-xs text-gray-500">{
+                        <p className={cn(
+                            "text-sm font-medium",
+                            isBookingCancelled && "text-gray-400"
+                        )}>Début</p>
+                        <p className={cn(
+                            "text-xs text-gray-500",
+                            isBookingCancelled && "text-gray-400"
+                        )}>{
                             formatDate(startDate)
                         }</p>
                     </div>
                 </div>
                 <div className="flex items-center md:justify-center space-x-2">
-                    <Clock className="w-4 h-4 text-gray-400"/>
+                    <Clock className={cn(
+                        "w-4 h-4 text-gray-400",
+                        isBookingCancelled && "text-gray-300"
+                    )}/>
                     <div>
-                        <p className="text-sm font-medium">Durée</p>
-                        <p className="text-xs text-gray-500">{
+                        <p className={cn(
+                            "text-sm font-medium",
+                            isBookingCancelled && "text-gray-400"
+                        )}>Durée</p>
+                        <p className={cn(
+                            "text-xs text-gray-500",
+                            isBookingCancelled && "text-gray-400"
+                        )}>{
                             displayDuration(hours, minutes)
                         }</p>
                     </div>
                 </div>
                 <div className="flex items-center md:justify-center space-x-2">
-                    <Calendar className="w-4 h-4 text-gray-400"/>
+                    <Calendar className={cn(
+                        "w-4 h-4 text-gray-400",
+                        isBookingCancelled && "text-gray-300"
+                    )}/>
                     <div>
-                        <p className="text-sm font-medium">Fin</p>
-                        <p className="text-xs text-gray-500">{formatDate(endDate)}</p>
+                        <p className={cn(
+                            "text-sm font-medium",
+                            isBookingCancelled && "text-gray-400"
+                        )}>Fin</p>
+                        <p className={cn(
+                            "text-xs text-gray-500",
+                            isBookingCancelled && "text-gray-400"
+                        )}>{formatDate(endDate)}</p>
                     </div>
                 </div>
             </div>
 
             <div className="flex justify-between items-center pt-4 border-t border-gray-200 dark:border-neutral-600">
                 <div className="flex items-center space-x-2">
-                    <Euro className="w-4 h-4 text-green-600"/>
-                    <span className="font-bold text-green-600">{booking.totalPrice}€</span>
+                    <Euro className={cn(
+                        "w-4 h-4 text-green-600",
+                        isBookingCancelled && "text-gray-400"
+                    )}/>
+                    <span className={cn(
+                        "font-bold text-green-600",
+                        isBookingCancelled && "text-gray-400 line-through"
+                    )}>{booking.totalPrice}€</span>
                 </div>
-                <div className="text-xs text-gray-500">
+                <div className={cn(
+                    "text-xs text-gray-500",
+                    isBookingCancelled && "text-gray-400"
+                )}>
                     {booking.coach.hourlyRate}€/h
                 </div>
                 {
@@ -195,7 +248,10 @@ const BookingCard = ({booking, index}: { booking: Booking; index: number }) => {
                             {booking.coach.levels.map((level, i) => (
                                 <span
                                     key={`${level}-${i}`}
-                                    className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+                                    className={cn(
+                                        "px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium",
+                                        isBookingCancelled && "bg-gray-100 text-gray-500"
+                                    )}>
                                     {level}
                                 </span>
                             ))}
@@ -208,7 +264,10 @@ const BookingCard = ({booking, index}: { booking: Booking; index: number }) => {
                             {booking.coach.sports.map((sport, i) => (
                                 <span
                                     key={`${sport}-${i}`}
-                                    className="px-2 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-medium">
+                                    className={cn(
+                                        "px-2 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-medium",
+                                        isBookingCancelled && "bg-gray-100 text-gray-500"
+                                    )}>
                                     {sport}
                                 </span>
                             ))}
@@ -228,6 +287,7 @@ const Account = () => {
     const [futureBookings, setFutureBookings] = useState<Booking[]>([]);
     const [ongoingBookings, setOngoingBookings] = useState<Booking[]>([]);
     const [pastBookings, setPastBookings] = useState<Booking[]>([]);
+    const [cancelledBookings, setCancelledBookings] = useState<Booking[]>([]);
 
     useEffect(() => {
         const fetchUserProfile = async () => {
@@ -265,8 +325,14 @@ const Account = () => {
             const future: Booking[] = [];
             const ongoing: Booking[] = [];
             const past: Booking[] = [];
+            const cancelled: Booking[] = [];
 
             userProfile.bookings.forEach((booking) => {
+                if (booking.isActive === false) {
+                    cancelled.push(booking);
+                    return;
+                }
+
                 const startDate = new Date(booking.startDate);
                 const endDate = new Date(booking.endDate);
 
@@ -282,6 +348,7 @@ const Account = () => {
             setFutureBookings(future);
             setOngoingBookings(ongoing);
             setPastBookings(past);
+            setCancelledBookings(cancelled);
         };
 
         categorizeBookings();
@@ -426,10 +493,24 @@ const Account = () => {
                                                     </div>
                                                 )}
 
+                                                {/* Annulées */}
+                                                {cancelledBookings && cancelledBookings.length > 0 && (
+                                                    <div>
+                                                        <h4 className="text-lg font-semibold mt-6 mb-2 text-red-600">Annulées</h4>
+                                                        <div className="space-y-4">
+                                                            {cancelledBookings.map((booking, index) => (
+                                                                <BookingCard key={booking.id} booking={booking}
+                                                                             index={index}/>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                )}
+
                                                 {/* Aucune réservation */}
                                                 {!futureBookings?.length &&
                                                     !ongoingBookings?.length &&
-                                                    !pastBookings?.length && (
+                                                    !pastBookings?.length &&
+                                                    !cancelledBookings?.length && (
                                                         <p className="text-gray-500 text-sm">Aucune réservation
                                                             trouvée.</p>
                                                     )}
