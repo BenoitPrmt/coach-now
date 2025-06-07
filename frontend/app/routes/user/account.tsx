@@ -28,7 +28,7 @@ const UserInfo = ({user}: { user: User }) => {
                 transition={{type: "spring", stiffness: 300}}
             >
                 <div
-                    className="w-24 h-24 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center shadow-lg">
+                    className="w-24 h-24 bg-primary rounded-full flex items-center justify-center shadow-lg">
                     <UserIcon className="w-10 h-10 text-white"/>
                 </div>
                 <div
@@ -55,7 +55,7 @@ const UserInfo = ({user}: { user: User }) => {
                     <p className="text-sm">{user.email}</p>
                 </motion.div>
                 <motion.div
-                    className="inline-flex px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium"
+                    className="inline-flex px-3 py-1 bg-primary text-white rounded-full text-xs font-medium"
                     initial={{y: 20, opacity: 0}}
                     animate={{y: 0, opacity: 1}}
                     transition={{delay: 0.4}}
@@ -72,11 +72,11 @@ const UserInfo = ({user}: { user: User }) => {
                 transition={{delay: 0.5}}
             >
                 <div className="text-center">
-                    <div className="text-2xl font-bold text-blue-600">{totalBookings}</div>
+                    <div className="text-2xl font-bold text-ring">{totalBookings}</div>
                     <div className="text-xs text-gray-500">Réservations</div>
                 </div>
                 <div className="text-center">
-                    <div className="text-2xl font-bold text-yellow-600">{totalRatings}</div>
+                    <div className="text-2xl font-bold text-secondary">{totalRatings}</div>
                     <div className="text-xs text-gray-500">Avis</div>
                 </div>
                 {/*<div className="text-center">*/}
@@ -94,7 +94,17 @@ const UserInfo = ({user}: { user: User }) => {
 const BookingCard = ({booking, index}: { booking: Booking; index: number }) => {
     const startDate = new Date(booking.startDate);
     const endDate = new Date(booking.endDate);
-    const duration = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+    const durationMs = endDate.getTime() - startDate.getTime();
+    const totalMinutes = Math.floor(durationMs / 60000);
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    const displayDuration =
+        hours && minutes
+            ? `${hours}h${minutes}`
+            : hours
+                ? `${hours}h`
+                : `${minutes}min`;
 
     return (
         <motion.div
@@ -137,7 +147,7 @@ const BookingCard = ({booking, index}: { booking: Booking; index: number }) => {
                     <Clock className="w-4 h-4 text-gray-400"/>
                     <div>
                         <p className="text-sm font-medium">Durée</p>
-                        <p className="text-xs text-gray-500">{duration} jour{duration > 1 ? 's' : ''}</p>
+                        <p className="text-xs text-gray-500">{displayDuration}</p>
                     </div>
                 </div>
                 <div className="flex items-center md:justify-center space-x-2">
@@ -263,7 +273,6 @@ const Account = () => {
                 </motion.div>
 
                 <div className="flex flex-col w-full gap-8">
-                    {/* Left Side - Profile Card */}
                     <motion.div
                         className="lg:col-span-1"
                         initial={{opacity: 0, x: -50}}
@@ -276,7 +285,6 @@ const Account = () => {
                         </div>
                     </motion.div>
 
-                    {/* Right Side - Content */}
                     <motion.div
                         className="lg:col-span-2"
                         initial={{opacity: 0, x: 50}}
@@ -288,7 +296,7 @@ const Account = () => {
                             <div className="p-8">
                                 <div className="flex items-center space-x-3 mb-6">
                                     <div
-                                        className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                                        className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
                                         <Info className="w-5 h-5 text-white"/>
                                     </div>
                                     <h3 className="text-2xl font-bold text-gray-900">
