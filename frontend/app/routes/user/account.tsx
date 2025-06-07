@@ -247,7 +247,7 @@ const BookingCard = ({booking, index}: { booking: Booking; index: number }) => {
                         <div className="flex items-center space-x-1">
                             {booking.coach.levels.map((level, i) => (
                                 <span
-                                    key={`${level}-${i}`}
+                                    key={`${booking.id}-level-${level}-${i}`}
                                     className={cn(
                                         "px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium",
                                         isBookingCancelled && "bg-gray-100 text-gray-500"
@@ -263,7 +263,7 @@ const BookingCard = ({booking, index}: { booking: Booking; index: number }) => {
                         <div className="flex items-center space-x-1">
                             {booking.coach.sports.map((sport, i) => (
                                 <span
-                                    key={`${sport}-${i}`}
+                                    key={`${booking.id}-sport-${sport}-${i}`}
                                     className={cn(
                                         "px-2 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-medium",
                                         isBookingCancelled && "bg-gray-100 text-gray-500"
