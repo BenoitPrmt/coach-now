@@ -75,11 +75,11 @@ const UserInfo = ({user}: { user: User }) => {
             >
                 <div className="text-center">
                     <div className="text-2xl font-bold text-ring">{totalBookings}</div>
-                    <div className="text-xs text-gray-500">Réservations</div>
+                    <div className="text-xs text-ring">Réservations</div>
                 </div>
                 <div className="text-center">
-                    <div className="text-2xl font-bold text-secondary">{totalRatings}</div>
-                    <div className="text-xs text-gray-500">Avis</div>
+                    <div className="text-2xl font-bold text-yellow-600">{totalRatings}</div>
+                    <div className="text-xs text-yellow-600">Avis</div>
                 </div>
             </motion.div>
         </motion.div>
@@ -104,11 +104,11 @@ const BookingCard = ({booking, index}: { booking: Booking; index: number }) => {
             minimumFractionDigits: 0,
             maximumFractionDigits: 0
         }).format(hours) + 'h' + (minutes > 0 ? minutes : '');
-    }, [hours, minutes]);
+    }, []);
 
     const bookingStatus = useMemo(() => {
         // Si la réservation est annulée (isActive === false)
-        if (booking.isActive === false) {
+        if (!booking.isActive) {
             return "Annulée";
         }
 
@@ -120,10 +120,10 @@ const BookingCard = ({booking, index}: { booking: Booking; index: number }) => {
         } else {
             return "Terminée";
         }
-    }, [booking, startDate, endDate]);
+    }, [booking.isActive]);
 
     // Déterminer si la carte doit être grisée
-    const isBookingCancelled = booking.isActive === false;
+    const isBookingCancelled = !booking.isActive;
 
     return (
         <motion.div
@@ -328,7 +328,7 @@ const Account = () => {
             const cancelled: Booking[] = [];
 
             userProfile.bookings.forEach((booking) => {
-                if (booking.isActive === false) {
+                if (!booking.isActive) {
                     cancelled.push(booking);
                     return;
                 }
