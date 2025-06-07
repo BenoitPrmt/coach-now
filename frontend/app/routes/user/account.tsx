@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState, useCallback} from 'react';
 import {useUser} from "~/hooks/useUser";
 import Loader from "~/components/Loader";
 import type {User, Booking} from "~/types";
@@ -9,6 +9,8 @@ import {Tabs, TabsContent, TabsList, TabsTrigger} from "~/components/ui/tabs"
 import CoachImage from "~/components/Coach/CoachImage";
 import {Link} from "react-router";
 import RatingCards from "~/components/Rating/RatingCards";
+import {cn} from "~/lib/utils";
+import {formatDate} from "~/lib/time";
 
 const UserInfo = ({user}: { user: User }) => {
     const totalBookings = user.bookings?.length || 0;
@@ -99,12 +101,28 @@ const BookingCard = ({booking, index}: { booking: Booking; index: number }) => {
     const hours = Math.floor(totalMinutes / 60);
     const minutes = totalMinutes % 60;
 
-    const displayDuration =
-        hours && minutes
-            ? `${hours}h${minutes}`
-            : hours
-                ? `${hours}h`
-                : `${minutes}min`;
+    const displayDuration = useCallback((
+        hours: number,
+        minutes: number
+    ) => {
+        if (hours === 0 && minutes === 0) return "0min";
+        return new Intl.NumberFormat('fr-FR', {
+            minimumIntegerDigits: 1,
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        }).format(hours) + 'h' + (minutes > 0 ? minutes : '');
+    }, [hours, minutes]);
+
+    const bookingStatus = useMemo(() => {
+        const now = new Date();
+        if (startDate > now) {
+            return "À venir";
+        } else if (startDate <= now && endDate >= now) {
+            return "En cours";
+        } else {
+            return "Terminée";
+        }
+    }, [booking]);
 
     return (
         <motion.div
@@ -126,12 +144,12 @@ const BookingCard = ({booking, index}: { booking: Booking; index: number }) => {
                         </h4>
                     </div>
                 </Link>
-                <div className={`px-3 py-1 rounded-full text-xs font-medium ${
-                    booking.isActive
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-gray-100 text-gray-800'
-                }`}>
-                    {booking.isActive ? 'Actif' : 'Terminé'}
+                <div className={cn('px-3 py-1 rounded-full text-xs font-medium',
+                    bookingStatus === "À venir" ? "bg-yellow-100 text-yellow-800" :
+                        bookingStatus === "En cours" ? "bg-green-100 text-green-800" :
+                            "bg-gray-100 text-gray-800"
+                )}>
+                    {bookingStatus}
                 </div>
             </div>
 
@@ -140,21 +158,25 @@ const BookingCard = ({booking, index}: { booking: Booking; index: number }) => {
                     <Calendar className="w-4 h-4 text-gray-400"/>
                     <div>
                         <p className="text-sm font-medium">Début</p>
-                        <p className="text-xs text-gray-500">{startDate.toLocaleDateString()}</p>
+                        <p className="text-xs text-gray-500">{
+                            formatDate(startDate)
+                        }</p>
                     </div>
                 </div>
                 <div className="flex items-center md:justify-center space-x-2">
                     <Clock className="w-4 h-4 text-gray-400"/>
                     <div>
                         <p className="text-sm font-medium">Durée</p>
-                        <p className="text-xs text-gray-500">{displayDuration}</p>
+                        <p className="text-xs text-gray-500">{
+                            displayDuration(hours, minutes)
+                        }</p>
                     </div>
                 </div>
                 <div className="flex items-center md:justify-center space-x-2">
                     <Calendar className="w-4 h-4 text-gray-400"/>
                     <div>
                         <p className="text-sm font-medium">Fin</p>
-                        <p className="text-xs text-gray-500">{endDate.toLocaleDateString()}</p>
+                        <p className="text-xs text-gray-500">{formatDate(endDate)}</p>
                     </div>
                 </div>
             </div>
@@ -203,6 +225,9 @@ const Account = () => {
     const [userProfile, setUserProfile] = useState<User | null>(null);
     const [userProfileLoading, setUserProfileLoading] = useState(true);
     const [activeTab, setActiveTab] = useState("bookings");
+    const [futureBookings, setFutureBookings] = useState<Booking[]>([]);
+    const [ongoingBookings, setOngoingBookings] = useState<Booking[]>([]);
+    const [pastBookings, setPastBookings] = useState<Booking[]>([]);
 
     useEffect(() => {
         const fetchUserProfile = async () => {
@@ -231,6 +256,36 @@ const Account = () => {
             fetchUserProfile();
         }
     }, [user, userToken]);
+
+    useEffect(() => {
+        const categorizeBookings = () => {
+            if (!userProfile || !userProfile.bookings) return;
+
+            const now = new Date();
+            const future: Booking[] = [];
+            const ongoing: Booking[] = [];
+            const past: Booking[] = [];
+
+            userProfile.bookings.forEach((booking) => {
+                const startDate = new Date(booking.startDate);
+                const endDate = new Date(booking.endDate);
+
+                if (startDate > now) {
+                    future.push(booking);
+                } else if (startDate <= now && endDate >= now) {
+                    ongoing.push(booking);
+                } else {
+                    past.push(booking);
+                }
+            });
+
+            setFutureBookings(future);
+            setOngoingBookings(ongoing);
+            setPastBookings(past);
+        };
+
+        categorizeBookings();
+    }, [userProfile?.bookings]);
 
     if (isLoading) return <Loader/>
     if (userProfileLoading) return <Loader/>
@@ -330,25 +385,54 @@ const Account = () => {
                                                 animate={{opacity: 1, y: 0}}
                                                 exit={{opacity: 0, y: -20}}
                                                 transition={{duration: 0.3}}
-                                                className="space-y-4 max-h-[60vh] overflow-y-auto pr-2"
+                                                className="space-y-8 max-h-[60vh] overflow-y-auto pr-2"
                                             >
-                                                {userProfile?.bookings && userProfile.bookings.length > 0 ? (
-                                                    userProfile.bookings.map((booking, index) => (
-                                                        <BookingCard key={booking.id} booking={booking} index={index}/>
-                                                    ))
-                                                ) : (
-                                                    <motion.div
-                                                        className="text-center py-12"
-                                                        initial={{opacity: 0, scale: 0.9}}
-                                                        animate={{opacity: 1, scale: 1}}
-                                                    >
-                                                        <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4"/>
-                                                        <p className="text-gray-500 text-lg">Aucune réservation pour le
-                                                            moment.</p>
-                                                        <p className="text-gray-400 text-sm mt-2">Vos réservations
-                                                            apparaîtront ici</p>
-                                                    </motion.div>
+                                                {/* À venir */}
+                                                {futureBookings && futureBookings.length > 0 && (
+                                                    <div>
+                                                        <h4 className="text-lg font-semibold mb-2">À venir</h4>
+                                                        <div className="space-y-4">
+                                                            {futureBookings.map((booking, index) => (
+                                                                <BookingCard key={booking.id} booking={booking}
+                                                                             index={index}/>
+                                                            ))}
+                                                        </div>
+                                                    </div>
                                                 )}
+
+                                                {/* En cours */}
+                                                {ongoingBookings && ongoingBookings.length > 0 && (
+                                                    <div>
+                                                        <h4 className="text-lg font-semibold mt-6 mb-2">En cours</h4>
+                                                        <div className="space-y-4">
+                                                            {ongoingBookings.map((booking, index) => (
+                                                                <BookingCard key={booking.id} booking={booking}
+                                                                             index={index}/>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                                {/* Terminées */}
+                                                {pastBookings && pastBookings.length > 0 && (
+                                                    <div>
+                                                        <h4 className="text-lg font-semibold mt-6 mb-2">Terminées</h4>
+                                                        <div className="space-y-4">
+                                                            {pastBookings.map((booking, index) => (
+                                                                <BookingCard key={booking.id} booking={booking}
+                                                                             index={index}/>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                                {/* Aucune réservation */}
+                                                {!futureBookings?.length &&
+                                                    !ongoingBookings?.length &&
+                                                    !pastBookings?.length && (
+                                                        <p className="text-gray-500 text-sm">Aucune réservation
+                                                            trouvée.</p>
+                                                    )}
                                             </motion.div>
                                         </TabsContent>
 

@@ -16,4 +16,13 @@ const timeAgo = (dateString: string): string => {
     return `il y a ${years} an${years > 1 ? 's' : ''}`;
 }
 
-export {timeAgo};
+const formatDate = (date: Date) =>
+  date.toLocaleDateString("fr-FR", {
+    weekday: "short",
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
+
+
+export {timeAgo, formatDate};
