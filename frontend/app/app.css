@@ -1,10 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+@import "@radix-ui/colors/slate.css";
+@import "@radix-ui/colors/slate-dark.css";
+
 @import "tailwindcss";
 @import "tw-animate-css";
+
 
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-    --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif,
+    --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
@@ -97,7 +102,7 @@ body {
     --sidebar-accent-foreground: oklch(0.9595 0.0080 253.8534);
     --sidebar-border: oklch(0.3169 0.0181 248.3968);
     --sidebar-ring: oklch(0.7257 0.1294 51.1911);
-    --font-sans: system-ui, sans-serif;
+    --font-sans: var(--font-sans), system-ui, sans-serif;
     --font-serif: Georgia, serif;
     --font-mono: Menlo, monospace;
     --radius: 0.25rem;
@@ -172,4 +177,8 @@ body {
     body {
         @apply bg-background text-foreground;
     }
+}
+
+body {
+    font-family: var(--font-sans), sans-serif;
 }

@@ -15,6 +15,8 @@ import {timeAgo} from "~/lib/time";
 import {Speech} from "lucide-react";
 import CoachImage from "~/components/Coach/CoachImage";
 
+import {Booking} from "~/components/Booking/booking";
+
 type Props = {
     coachId: string;
 }
@@ -195,7 +197,7 @@ const CoachProfile = ({coachId}: Props) => {
                             animate={{scale: 1, opacity: 1}}
                             transition={{delay: 0.1}}
                         >
-                            Réserver un créneau (Benoit)
+                            {coach && <Booking coach={coach} />}
                         </motion.div>
                     </div>
                 </motion.div>

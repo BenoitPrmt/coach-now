@@ -12,7 +12,6 @@ const Account = () => {
     useEffect(() => {
         const fetchUserProfile = async () => {
             try {
-                console.log("Fetching user profile for user:", user);
                 setUserProfileLoading(true);
                 const res = await fetch(`${getPublicEnv(import.meta.env).VITE_API_URL}/user/${user?.id}`, {
                     method: 'GET',
