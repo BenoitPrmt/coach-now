@@ -21,8 +21,8 @@ export function CalendarGrid({
 }) {
 	const { locale } = useLocale();
 
-	const { selectedDate, getAvailabilityByDate, dateToISOString } = useBooking({
-		coachId: "304cad21-c1a2-456d-a1fe-6f3b5485aa5b",
+	const { selectedDate, getAvailabilityByDate, dateToISOString, isLoading } = useBooking({
+		coachId: "4e641c60-50eb-4172-86f4-cd6145be5d28",
 	});
 
 	// Set startDate (CalendarDate type) to the selected date
@@ -65,7 +65,6 @@ export function CalendarGrid({
 							}
 
 							const availability = getAvailabilityByDate(dateToISOString(date.toDate("Europe/Paris")));
-							// console.log("Availability for date:", date.toDate("Europe/Paris").toISOString(), availability);
 
 							return (
 								<CalendarCell
@@ -74,6 +73,7 @@ export function CalendarGrid({
 									date={date}
 									currentMonth={startDate}
 									availability={availability}
+									isLoading={isLoading}
 								/>
 							);
 						})}

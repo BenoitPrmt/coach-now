@@ -1,5 +1,4 @@
 import {bookingStore, type CoachAvailabilities} from "~/store/bookingStore";
-import {useEffect} from "react";
 import {useUser} from "~/hooks/useUser";
 import {CalendarDate, endOfMonth, startOfMonth} from "@internationalized/date";
 
@@ -11,6 +10,7 @@ export const useBooking = ({ coachId }: Props) => {
     const availabilities = bookingStore((state) => state.availabilities);
     const setAvailabilities = bookingStore((state) => state.setAvailabilities);
     const fetchAvailabilities = bookingStore((state) => state.fetchAvailabilities);
+    const isLoading = bookingStore((state) => state.isLoading);
 
     const {userToken} = useUser();
 
@@ -25,21 +25,24 @@ export const useBooking = ({ coachId }: Props) => {
         setSelectedDate(formattedDate);
     }
 
-    // useEffect(() => {
-    //     console.log("useBooking useEffect - selectedDate:", selectedDate);
-    //     const lastDayOfMonth: string = getLastDayOfMonth(new Date(selectedDate));
-    //     console.log("Fetching availabilities for coach:", coachId, "from", selectedDate, "to", lastDayOfMonth);
-    //     fetchAvailabilities(userToken, coachId, selectedDate, lastDayOfMonth);
-    // }, []);
-
-    const fetCoachAvailabilities = () => {
-        const lastDayOfMonth: string = getLastDayOfMonth(new Date(selectedDate));
-        fetchAvailabilities(userToken, coachId, selectedDate, lastDayOfMonth);
+    const getMonthRangeFromCalendarDate = (calendarDate: CalendarDate) => {
+        const startCD = startOfMonth(calendarDate);
+        const endCD = endOfMonth(calendarDate);
+        return {
+            start: startCD.toString(),
+            end: endCD.toString()
+        };
     }
 
-    const getLastDayOfMonth = (date: Date): string => {
-        const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-        return lastDay.toISOString().split("T")[0];
+    const fetchCoachAvailabilitiesForMonth = (calendarDate: CalendarDate) => {
+        const { start, end } = getMonthRangeFromCalendarDate(calendarDate);
+        fetchAvailabilities(userToken, coachId, start, end);
+    }
+
+    const fetchCoachAvailabilitiesForDate = (date: string) => {
+        const jsDate = new Date(date);
+        const calendarDate = new CalendarDate(jsDate.getFullYear(), jsDate.getMonth() + 1, jsDate.getDate());
+        fetchCoachAvailabilitiesForMonth(calendarDate);
     }
 
     const getAvailabilityByDate = (date: string): CoachAvailabilities | undefined => {
@@ -50,33 +53,16 @@ export const useBooking = ({ coachId }: Props) => {
     }
 
     const handleMonthChange = (direction: "next" | "prev") => {
-        console.log("handleMonthChange - direction:", direction, "selectedDate:", selectedDate);
         let newMonth: CalendarDate;
+        const jsDate = new Date(selectedDate);
+        const currentCalendarDate = new CalendarDate(jsDate.getFullYear(), jsDate.getMonth() + 1, jsDate.getDate());
         if (direction === "next") {
-            const nextMonth = new Date(selectedDate);
-            nextMonth.setMonth(nextMonth.getMonth() + 1);
-            newMonth = new CalendarDate(
-                nextMonth.getFullYear(),
-                nextMonth.getMonth() + 1,
-                nextMonth.getDate()
-            )
+            newMonth = currentCalendarDate.add({ months: 1 });
         } else {
-            const previousMonth = new Date(selectedDate);
-            previousMonth.setMonth(previousMonth.getMonth() - 1);
-            newMonth = new CalendarDate(
-                previousMonth.getFullYear(),
-                previousMonth.getMonth() + 1,
-                previousMonth.getDate()
-            )
+            newMonth = currentCalendarDate.subtract({ months: 1 });
         }
-
         setSelectedDate(dateToISOString(newMonth.toDate("Europe/Paris")));
-        fetchAvailabilities(
-            userToken,
-            coachId,
-            dateToISOString(startOfMonth(newMonth).toDate("Europe/Paris")),
-            dateToISOString(endOfMonth(newMonth).toDate("Europe/Paris")),
-        );
+        fetchCoachAvailabilitiesForMonth(newMonth);
     }
 
     const dateToISOString = (date: Date): string => {
@@ -94,7 +80,8 @@ export const useBooking = ({ coachId }: Props) => {
         getAvailabilityByDate,
         resetSelectedDate,
         handleMonthChange,
-        fetCoachAvailabilities,
-        dateToISOString
+        fetchCoachAvailabilitiesForDate,
+        dateToISOString,
+        isLoading
     };
 };

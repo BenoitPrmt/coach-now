@@ -27,20 +27,33 @@ export function RightPanel({
         })
         .split(" ");
 
-    const {getAvailabilityByDate, selectedDate} = useBooking({
-        coachId: "304cad21-c1a2-456d-a1fe-6f3b5485aa5b",
+    const {
+        getAvailabilityByDate,
+        fetchCoachAvailabilitiesForDate,
+        dateToISOString,
+        isLoading
+    } = useBooking({
+        coachId: "4e641c60-50eb-4172-86f4-cd6145be5d28",
     });
 
     const [availableTimes, setAvailableTimes] = useState<HourAvailability[]>([]);
+    const isoDate = dateToISOString(date.toDate(timeZone));
 
     useEffect(() => {
-        const availability = getAvailabilityByDate(selectedDate);
-        // console.log("Availability for date:", selectedDate, availability);
+        const availability = getAvailabilityByDate(isoDate);
+        if (!availability) {
+            fetchCoachAvailabilitiesForDate(isoDate);
+        } else {
+            setAvailableTimes(availability.hours);
+        }
+    }, [isoDate]);
+
+    useEffect(() => {
+        const availability = getAvailabilityByDate(isoDate);
         if (availability) {
             setAvailableTimes(availability.hours);
         }
-    }, [selectedDate]);
-
+    }, [getAvailabilityByDate(isoDate)]);
 
     return (
         <div
@@ -64,20 +77,33 @@ export function RightPanel({
                     }}
                 >
                     <div className="grid gap-2 pr-3">
-                        {availableTimes.map((availableTime) => (
-                            <Button
-                                variant="outline"
-                                onClick={() =>
-                                    handleChangeAvailableTime(
-                                        availableTime.start
-                                    )
-                                }
-                                key={availableTime.start}
-                                disabled={!availableTime.available}
-                            >
-                                {availableTime.start}
-                            </Button>
-                        ))}
+                        {isLoading ? (
+                            Array.from({ length: 4 }).map((_, idx) => (
+                                <Button
+                                    key={idx}
+                                    variant="outline"
+                                    disabled
+                                    className="animate-pulse bg-gray-200 text-gray-200 border-gray-200"
+                                >
+                                    00:00
+                                </Button>
+                            ))
+                        ) : (
+                            availableTimes.map((availableTime) => (
+                                <Button
+                                    variant="outline"
+                                    onClick={() =>
+                                        handleChangeAvailableTime(
+                                            availableTime.start
+                                        )
+                                    }
+                                    key={availableTime.start}
+                                    disabled={!availableTime.available}
+                                >
+                                    {availableTime.start}
+                                </Button>
+                            ))
+                        )}
                     </div>
                 </ScrollArea>
             </div>

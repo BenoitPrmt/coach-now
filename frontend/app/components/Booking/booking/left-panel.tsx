@@ -19,7 +19,7 @@ export function LeftPanel({
 	const { locale } = useLocale();
 
 	const { selectedSlot } = useBooking({
-		coachId: "304cad21-c1a2-456d-a1fe-6f3b5485aa5b",
+		coachId: "4e641c60-50eb-4172-86f4-cd6145be5d28",
 	});
 
 	return (

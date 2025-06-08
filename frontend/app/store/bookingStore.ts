@@ -22,17 +22,23 @@ type BookingStore = {
     setSelectedDate: (date: string) => void;
     selectedSlot: string | null;
     setSelectedSlot: (slot: string | null) => void;
+    isLoading: boolean;
+    setIsLoading: (loading: boolean) => void;
 }
 
 export const bookingStore = create<BookingStore>((set) => ({
     availabilities: [],
     setAvailabilities: (availabilities) => set({availabilities}),
+    isLoading: false,
+    setIsLoading: (loading: boolean) => set({ isLoading: loading }),
     fetchAvailabilities: async (bearerToken: any, coachId: string, dateStart: string, dateEnd: string) => {
+        set({ isLoading: true });
         try {
             const response = await getAvailabilities(bearerToken, coachId, dateStart, dateEnd);
-            set({availabilities: response})
+            set({availabilities: response, isLoading: false})
             console.log("Fetched availabilities:", response);
         } catch (error) {
+            set({ isLoading: false });
             console.error('Error fetching availabilities:', error);
         }
     },

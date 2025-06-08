@@ -108,7 +108,9 @@ const CoachModal = ({
             initial={{opacity: 0}}
             animate={{opacity: 1}}
             exit={{opacity: 0}}
-            onClick={onClose}
+            onClick={(e) => {
+                if (e.target === e.currentTarget) onClose();
+            }}
         >
             <motion.div
                 className={cn(
