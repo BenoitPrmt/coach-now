@@ -5,6 +5,7 @@ import com.coachnow.api.model.repository.BookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,7 +36,7 @@ public class BookingService {
     }
 
     public boolean userHasBookedWithCoach(String userId, String coachId) {
-        return bookingRepository.existsByUserIdAndCoachId(userId, coachId);
+        return bookingRepository.existsByUserIdAndCoachIdAndEndDateBefore(userId, coachId, new Date());
     }
 
     public Booking getBookingByCoachAndUser(String coachId, String userId) {

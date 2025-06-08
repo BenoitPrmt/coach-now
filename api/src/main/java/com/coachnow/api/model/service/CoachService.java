@@ -80,8 +80,13 @@ public class CoachService {
                 HourAvailability hourAvailability = new HourAvailability(
                         String.format("%02d:00", hour),
                         String.format("%02d:00", hour + 1),
-                        true
+                        rawDate
                 );
+
+                if (!hourAvailability.isAvailable()) {
+                    continue;
+                }
+
                 String date = rawDate + " " + hour + ":00:00.0";
                 for (Booking booking : bookings) {
                     Calendar calendar = Calendar.getInstance();
