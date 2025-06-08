@@ -11,7 +11,11 @@ import { useCalendarState } from "@react-stately/calendar";
 import { CalendarGrid } from "./calendar-grid";
 import { CalendarHeader } from "./calendar-header";
 
-export function Calendar(props: CalendarProps<DateValue>) {
+type Props<T extends DateValue> = Omit<CalendarProps<T>, "visibleDuration"> & {
+	coachId: string;
+}
+
+export function Calendar(props: Props<DateValue>) {
 	const { locale } = useLocale();
 	const state = useCalendarState({
 		...props,
@@ -32,9 +36,10 @@ export function Calendar(props: CalendarProps<DateValue>) {
 				calendarProps={calendarProps}
 				prevButtonProps={prevButtonProps}
 				nextButtonProps={nextButtonProps}
+				coachId={props.coachId}
 			/>
 			<div className="flex gap-8">
-				<CalendarGrid state={state} />
+				<CalendarGrid state={state} coachId={props.coachId} />
 			</div>
 		</div>
 	);

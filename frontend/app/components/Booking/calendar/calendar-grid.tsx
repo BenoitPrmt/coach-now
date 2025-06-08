@@ -14,15 +14,17 @@ import {useRef} from "react";
 
 export function CalendarGrid({
 	state,
+	coachId,
 	offset = {},
 }: {
 	state: CalendarState;
+	coachId: string;
 	offset?: DateDuration;
 }) {
 	const { locale } = useLocale();
 
 	const { selectedDate, getAvailabilityByDate, dateToISOString, isLoading } = useBooking({
-		coachId: "4e641c60-50eb-4172-86f4-cd6145be5d28",
+		coachId,
 	});
 
 	// Set startDate (CalendarDate type) to the selected date

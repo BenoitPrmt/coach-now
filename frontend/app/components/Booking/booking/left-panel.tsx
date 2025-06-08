@@ -6,20 +6,23 @@ import {
 import { useLocale } from "@react-aria/i18n";
 import { CalendarIcon, Clock4 } from "lucide-react";
 import {useBooking} from "~/hooks/useBooking";
+import type {Coach} from "~/types";
 
 export function LeftPanel({
 	showForm,
 	timeZone,
 	setTimeZone,
+	coach
 }: {
 	showForm: boolean | null;
 	timeZone: string;
 	setTimeZone: (timeZone: string) => void;
+	coach: Coach
 }) {
 	const { locale } = useLocale();
 
 	const { selectedSlot } = useBooking({
-		coachId: "4e641c60-50eb-4172-86f4-cd6145be5d28",
+		coachId: coach.id,
 	});
 
 	return (
@@ -29,15 +32,15 @@ export function LeftPanel({
 					<TooltipTrigger asChild>
 						<img
 							alt="Avatar"
-							src="https://benoit.fun/me.jpg"
+							src={coach.profilePictureUrl}
 							className="rounded-full border"
 							width={24}
 							height={24}
 						/>
 					</TooltipTrigger>
-					<TooltipContent>Benoît P.</TooltipContent>
+					<TooltipContent>{coach.user.firstName} {coach.user.lastName}</TooltipContent>
 				</Tooltip>
-				<p className="text-gray-11 text-sm font-semibold">Benoît P.</p>
+				<p className="text-gray-11 text-sm font-semibold">{coach.user.firstName} {coach.user.lastName}</p>
 			</div>
 			<div className="grid gap-3">
 				<p className="text-gray-950 text-2xl font-bold">Cours</p>

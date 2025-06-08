@@ -12,11 +12,13 @@ export function CalendarHeader({
 	calendarProps,
 	prevButtonProps,
 	nextButtonProps,
+	coachId,
 }: {
 	state: CalendarState;
 	calendarProps: DOMAttributes<FocusableElement>;
 	prevButtonProps: AriaButtonProps<"button">;
 	nextButtonProps: AriaButtonProps<"button">;
+	coachId: string;
 }) {
 	const monthDateFormatter = useDateFormatter({
 		month: "long",
@@ -29,7 +31,7 @@ export function CalendarHeader({
 		.map((part) => part.value);
 
 	const { handleMonthChange } = useBooking({
-		coachId: "4e641c60-50eb-4172-86f4-cd6145be5d28",
+		coachId,
 	});
 
 	const handleChange = (direction: "prev" | "next") => {

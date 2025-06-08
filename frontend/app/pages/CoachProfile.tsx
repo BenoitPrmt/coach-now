@@ -197,7 +197,7 @@ const CoachProfile = ({coachId}: Props) => {
                             animate={{scale: 1, opacity: 1}}
                             transition={{delay: 0.1}}
                         >
-                            <Booking />
+                            {coach && <Booking coach={coach} />}
                         </motion.div>
                     </div>
                 </motion.div>

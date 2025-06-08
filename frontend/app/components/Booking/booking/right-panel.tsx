@@ -12,11 +12,13 @@ export function RightPanel({
                                timeZone,
                                weeksInMonth,
                                handleChangeAvailableTime,
+    coachId
                            }: {
     date: DateValue;
     timeZone: string;
     weeksInMonth: number;
     handleChangeAvailableTime: (time: string) => void;
+    coachId: string;
 }) {
     const {locale} = useLocale();
     const [dayNumber, dayName] = date
@@ -33,7 +35,7 @@ export function RightPanel({
         dateToISOString,
         isLoading
     } = useBooking({
-        coachId: "4e641c60-50eb-4172-86f4-cd6145be5d28",
+        coachId,
     });
 
     const [availableTimes, setAvailableTimes] = useState<HourAvailability[]>([]);

@@ -26,8 +26,13 @@ import { RightPanel } from "./right-panel";
 import {CalendarCheckIcon} from "lucide-react";
 import {useEffect, useState} from "react";
 import {useBooking} from "~/hooks/useBooking";
+import type {Coach} from "~/types";
 
-export function Booking() {
+type Props = {
+	coach: Coach;
+}
+
+export function Booking({ coach }: Props) {
 	const [isOpen, setIsOpen] = React.useState(false);
 	const { locale } = useLocale();
 
@@ -40,7 +45,7 @@ export function Booking() {
 	);
 
 	const { selectedDate, setSelectedDate, selectedSlot, setSelectedSlot, resetSelectedDate } = useBooking({
-		coachId: "4e641c60-50eb-4172-86f4-cd6145be5d28",
+		coachId: coach.id,
 	});
 
 	useEffect(() => {
@@ -101,8 +106,7 @@ export function Booking() {
 							showForm={showForm}
 							timeZone={timeZone}
 							setTimeZone={setTimeZone}
-							// selectedDate={selectedDate}
-							// selectedSlot={selectedSlot}
+							coach={coach}
 						/>
 						{!showForm ? (
 							<>
@@ -112,9 +116,11 @@ export function Booking() {
 									value={date}
 									onChange={handleChangeDate}
 									onFocusChange={(focused: any) => setFocusedDate(focused)}
+									coachId={coach.id}
 								/>
 								<RightPanel
 									{...{ date, timeZone, weeksInMonth, handleChangeAvailableTime }}
+									coachId={coach.id}
 								/>
 							</>
 						) : (
