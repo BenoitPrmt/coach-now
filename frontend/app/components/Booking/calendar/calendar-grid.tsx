@@ -3,7 +3,7 @@ import {
 	type DateDuration,
 	startOfMonth,
 	endOfMonth,
-	getWeeksInMonth,
+	getWeeksInMonth, getLocalTimeZone,
 } from "@internationalized/date";
 import {useCalendarCell, useCalendarGrid} from "@react-aria/calendar";
 import { useLocale } from "@react-aria/i18n";
@@ -66,7 +66,7 @@ export function CalendarGrid({
 								return <td key={index} />;
 							}
 
-							const availability = getAvailabilityByDate(dateToISOString(date.toDate("Europe/Paris")));
+							const availability = getAvailabilityByDate(dateToISOString(date.toDate(getLocalTimeZone())));
 
 							return (
 								<CalendarCell

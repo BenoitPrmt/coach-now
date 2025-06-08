@@ -1,6 +1,6 @@
 import {bookingStore, type CoachAvailabilities} from "~/store/bookingStore";
 import {useUser} from "~/hooks/useUser";
-import {CalendarDate, endOfMonth, startOfMonth} from "@internationalized/date";
+import {CalendarDate, endOfMonth, getLocalTimeZone, startOfMonth} from "@internationalized/date";
 
 type Props = {
     coachId: string;
@@ -10,7 +10,7 @@ export const useBooking = ({ coachId }: Props) => {
     const availabilities = bookingStore((state) => state.availabilities);
     const setAvailabilities = bookingStore((state) => state.setAvailabilities);
     const fetchAvailabilities = bookingStore((state) => state.fetchAvailabilities);
-    const isLoading = bookingStore((state) => state.isLoading);
+    const isLoading: boolean = bookingStore((state) => state.isLoading);
 
     const {userToken} = useUser();
 
@@ -61,7 +61,7 @@ export const useBooking = ({ coachId }: Props) => {
         } else {
             newMonth = currentCalendarDate.subtract({ months: 1 });
         }
-        setSelectedDate(dateToISOString(newMonth.toDate("Europe/Paris")));
+        setSelectedDate(dateToISOString(newMonth.toDate(getLocalTimeZone())));
         fetchCoachAvailabilitiesForMonth(newMonth);
     }
 

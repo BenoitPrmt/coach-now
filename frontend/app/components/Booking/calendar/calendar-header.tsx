@@ -30,11 +30,13 @@ export function CalendarHeader({
 		.formatToParts(state.visibleRange.start.toDate(state.timeZone))
 		.map((part) => part.value);
 
-	const { handleMonthChange } = useBooking({
+	const { handleMonthChange, isLoading } = useBooking({
 		coachId,
 	});
 
 	const handleChange = (direction: "prev" | "next") => {
+		if (isLoading) return;
+
 		if (direction === "prev") {
 			state.focusPreviousPage();
 		} else {
@@ -55,10 +57,10 @@ export function CalendarHeader({
 			>
 				{monthName} <span className="text-gray-11">{year}</span>
 			</h2>
-			<Button {...prevButtonProps} onClick={() => handleChange("prev")}>
+			<Button {...prevButtonProps} onClick={() => handleChange("prev")} isDisabled={isLoading}>
 				<ChevronLeftIcon className="size-4" />
 			</Button>
-			<Button {...nextButtonProps} onClick={() => handleChange("next")}>
+			<Button {...nextButtonProps} onClick={() => handleChange("next")} isDisabled={isLoading}>
 				<ChevronRightIcon className="size-4" />
 			</Button>
 		</div>

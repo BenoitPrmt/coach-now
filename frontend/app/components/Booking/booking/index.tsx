@@ -5,9 +5,6 @@ import { Button } from "~/components/ui/button";
 import {
 	Dialog,
 	DialogContent,
-	DialogDescription,
-	DialogHeader,
-	DialogTitle,
 	DialogTrigger,
 } from "~/components/ui/dialog";
 
@@ -27,22 +24,28 @@ import {CalendarCheckIcon} from "lucide-react";
 import {useEffect, useState} from "react";
 import {useBooking} from "~/hooks/useBooking";
 import type {Coach} from "~/types";
+import {useUser} from "~/hooks/useUser";
+import {createBooking} from "~/actions/booking.action";
+import {toast} from "sonner";
 
 type Props = {
 	coach: Coach;
+	buttonClassName?: string;
 }
 
-export function Booking({ coach }: Props) {
+export function Booking({ coach, buttonClassName }: Props) {
 	const [isOpen, setIsOpen] = React.useState(false);
 	const { locale } = useLocale();
 
 	const [showForm, setShowForm] = useState(false);
 
-	const [timeZone, setTimeZone] = React.useState("Europe/Paris");
-	const [date, setDate] = React.useState(today(getLocalTimeZone()));
-	const [focusedDate, setFocusedDate] = React.useState<CalendarDate | null>(
+	const [timeZone, setTimeZone] = useState(getLocalTimeZone());
+	const [date, setDate] = useState(today(getLocalTimeZone()));
+	const [focusedDate, setFocusedDate] = useState<CalendarDate | null>(
 		date,
 	);
+
+	const { user, userToken } = useUser();
 
 	const { selectedDate, setSelectedDate, selectedSlot, setSelectedSlot, resetSelectedDate } = useBooking({
 		coachId: coach.id,
@@ -83,6 +86,49 @@ export function Booking({ coach }: Props) {
 		setShowForm(false);
 	}
 
+	const handleSubmitBooking = () => {
+		setShowForm(false);
+		setSelectedSlot(null);
+
+		if (!userToken || !selectedSlot || !coach || !user) {
+			console.error("Missing required data for booking:", { userToken, selectedSlot, coach, user });
+			return;
+		}
+
+		const startDate = new Date(selectedSlot);
+		const endDate = new Date(selectedSlot);
+
+		startDate.setHours(startDate.getHours());
+		endDate.setHours(endDate.getHours() + 1);
+
+		const formattedStartDate = startDate.toISOString().split("T")[0] + " " + startDate.toTimeString().split(" ")[0];
+		const formattedEndDate = endDate.toISOString().split("T")[0] + " " + endDate.toTimeString().split(" ")[0];
+
+		createBooking(userToken, {
+			startDate: formattedStartDate,
+			endDate: formattedEndDate,
+			isActive: true,
+			totalPrice: coach.hourlyRate,
+			coachId: coach.id,
+			userId: user.id,
+		}).then(() => {
+			toast.success("Réservation créée avec succès !", {
+				description: "Vous pouvez consulter vos réservations dans votre espace personnel.",
+				action: {
+					label: "Mon compte",
+					onClick: () => {
+						window.location.href = "/account";
+					},
+				}
+			});
+			setIsOpen(false);
+			resetSelectedDate();
+		}).catch((error) => {
+			console.error("Error creating booking:", error);
+			toast.error("Une erreur est survenue lors de la création de la réservation. Veuillez réessayer plus tard.");
+		})
+	}
+
 	useEffect(() => {
 		setSelectedSlot(null);
 	}, [selectedDate]);
@@ -94,14 +140,14 @@ export function Booking({ coach }: Props) {
 	return (
 		<Dialog open={isOpen} onOpenChange={setIsOpen}>
 			<DialogTrigger asChild>
-				<Button>
+				<Button className={`w-full ${buttonClassName}`}>
 					<CalendarCheckIcon />
 					Réserver
 				</Button>
 			</DialogTrigger>
 			<DialogContent className="!max-w-none !w-fit max-h-[90vh] overflow-auto p-0">
 				<div className="w-full bg-gray-50 px-8 py-6 rounded-md max-w-max mx-auto">
-					<div className="flex gap-6">
+					<div className="flex gap-6 flex-col lg:flex-row">
 						<LeftPanel
 							showForm={showForm}
 							timeZone={timeZone}
@@ -124,7 +170,7 @@ export function Booking({ coach }: Props) {
 								/>
 							</>
 						) : (
-							<FormPanel handleCancelForm={handleCancelForm} />
+							<FormPanel handleCancelForm={handleCancelForm} handleSubmitBooking={handleSubmitBooking} />
 						)}
 					</div>
 				</div>

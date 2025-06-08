@@ -60,14 +60,14 @@ export function RightPanel({
     return (
         <div
             defaultValue="24"
-            className="flex flex-col gap-4 w-[280px] border-l pl-6"
+            className="flex flex-col gap-4 w-[280px] lg:border-l pl-6"
         >
             <div className="flex justify-between items-center">
                 <p
                     aria-hidden
                     className="flex-1 align-center font-bold text-md text-gray-950"
                 >
-                    {dayName} <span className="text-gray-11">{dayNumber}</span>
+                    <span className="text-gray-11">{dayNumber}</span> {dayName}
                 </p>
             </div>
             <div>
@@ -105,6 +105,11 @@ export function RightPanel({
                                     {availableTime.start}
                                 </Button>
                             ))
+                        )}
+                        {!isLoading && availableTimes.length === 0 && (
+                            <p className="text-gray-500 text-sm">
+                                Aucune disponibilité pour cette date
+                            </p>
                         )}
                     </div>
                 </ScrollArea>

@@ -36,7 +36,6 @@ export const bookingStore = create<BookingStore>((set) => ({
         try {
             const response = await getAvailabilities(bearerToken, coachId, dateStart, dateEnd);
             set({availabilities: response, isLoading: false})
-            console.log("Fetched availabilities:", response);
         } catch (error) {
             set({ isLoading: false });
             console.error('Error fetching availabilities:', error);

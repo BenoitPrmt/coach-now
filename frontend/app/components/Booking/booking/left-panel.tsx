@@ -26,7 +26,7 @@ export function LeftPanel({
 	});
 
 	return (
-		<div className="flex flex-col gap-4 w-[280px] border-r pr-6">
+		<div className="flex flex-col gap-4 w-[280px] pr-6 lg:border-r">
 			<div className="grid gap-1">
 				<Tooltip>
 					<TooltipTrigger asChild>

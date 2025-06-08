@@ -1,17 +1,13 @@
 import {Button} from "~/components/ui/button";
 import {BadgeCheckIcon} from "lucide-react";
 import * as React from "react";
-import {toast} from "sonner";
 
 type Props = {
 	handleCancelForm: () => void;
+	handleSubmitBooking: () => void;
 }
 
-export function FormPanel({ handleCancelForm }: Props) {
-	const handleBookCoach = () => {
-		toast.success("Booking coach");
-	}
-
+export function FormPanel({ handleCancelForm, handleSubmitBooking }: Props) {
 	const handleCancel = () => {
 		const queryParams = new URLSearchParams(location.search)
 		queryParams.delete("slot");
@@ -41,7 +37,7 @@ export function FormPanel({ handleCancelForm }: Props) {
 				>
 					Retour
 				</Button>
-				<Button type="button" onClick={handleBookCoach}>
+				<Button type="button" onClick={handleSubmitBooking}>
 					<BadgeCheckIcon />
 					Réserver ce coach
 				</Button>

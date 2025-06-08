@@ -2,11 +2,12 @@ import {cn} from "~/lib/utils";
 import {motion} from "motion/react";
 import {useMemo, useState} from "react";
 import {MarsIcon, VenusIcon, XIcon} from "lucide-react";
-import type {Gender, Level} from "~/types";
+import type {Coach, Gender, Level} from "~/types";
 import {formatGender} from "~/lib/formatting";
 import CoachBadge from "~/components/Coach/CoachCard/CoachBadge";
 import CoachModal from "~/components/Coach/CoachModal";
 import CoachImage from "~/components/Coach/CoachImage";
+import {calculateAgeFromBirthdate} from "~/lib/calculations";
 
 interface UserInfoProps {
     profilePictureUrl: string;
@@ -107,15 +108,7 @@ export const Description = ({levels, sports, isModal = false}: DescriptionProps)
 };
 
 interface CoachCardProps {
-    coach: {
-        id: string;
-        profilePictureUrl: string;
-        name: string;
-        age: number;
-        gender: Gender;
-        sports: string[];
-        levels: Level[];
-    }
+    coach: Coach;
     className?: string;
 }
 
@@ -141,7 +134,7 @@ const CoachCard = ({
                 whileTap={{scale: 1.0}}
             >
                 <motion.div>
-                    <UserInfo profilePictureUrl={coach.profilePictureUrl} name={coach.name} age={coach.age}
+                    <UserInfo profilePictureUrl={coach.profilePictureUrl} name={coach.user.firstName + ' ' + coach.user.lastName} age={calculateAgeFromBirthdate(coach.birthdate)}
                               gender={coach.gender}/>
                 </motion.div>
 
