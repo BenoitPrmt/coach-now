@@ -2,13 +2,15 @@ import {create} from 'zustand'
 import {isOfTypeUserRole} from "~/validation/typesValidations";
 import type {UserRole} from "~/types";
 
-type User = {
+export type SessionUser = {
+    id: string;
     name: string;
     email: string;
     role: UserRole;
 }
 
 type DecodedUser = {
+    id?: string;
     name?: string;
     email?: string;
     role?: string;
@@ -16,8 +18,8 @@ type DecodedUser = {
 };
 
 type UserStore = {
-    user: User | null;
-    setUser: (user: User) => void;
+    user: SessionUser | null;
+    setUser: (user: SessionUser) => void;
     clearUser: () => void;
     setUserFromToken: (token: string) => void;
 }
@@ -46,6 +48,7 @@ export const userStore = create<UserStore>((set) => ({
 
             set({
                 user: {
+                    id: decodedUser.id || 'unknown-id', // Assuming name is used as a placeholder for ID
                     name: decodedUser.name || 'Guest',
                     email: decodedUser.email || '',
                     role: isOfTypeUserRole(decodedUser.role) ? decodedUser.role : 'USER',

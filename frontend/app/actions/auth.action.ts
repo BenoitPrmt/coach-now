@@ -93,4 +93,3 @@ export async function registerCoach(values: {
         throw err;
     }
 }
-

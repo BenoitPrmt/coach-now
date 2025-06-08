@@ -2,9 +2,15 @@ import {type RouteConfig, index, route, layout, prefix} from "@react-router/dev/
 
 export default [
     index("routes/home.tsx"),
+    route("about", "routes/about.tsx"),
     route("coachs", "routes/coachs.tsx"),
     route("login", "routes/login.tsx"),
     route("register", "routes/register.tsx"),
+
+    // Protected routes : need to be authenticated
+    layout("routes/user/layout.tsx", [
+        route("account", "routes/user/account.tsx"),
+    ]),
 
     // Protected routes : need to be ADMIN
     ...prefix("admin", [
