@@ -4,7 +4,7 @@ import { Calendar } from "~/components/Booking/calendar";
 import { Button } from "~/components/ui/button";
 import {
 	Dialog,
-	DialogContent,
+	DialogContent, DialogDescription, DialogTitle,
 	DialogTrigger,
 } from "~/components/ui/dialog";
 
@@ -27,6 +27,7 @@ import type {Coach} from "~/types";
 import {useUser} from "~/hooks/useUser";
 import {createBooking} from "~/actions/booking.action";
 import {toast} from "sonner";
+import {VisuallyHidden} from "@react-aria/visually-hidden";
 
 type Props = {
 	coach: Coach;
@@ -125,7 +126,9 @@ export function Booking({ coach, buttonClassName }: Props) {
 			resetSelectedDate();
 		}).catch((error) => {
 			console.error("Error creating booking:", error);
-			toast.error("Une erreur est survenue lors de la création de la réservation. Veuillez réessayer plus tard.");
+			toast.error("Une erreur est survenue lors de la création de la réservation.", {
+				description: "Veuillez réessayer plus tard.",
+			});
 		})
 	}
 
@@ -146,6 +149,10 @@ export function Booking({ coach, buttonClassName }: Props) {
 				</Button>
 			</DialogTrigger>
 			<DialogContent className="!max-w-none !w-fit max-h-[90vh] overflow-auto p-0">
+				<VisuallyHidden>
+					<DialogTitle></DialogTitle>
+					<DialogDescription></DialogDescription>
+				</VisuallyHidden>
 				<div className="w-full bg-gray-50 px-8 py-6 rounded-md max-w-max mx-auto">
 					<div className="flex gap-6 flex-col lg:flex-row">
 						<LeftPanel
