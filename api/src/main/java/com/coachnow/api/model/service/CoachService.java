@@ -76,30 +76,33 @@ public class CoachService {
         List<DayAvailability> availabilities = new ArrayList<>();
         for (String rawDate : datesBetween) {
             DayAvailability dayAvailability = new DayAvailability(formatter.parse(rawDate + " 00:00:00"), new ArrayList<>());
-            for (int hour = 9; hour <= 20; hour++) {
-                HourAvailability hourAvailability = new HourAvailability(
-                        String.format("%02d:00", hour),
-                        String.format("%02d:00", hour + 1),
-                        rawDate
-                );
 
-                if (!hourAvailability.isAvailable()) {
-                    continue;
-                }
+            if (dayAvailability.getIsWorkingDay()) {
+                for (int hour = 9; hour <= 20; hour++) {
+                    HourAvailability hourAvailability = new HourAvailability(
+                            String.format("%02d:00", hour),
+                            String.format("%02d:00", hour + 1),
+                            rawDate
+                    );
 
-                String date = rawDate + " " + hour + ":00:00.0";
-                for (Booking booking : bookings) {
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTime(booking.getEndDate());
-                    int bookingEndHour = calendar.get(Calendar.HOUR_OF_DAY);
-
-                    if (booking.getStartDate().toString().equals((date)) &&
-                        bookingEndHour == hour + 1) {
-                        hourAvailability.setAvailable(false);
-                        break;
+                    if (!hourAvailability.isAvailable()) {
+                        continue;
                     }
+
+                    String date = rawDate + " " + hour + ":00:00.0";
+                    for (Booking booking : bookings) {
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTime(booking.getEndDate());
+                        int bookingEndHour = calendar.get(Calendar.HOUR_OF_DAY);
+
+                        if (booking.getStartDate().toString().equals((date)) &&
+                            bookingEndHour == hour + 1) {
+                            hourAvailability.setAvailable(false);
+                            break;
+                        }
+                    }
+                    dayAvailability.getHours().add(hourAvailability);
                 }
-                dayAvailability.getHours().add(hourAvailability);
             }
             availabilities.add(dayAvailability);
         }

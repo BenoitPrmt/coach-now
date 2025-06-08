@@ -10,7 +10,7 @@ import java.util.List;
 public class DayAvailability {
 
     public final static String HOUR_START = "09:00";
-    public final static String HOUR_END = "20:00";
+    public final static String HOUR_END = "19:00";
 
     private Date date; // eg: "2025-06-03"
     private Boolean isWorkingDay; // true if it's a working day, false otherwise
