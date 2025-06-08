@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.Getter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -19,8 +20,8 @@ public class CoachDTO {
     private String profilePictureUrl;
     private Float hourlyRate;
 
-    private Set<Sports> sports;
-    private Set<Level> levels;
+    private Collection<Sports> sports;
+    private Collection<Level> levels;
 
     private Gender gender;
 
@@ -63,11 +64,11 @@ public class CoachDTO {
         return hourlyRate;
     }
 
-    public Set<Sports> getSports() {
+    public Collection<Sports> getSports() {
         return sports;
     }
 
-    public Set<Level> getLevels() {
+    public Collection<Level> getLevels() {
         return levels;
     }
 

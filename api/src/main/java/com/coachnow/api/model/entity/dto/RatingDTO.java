@@ -12,7 +12,7 @@ public class RatingDTO {
     private Float rating;
     private String comment;
     private String coach;
-    private String user;
+    private RatingUserDTO user;
 
     public RatingDTO(Rating rating) {
         this.id = rating.getId();
@@ -20,7 +20,7 @@ public class RatingDTO {
         this.rating = rating.getRating();
         this.comment = rating.getComment();
         this.coach = rating.getCoach().getId();
-        this.user = rating.getUser().getId();
+        this.user = rating.getUser() != null ? new RatingUserDTO(rating.getUser()) : null;
     }
 
     public String getId() { return id; }
@@ -28,5 +28,5 @@ public class RatingDTO {
     public Float getRating() { return rating; }
     public String getComment() { return comment; }
     public String getCoach() { return coach; }
-    public String getUser() { return user; }
+    public RatingUserDTO getUser() { return user; }
 }

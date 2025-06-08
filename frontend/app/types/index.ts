@@ -4,12 +4,24 @@ export type Gender = "MALE" | "FEMALE"
 
 export type Level = "BEGINNER" | "MEDIUM" | "HIGHLEVEL";
 
+export type Booking = {
+    id: string;
+    startDate: string;
+    endDate: string;
+    isActive: boolean;
+    totalPrice: number;
+    coach: Coach;
+    user: User;
+}
+
 export type User = {
     id: string;
     email: string;
     firstName: string;
     lastName: string;
     role: UserRole;
+    bookings?: Booking[];
+    ratings?: Rating[];
 }
 
 export type Rating = {
@@ -18,7 +30,7 @@ export type Rating = {
     date: string;
     comment: string;
     coach: string;
-    user: string;
+    user: User;
 }
 
 export type Coach = {

@@ -30,7 +30,6 @@ export async function register(values: {
     email: string;
     password: string,
     isCoach?: boolean;
-    gender: string;
 }) {
     try {
         const url = getPublicEnv(import.meta.env).VITE_API_URL + "/auth/register";
@@ -65,7 +64,7 @@ export async function registerCoach(values: {
     gender: string;
     hourlyRate?: number;
     sports?: string;
-    profilePicture?: string; // URL de la photo
+    profilePicture?: string;
     birthDate?: Date;
     level?: "BEGINNER" | "MEDIUM" | "HIGHLEVEL";
 }) {
@@ -92,4 +91,3 @@ export async function registerCoach(values: {
         throw err;
     }
 }
-
