@@ -1,4 +1,4 @@
-import type {Route} from "./+types/home";
+import type {Route} from "../../../.react-router/types/app/routes/+types";
 import {default as LoginPage} from "~/pages/Login";
 
 export function meta({}: Route.MetaArgs) {

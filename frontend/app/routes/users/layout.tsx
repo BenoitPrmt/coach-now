@@ -5,7 +5,7 @@ import Loader from "~/components/Loader";
 
 export default function Layout() {
     let navigate = useNavigate();
-    const {user, isLoading, isAuthenticated} = useUser();
+    const {user, isCoach, isLoading} = useUser();
 
     useEffect(() => {
         if (!isLoading && !user) {
@@ -17,12 +17,12 @@ export default function Layout() {
             return;
         }
 
-        if (!isAuthenticated) {
+        if (isCoach) {
             navigate("/");
         }
-    }, [isLoading, isAuthenticated]);
+    }, [isLoading, isCoach]);
 
-    return !isLoading && isAuthenticated ? (
+    return (!isLoading && !isCoach) ? (
         <Outlet/>
     ) : (
         <Loader/>
