@@ -159,15 +159,22 @@ const CoachProfile = ({coachId}: Props) => {
                                         gender={coach.gender}
                                     />
 
-                                    <motion.div
-                                        className="mt-6 w-full bg-neutral-50 dark:bg-neutral-700 border border-neutral-400/20 border-dashed rounded-md shadow-2xs flex flex-col gap-2 p-6"
-                                    >
-                                        <Description
-                                            levels={coach.levels}
-                                            sports={coach.sports}
-                                            isModal={true}
-                                        />
-                                    </motion.div>
+                                    {
+                                        (coach.levels.length > 0 || coach.sports.length > 0) && (
+                                            <motion.div
+                                                className="mt-6 w-full bg-neutral-50 dark:bg-neutral-700 border border-neutral-400/20 border-dashed rounded-md shadow-2xs flex flex-col gap-2 p-6"
+                                                initial={{opacity: 0, y: 20}}
+                                                animate={{opacity: 1, y: 0}}
+                                                transition={{duration: 0.5, delay: 0.1}}
+                                            >
+                                                <Description
+                                                    levels={coach.levels}
+                                                    sports={coach.sports}
+                                                    isModal={true}
+                                                />
+                                            </motion.div>
+                                        )
+                                    }
                                     <motion.div
                                         className="mt-6 flex flex-col items-center gap-4"
                                         initial={{opacity: 0, y: 20}}
@@ -195,7 +202,7 @@ const CoachProfile = ({coachId}: Props) => {
                             animate={{scale: 1, opacity: 1}}
                             transition={{delay: 0.1}}
                         >
-                            {coach && <Booking coach={coach} />}
+                            {coach && <Booking coach={coach}/>}
                         </motion.div>
                     </div>
                 </motion.div>

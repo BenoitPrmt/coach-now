@@ -4,7 +4,6 @@ import {motion, type Variants} from "motion/react";
 import {getPublicEnv} from "../../env.common";
 import type {Coach} from "~/types";
 import {useUser} from "~/hooks/useUser";
-import {calculateAgeFromBirthdate} from "~/lib/calculations";
 import Loader from "~/components/Loader";
 
 const titleTransition: Variants = {
