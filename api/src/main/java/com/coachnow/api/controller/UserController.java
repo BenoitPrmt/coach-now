@@ -19,7 +19,7 @@ public class UserController {
     @GetMapping("/users")
     public List<UserDTO> all() {
         List<User> users = userService.selectAll();
-        List<UserDTO> listDTO = new ArrayList<UserDTO>();
+        List<UserDTO> listDTO = new ArrayList<>();
         for (User user : users) {
             listDTO.add(new UserDTO(user));
         }
@@ -49,7 +49,9 @@ public class UserController {
                 user.setPassword(existingUser.getPassword());
             }
         }
-        return new UserDTO(userService.save(user));
+        UserDTO newUser = new UserDTO(userService.save(user));
+        // Adding missing fields to the UserDTO
+        return new UserDTO(userService.select(newUser.getId()));
     }
 
     @DeleteMapping("/user/{id}")

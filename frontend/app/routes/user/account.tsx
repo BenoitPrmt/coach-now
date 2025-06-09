@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState, useCallback} from 'react';
+import React, {useEffect, useMemo, useState, useCallback, useRef} from 'react';
 import {useUser} from "~/hooks/useUser";
 import Loader from "~/components/Loader";
 import type {User, Booking, UserRole, Coach} from "~/types";
@@ -19,16 +19,10 @@ import {FaDumbbell, FaUser, FaCrown, FaInfo} from "react-icons/fa6";
 import {isOfTypeCoach} from "~/validation/typesValidations";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import * as z from "zod";
+import {profileSchema} from "~/validation/zod";
+import {z} from "zod";
 
-// Schéma de validation Zod
-const profileFormSchema = z.object({
-    firstName: z.string().min(1, "Le prénom est requis").min(2, "Le prénom doit contenir au moins 2 caractères"),
-    lastName: z.string().min(1, "Le nom est requis").min(2, "Le nom doit contenir au moins 2 caractères"),
-    email: z.string().min(1, "L'email est requis").email("Format d'email invalide"),
-});
-
-type ProfileFormValues = z.infer<typeof profileFormSchema>;
+type ProfileFormValues = z.infer<typeof profileSchema>;
 
 const UserInfo = ({user, userRole = "USER", onEditClick}: {
     user: User | Coach,
@@ -168,7 +162,7 @@ const ProfileEditModal = ({isOpen, onClose, user, userRole, onProfileUpdate}: {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const form = useForm<ProfileFormValues>({
-        resolver: zodResolver(profileFormSchema),
+        resolver: zodResolver(profileSchema),
         defaultValues: {
             firstName: isOfTypeCoach(user) ? user.user.firstName : user.firstName,
             lastName: isOfTypeCoach(user) ? user.user.lastName : user.lastName,
@@ -197,7 +191,15 @@ const ProfileEditModal = ({isOpen, onClose, user, userRole, onProfileUpdate}: {
             }
 
             const updatedUser = await response.json();
-            onProfileUpdate(updatedUser);
+            console.log(`Profil mis à jour avec succès:`, updatedUser);
+            onProfileUpdate({
+                ...updatedUser,
+                user: isOfTypeCoach(updatedUser) ? updatedUser.user : {
+                    firstName: updatedUser.firstName,
+                    lastName: updatedUser.lastName,
+                    email: updatedUser.email
+                }
+            });
             onClose();
 
             // Reset form avec les nouvelles valeurs
@@ -492,85 +494,132 @@ const BookingCard = ({booking, index}: { booking: Booking; index: number }) => {
 const Account = () => {
     const {user, userToken, isLoading} = useUser();
     const [userProfile, setUserProfile] = useState<User | null>(null);
-    const [userProfileLoading, setUserProfileLoading] = useState(true);
+    const [userProfileLoading, setUserProfileLoading] = useState(false);
     const [activeTab, setActiveTab] = useState("bookings");
-    const [futureBookings, setFutureBookings] = useState<Booking[]>([]);
-    const [ongoingBookings, setOngoingBookings] = useState<Booking[]>([]);
-    const [pastBookings, setPastBookings] = useState<Booking[]>([]);
-    const [cancelledBookings, setCancelledBookings] = useState<Booking[]>([]);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-    useEffect(() => {
-        const fetchUserProfile = async () => {
-            try {
-                setUserProfileLoading(true);
-                const res = await fetch(`${getPublicEnv(import.meta.env).VITE_API_URL}/${user?.role.toLowerCase()}/${user?.id}`, {
+    const fetchKey = useMemo(() => {
+        if (!user?.id || !user?.role || !userToken) return null;
+        return `${user.role}-${user.id}`;
+    }, [user?.id, user?.role, userToken]);
+
+    // Ref pour éviter les fetch multiples
+    const fetchInProgress = useRef(false);
+    const currentFetchKey = useRef<string | null>(null);
+
+    const fetchUserProfile = useCallback(async () => {
+        if (!fetchKey || fetchInProgress.current || currentFetchKey.current === fetchKey) {
+            return;
+        }
+        fetchInProgress.current = true;
+        currentFetchKey.current = fetchKey;
+        setUserProfileLoading(true);
+
+        try {
+            const res = await fetch(
+                `${getPublicEnv(import.meta.env).VITE_API_URL}/${user!.role.toLowerCase()}/${user!.id}`,
+                {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${userToken}`,
                     }
-                });
-                if (!res.ok) {
-                    throw new Error('Failed to fetch user profile');
                 }
-                const data = await res.json();
-                console.log(`Fetching user profile for ${user?.role.toLowerCase()}/${user?.id}`, data);
-                setUserProfile(data);
-            } catch (error) {
-                console.error('Error fetching user profile:', error);
-            } finally {
-                setUserProfileLoading(false);
+            );
+
+            if (!res.ok) {
+                throw new Error('Failed to fetch user profile');
             }
+
+            const data = await res.json();
+            console.log(`Fetch successful for ${fetchKey}:`, data);
+            setUserProfile(data);
+
+        } catch (error) {
+            console.error('Error fetching user profile:', error);
+            setUserProfile(null);
+        } finally {
+            setUserProfileLoading(false);
+            fetchInProgress.current = false;
         }
-        if (user && userToken) {
-            fetchUserProfile();
-        }
-    }, [user, userToken]);
+    }, [fetchKey, user]);
 
     useEffect(() => {
-        const categorizeBookings = () => {
-            if (!userProfile || !userProfile.bookings) return;
+        if (fetchKey && !isLoading) {
+            fetchUserProfile();
+        }
+    }, [fetchKey, isLoading, fetchUserProfile]);
 
-            const now = new Date();
-            const future: Booking[] = [];
-            const ongoing: Booking[] = [];
-            const past: Booking[] = [];
-            const cancelled: Booking[] = [];
+    const bookingCategories = useMemo(() => {
+        if (!userProfile?.bookings) {
+            return {
+                futureBookings: [],
+                ongoingBookings: [],
+                pastBookings: [],
+                cancelledBookings: []
+            };
+        }
 
-            userProfile.bookings.forEach((booking) => {
-                if (!booking.isActive) {
-                    cancelled.push(booking);
-                    return;
-                }
+        const now = new Date();
+        const future: Booking[] = [];
+        const ongoing: Booking[] = [];
+        const past: Booking[] = [];
+        const cancelled: Booking[] = [];
 
-                const startDate = new Date(booking.startDate);
-                const endDate = new Date(booking.endDate);
+        userProfile.bookings.forEach((booking) => {
+            if (!booking.isActive) {
+                cancelled.push(booking);
+                return;
+            }
 
-                if (startDate > now) {
-                    future.push(booking);
-                } else if (startDate <= now && endDate >= now) {
-                    ongoing.push(booking);
-                } else {
-                    past.push(booking);
-                }
-            });
+            const startDate = new Date(booking.startDate);
+            const endDate = new Date(booking.endDate);
 
-            setFutureBookings(future);
-            setOngoingBookings(ongoing);
-            setPastBookings(past);
-            setCancelledBookings(cancelled);
+            if (startDate > now) {
+                future.push(booking);
+            } else if (startDate <= now && endDate >= now) {
+                ongoing.push(booking);
+            } else {
+                past.push(booking);
+            }
+        });
+
+        return {
+            futureBookings: future,
+            ongoingBookings: ongoing,
+            pastBookings: past,
+            cancelledBookings: cancelled
         };
-
-        categorizeBookings();
     }, [userProfile?.bookings]);
 
-    const handleProfileUpdate = (updatedUser: User | Coach) => {
+    const handleProfileUpdate = useCallback((updatedUser: User | Coach) => {
         if (!isOfTypeCoach(updatedUser)) {
             setUserProfile(updatedUser);
         }
         console.log(`Profile updated:`, updatedUser);
-    };
+    }, []);
+
+    if (isLoading) return <Loader/>;
+    if (!user) return <Loader/>;
+    if (userProfileLoading) return <Loader/>;
+
+    if (!userProfile) {
+        return (
+            <motion.div
+                initial={{opacity: 0, y: 20}}
+                animate={{opacity: 1, y: 0}}
+                className="max-w-md mx-auto mt-8 p-6 bg-white rounded-xl shadow-lg"
+            >
+                <h1 className="text-2xl font-bold mb-4 text-gray-900">Mon compte</h1>
+                <div className="flex items-center space-x-2 text-red-600">
+                    <Info className="w-5 h-5"/>
+                    <p>Votre profil n'est pas disponible.</p>
+                </div>
+            </motion.div>
+        );
+    }
+
+    const {futureBookings, ongoingBookings, pastBookings, cancelledBookings} = bookingCategories;
 
     if (isLoading) return <Loader/>
     if (userProfileLoading) return <Loader/>
