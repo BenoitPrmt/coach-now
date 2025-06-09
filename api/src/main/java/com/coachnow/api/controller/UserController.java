@@ -41,6 +41,14 @@ public class UserController {
     @PutMapping("/user/{id}")
     public UserDTO update(@RequestBody User user, @PathVariable String id) {
         user.setId(id);
+        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+            userService.updateUserPassword(user);
+        } else {
+            User existingUser = userService.select(id);
+            if (existingUser != null) {
+                user.setPassword(existingUser.getPassword());
+            }
+        }
         return new UserDTO(userService.save(user));
     }
 

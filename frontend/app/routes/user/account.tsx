@@ -4,8 +4,12 @@ import Loader from "~/components/Loader";
 import type {User, Booking, UserRole, Coach} from "~/types";
 import {getPublicEnv} from "../../../env.common";
 import {motion, AnimatePresence} from "motion/react";
-import {Info, Calendar, Star, Clock, Euro, User as UserIcon, Mail, ArrowRight} from "lucide-react";
+import {Info, Calendar, Star, Clock, Euro, User as UserIcon, Mail, ArrowRight, Edit, Save, X} from "lucide-react";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "~/components/ui/tabs"
+import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} from "~/components/ui/dialog"
+import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "~/components/ui/form"
+import {Input} from "~/components/ui/input"
+import {Button} from "~/components/ui/button"
 import CoachImage from "~/components/Coach/CoachImage";
 import {Link} from "react-router";
 import RatingCards from "~/components/Rating/RatingCards";
@@ -13,8 +17,24 @@ import {cn} from "~/lib/utils";
 import {formatDate} from "~/lib/time";
 import {FaDumbbell, FaUser, FaCrown, FaInfo} from "react-icons/fa6";
 import {isOfTypeCoach} from "~/validation/typesValidations";
+import {useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
+import * as z from "zod";
 
-const UserInfo = ({user, userRole = "USER"}: { user: User | Coach, userRole?: UserRole }) => {
+// Schéma de validation Zod
+const profileFormSchema = z.object({
+    firstName: z.string().min(1, "Le prénom est requis").min(2, "Le prénom doit contenir au moins 2 caractères"),
+    lastName: z.string().min(1, "Le nom est requis").min(2, "Le nom doit contenir au moins 2 caractères"),
+    email: z.string().min(1, "L'email est requis").email("Format d'email invalide"),
+});
+
+type ProfileFormValues = z.infer<typeof profileFormSchema>;
+
+const UserInfo = ({user, userRole = "USER", onEditClick}: {
+    user: User | Coach,
+    userRole?: UserRole,
+    onEditClick: () => void
+}) => {
     let totalBookings = 0;
     let totalRatings = 0;
     if (!isOfTypeCoach(user)) {
@@ -96,6 +116,23 @@ const UserInfo = ({user, userRole = "USER"}: { user: User | Coach, userRole?: Us
                 </motion.div>
             </div>
 
+            {/* Bouton Modifier le profil */}
+            <motion.div
+                initial={{y: 30, opacity: 0}}
+                animate={{y: 0, opacity: 1}}
+                transition={{delay: 0.45}}
+            >
+                <Button
+                    onClick={onEditClick}
+                    variant="outline"
+                    size="sm"
+                    className="bg-white/80 backdrop-blur-sm border-primary/20 hover:bg-primary hover:text-white transition-all duration-300 shadow-sm"
+                >
+                    <Edit className="w-4 h-4 mr-2"/>
+                    Modifier le profil
+                </Button>
+            </motion.div>
+
             {/* Stats (que si user) */}
             {
                 userRole === 'USER' && (
@@ -119,6 +156,145 @@ const UserInfo = ({user, userRole = "USER"}: { user: User | Coach, userRole?: Us
         </motion.div>
     );
 }
+
+const ProfileEditModal = ({isOpen, onClose, user, userRole, onProfileUpdate}: {
+    isOpen: boolean;
+    onClose: () => void;
+    user: User | Coach;
+    userRole?: UserRole;
+    onProfileUpdate: (updatedUser: User | Coach) => void;
+}) => {
+    const {userToken} = useUser();
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const form = useForm<ProfileFormValues>({
+        resolver: zodResolver(profileFormSchema),
+        defaultValues: {
+            firstName: isOfTypeCoach(user) ? user.user.firstName : user.firstName,
+            lastName: isOfTypeCoach(user) ? user.user.lastName : user.lastName,
+            email: isOfTypeCoach(user) ? user.user.email : user.email,
+        },
+    });
+
+    const onSubmit = async (values: ProfileFormValues) => {
+        if (!userToken) return;
+
+        setIsSubmitting(true);
+        try {
+            const endpoint = `${getPublicEnv(import.meta.env).VITE_API_URL}/${userRole?.toLowerCase()}/${isOfTypeCoach(user) ? user.user.id : user.id}`;
+
+            const response = await fetch(endpoint, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${userToken}`,
+                },
+                body: JSON.stringify(values),
+            });
+
+            if (!response.ok) {
+                throw new Error('Erreur lors de la mise à jour du profil');
+            }
+
+            const updatedUser = await response.json();
+            onProfileUpdate(updatedUser);
+            onClose();
+
+            // Reset form avec les nouvelles valeurs
+            form.reset({
+                firstName: isOfTypeCoach(updatedUser) ? updatedUser.user.firstName : updatedUser.firstName,
+                lastName: isOfTypeCoach(updatedUser) ? updatedUser.user.lastName : updatedUser.lastName,
+                email: isOfTypeCoach(updatedUser) ? updatedUser.user.email : updatedUser.email,
+            });
+        } catch (error) {
+            console.error('Erreur:', error);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    return (
+        <Dialog open={isOpen} onOpenChange={onClose}>
+            <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                    <DialogTitle className="flex items-center space-x-2">
+                        <Edit className="w-5 h-5 text-primary"/>
+                        <span>Modifier le profil</span>
+                    </DialogTitle>
+                    <DialogDescription>
+                        Modifiez vos informations personnelles. Cliquez sur sauvegarder pour confirmer les changements.
+                    </DialogDescription>
+                </DialogHeader>
+
+                <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                        <FormField
+                            control={form.control}
+                            name="firstName"
+                            render={({field}) => (
+                                <FormItem>
+                                    <FormLabel>Prénom</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="Votre prénom" {...field} />
+                                    </FormControl>
+                                    <FormMessage/>
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="lastName"
+                            render={({field}) => (
+                                <FormItem>
+                                    <FormLabel>Nom</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="Votre nom" {...field} />
+                                    </FormControl>
+                                    <FormMessage/>
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="email"
+                            render={({field}) => (
+                                <FormItem>
+                                    <FormLabel>Email</FormLabel>
+                                    <FormControl>
+                                        <Input type="email" placeholder="votre@email.com" {...field} />
+                                    </FormControl>
+                                    <FormMessage/>
+                                </FormItem>
+                            )}
+                        />
+
+                        <div className="flex justify-end space-x-2 pt-4">
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={onClose}
+                                disabled={isSubmitting}
+                            >
+                                <X className="w-4 h-4 mr-2"/>
+                                Annuler
+                            </Button>
+                            <Button
+                                type="submit"
+                                disabled={isSubmitting}
+                                className="bg-primary hover:bg-primary/90"
+                            >
+                                <Save className="w-4 h-4 mr-2"/>
+                                {isSubmitting ? 'Sauvegarde...' : 'Sauvegarder'}
+                            </Button>
+                        </div>
+                    </form>
+                </Form>
+            </DialogContent>
+        </Dialog>
+    );
+};
 
 const BookingCard = ({booking, index}: { booking: Booking; index: number }) => {
     const startDate = new Date(booking.startDate);
@@ -322,6 +498,7 @@ const Account = () => {
     const [ongoingBookings, setOngoingBookings] = useState<Booking[]>([]);
     const [pastBookings, setPastBookings] = useState<Booking[]>([]);
     const [cancelledBookings, setCancelledBookings] = useState<Booking[]>([]);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
     useEffect(() => {
         const fetchUserProfile = async () => {
@@ -388,6 +565,13 @@ const Account = () => {
         categorizeBookings();
     }, [userProfile?.bookings]);
 
+    const handleProfileUpdate = (updatedUser: User | Coach) => {
+        if (!isOfTypeCoach(updatedUser)) {
+            setUserProfile(updatedUser);
+        }
+        console.log(`Profile updated:`, updatedUser);
+    };
+
     if (isLoading) return <Loader/>
     if (userProfileLoading) return <Loader/>
 
@@ -437,7 +621,13 @@ const Account = () => {
                     >
                         <div
                             className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-white/20 sticky top-8">
-                            {userProfile && <UserInfo user={userProfile} userRole={user?.role}/>}
+                            {userProfile && (
+                                <UserInfo
+                                    user={userProfile}
+                                    userRole={user?.role}
+                                    onEditClick={() => setIsEditModalOpen(true)}
+                                />
+                            )}
                         </div>
                     </motion.div>
                     <motion.div
@@ -591,6 +781,17 @@ const Account = () => {
                         </div>
                     </motion.div>
                 </div>
+
+                {/* Modal de modification du profil */}
+                {userProfile && (
+                    <ProfileEditModal
+                        isOpen={isEditModalOpen}
+                        onClose={() => setIsEditModalOpen(false)}
+                        user={userProfile}
+                        userRole={user?.role}
+                        onProfileUpdate={handleProfileUpdate}
+                    />
+                )}
             </motion.div>
         </div>
     );
