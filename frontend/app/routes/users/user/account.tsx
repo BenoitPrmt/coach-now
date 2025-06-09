@@ -2,7 +2,7 @@ import React, {useEffect, useMemo, useState, useCallback, useRef} from 'react';
 import {useUser} from "~/hooks/useUser";
 import Loader from "~/components/Loader";
 import type {User, Booking, UserRole, Coach} from "~/types";
-import {getPublicEnv} from "../../../env.common";
+import {getPublicEnv} from "../../../../env.common";
 import {motion, AnimatePresence} from "motion/react";
 import {Info, Calendar, Star, Clock, Euro, User as UserIcon, Mail, ArrowRight, Edit, Save, X} from "lucide-react";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "~/components/ui/tabs"
