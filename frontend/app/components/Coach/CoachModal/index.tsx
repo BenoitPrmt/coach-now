@@ -151,12 +151,16 @@ const CoachModal = ({
                     />
                 </motion.div>
 
-                <motion.div
-                    className="bg-neutral-50 dark:bg-neutral-700 border border-neutral-400/20 border-dashed rounded-md shadow-2xs flex flex-col gap-2 p-6">
-                    <motion.div>
-                        <Description levels={coach.levels} sports={coach.sports} isModal={true}/>
-                    </motion.div>
-                </motion.div>
+                {
+                    (coach.levels.length > 0 || coach.sports.length > 0) && (
+                        <motion.div
+                            className="bg-neutral-50 dark:bg-neutral-700 border border-neutral-400/20 border-dashed rounded-md shadow-2xs flex flex-col gap-2 p-6">
+                            <motion.div>
+                                <Description levels={coach.levels} sports={coach.sports} isModal={true}/>
+                            </motion.div>
+                        </motion.div>
+                    )
+                }
 
                 {(showBookingButton || showProfileButton) && (
                     <motion.div
@@ -167,7 +171,8 @@ const CoachModal = ({
                         exit={{opacity: 0, y: 20}}
                     >
                         {showBookingButton && (
-                            <Booking coach={coach} buttonClassName="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium h-11 rounded-lg transition-colors cursor-pointer" />
+                            <Booking coach={coach}
+                                     buttonClassName="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium h-11 rounded-lg transition-colors cursor-pointer"/>
                         )}
                         {showProfileButton && (
                             <Button
@@ -175,7 +180,7 @@ const CoachModal = ({
                                 asChild
                             >
                                 <Link to={`/coach/${coach.id}`}>
-                                    <CircleUserIcon />
+                                    <CircleUserIcon/>
                                     Voir le profil
                                 </Link>
                             </Button>

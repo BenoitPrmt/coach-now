@@ -10,7 +10,7 @@ const translations: Translation[] = [
     },
     {
         english: "MEDIUM",
-        french: "MOYEN"
+        french: "INTERMÉDIAIRE"
     },
     {
         english: "HIGHLEVEL",

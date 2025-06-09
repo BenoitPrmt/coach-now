@@ -1,30 +1,30 @@
-import { cn } from "~/lib/utils";
-import { type AriaButtonProps, useButton } from "@react-aria/button";
-import { useFocusRing } from "@react-aria/focus";
-import { mergeProps } from "@react-aria/utils";
-import type { CalendarState } from "@react-stately/calendar";
-import { useRef } from "react";
+import {cn} from "~/lib/utils";
+import {type AriaButtonProps, useButton} from "@react-aria/button";
+import {useFocusRing} from "@react-aria/focus";
+import {mergeProps} from "@react-aria/utils";
+import type {CalendarState} from "@react-stately/calendar";
+import {useRef} from "react";
 
 export function Button(
-	props: AriaButtonProps<"button"> & {
-		state?: CalendarState;
-		side?: "left" | "right";
-	},
+    props: AriaButtonProps<"button"> & {
+        state?: CalendarState;
+        side?: "left" | "right";
+    },
 ) {
-	const ref = useRef<HTMLButtonElement>(null);
-	const { buttonProps } = useButton(props, ref);
-	const { focusProps, isFocusVisible } = useFocusRing();
-	return (
-		<button
-			{...mergeProps(buttonProps, focusProps)}
-			ref={ref}
-			className={cn(
-				"p-2 rounded-lg outline-none text-gray-950",
-				props.isDisabled ? "text-gray-700" : "hover:bg-gray-400 active:bg-gray-500",
-				isFocusVisible && "ring-2 ring-offset-2 ring-gray-900",
-			)}
-		>
-			{props.children}
-		</button>
-	);
+    const ref = useRef<HTMLButtonElement>(null);
+    const {buttonProps} = useButton(props, ref);
+    const {focusProps, isFocusVisible} = useFocusRing();
+    return (
+        <button
+            {...mergeProps(buttonProps, focusProps)}
+            ref={ref}
+            className={cn(
+                "p-2 rounded-lg outline-none text-gray-950 cursor-pointer",
+                props.isDisabled ? "text-gray-700" : "hover:bg-gray-400 active:bg-gray-500",
+                isFocusVisible && "ring-2 ring-offset-2 ring-gray-900",
+            )}
+        >
+            {props.children}
+        </button>
+    );
 }
