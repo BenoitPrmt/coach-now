@@ -1,21 +1,26 @@
 import React, {useEffect, useMemo, useState, useCallback} from 'react';
 import {useUser} from "~/hooks/useUser";
 import Loader from "~/components/Loader";
-import type {User, Booking} from "~/types";
+import type {User, Booking, UserRole, Coach} from "~/types";
 import {getPublicEnv} from "../../../env.common";
 import {motion, AnimatePresence} from "motion/react";
-import {Info, Calendar, Star, Clock, Euro, User as UserIcon, Mail} from "lucide-react";
+import {Info, Calendar, Star, Clock, Euro, User as UserIcon, Mail, ArrowRight} from "lucide-react";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "~/components/ui/tabs"
 import CoachImage from "~/components/Coach/CoachImage";
 import {Link} from "react-router";
 import RatingCards from "~/components/Rating/RatingCards";
 import {cn} from "~/lib/utils";
 import {formatDate} from "~/lib/time";
+import {FaDumbbell, FaUser, FaCrown, FaInfo} from "react-icons/fa6";
+import {isOfTypeCoach} from "~/validation/typesValidations";
 
-const UserInfo = ({user}: { user: User }) => {
-    const totalBookings = user.bookings?.length || 0;
-    const totalRatings = user.ratings?.length || 0;
-
+const UserInfo = ({user, userRole = "USER"}: { user: User | Coach, userRole?: UserRole }) => {
+    let totalBookings = 0;
+    let totalRatings = 0;
+    if (!isOfTypeCoach(user)) {
+        totalBookings = user.bookings?.length || 0;
+        totalRatings = user.ratings?.length || 0;
+    }
     return (
         <motion.div
             className="flex flex-col items-center space-y-6"
@@ -29,10 +34,19 @@ const UserInfo = ({user}: { user: User }) => {
                 whileHover={{scale: 1.05}}
                 transition={{type: "spring", stiffness: 300}}
             >
-                <div
-                    className="w-24 h-24 bg-primary rounded-full flex items-center justify-center shadow-lg">
-                    <UserIcon className="w-10 h-10 text-white"/>
-                </div>
+                {
+                    isOfTypeCoach(user) && userRole === "COACH" ? (
+                        <img
+                            src={user.profilePictureUrl}
+                            alt={`${user.user.firstName} ${user.user.lastName}`}
+                            className="w-24 h-24 bg-primary rounded-full object-cover shadow-lg"
+                        />
+                    ) : (
+                        <div className="w-24 h-24 bg-primary rounded-full flex items-center justify-center shadow-lg">
+                            <UserIcon className="w-10 h-10 text-white"/>
+                        </div>
+                    )
+                }
                 <div
                     className="absolute -bottom-2 -right-2 w-6 h-6 bg-green-500 rounded-full border-2 border-white"></div>
             </motion.div>
@@ -45,7 +59,9 @@ const UserInfo = ({user}: { user: User }) => {
                     animate={{y: 0, opacity: 1}}
                     transition={{delay: 0.2}}
                 >
-                    {user.firstName} {user.lastName}
+                    {isOfTypeCoach(user)
+                        ? `${user.user.firstName} ${user.user.lastName}`
+                        : `${user.firstName} ${user.lastName}`}
                 </motion.h2>
                 <motion.div
                     className="flex items-center justify-center space-x-2 text-gray-600"
@@ -54,7 +70,9 @@ const UserInfo = ({user}: { user: User }) => {
                     transition={{delay: 0.3}}
                 >
                     <Mail className="w-4 h-4"/>
-                    <p className="text-sm">{user.email}</p>
+                    <p className="text-sm">
+                        {isOfTypeCoach(user) ? user.user.email : user.email}
+                    </p>
                 </motion.div>
                 <motion.div
                     className="inline-flex px-3 py-1 bg-primary text-white rounded-full text-xs font-medium"
@@ -62,26 +80,42 @@ const UserInfo = ({user}: { user: User }) => {
                     animate={{y: 0, opacity: 1}}
                     transition={{delay: 0.4}}
                 >
-                    {user.role}
+                    {
+                        userRole === 'COACH' ? (
+                            <FaDumbbell className="w-4 h-4 mr-1" title="Coach"/>
+                        ) : userRole === 'USER' ? (
+                            <FaUser className="w-4 h-4 mr-1" title="Utilisateur"/>
+                        ) : userRole === 'ADMIN' ? (
+                            <FaCrown
+                                className="w-4 h-4 mr-1" title="Administrateur"/>
+                        ) : (
+                            <FaInfo className="w-4 h-4 mr-1" title="Rôle inconnu"/>
+                        )
+                    }
+                    {userRole}
                 </motion.div>
             </div>
 
-            {/* Stats */}
-            <motion.div
-                className="grid grid-cols-2 gap-4 w-full"
-                initial={{y: 30, opacity: 0}}
-                animate={{y: 0, opacity: 1}}
-                transition={{delay: 0.5}}
-            >
-                <div className="text-center">
-                    <div className="text-2xl font-bold text-ring">{totalBookings}</div>
-                    <div className="text-xs text-ring">Réservations</div>
-                </div>
-                <div className="text-center">
-                    <div className="text-2xl font-bold text-yellow-600">{totalRatings}</div>
-                    <div className="text-xs text-yellow-600">Avis</div>
-                </div>
-            </motion.div>
+            {/* Stats (que si user) */}
+            {
+                userRole === 'USER' && (
+                    <motion.div
+                        className="grid grid-cols-2 gap-4 w-full"
+                        initial={{y: 30, opacity: 0}}
+                        animate={{y: 0, opacity: 1}}
+                        transition={{delay: 0.5}}
+                    >
+                        <div className="text-center">
+                            <div className="text-2xl font-bold text-ring">{totalBookings}</div>
+                            <div className="text-xs text-ring">Réservations</div>
+                        </div>
+                        <div className="text-center">
+                            <div className="text-2xl font-bold text-yellow-600">{totalRatings}</div>
+                            <div className="text-xs text-yellow-600">Avis</div>
+                        </div>
+                    </motion.div>
+                )
+            }
         </motion.div>
     );
 }
@@ -293,7 +327,7 @@ const Account = () => {
         const fetchUserProfile = async () => {
             try {
                 setUserProfileLoading(true);
-                const res = await fetch(`${getPublicEnv(import.meta.env).VITE_API_URL}/user/${user?.id}`, {
+                const res = await fetch(`${getPublicEnv(import.meta.env).VITE_API_URL}/${user?.role.toLowerCase()}/${user?.id}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -304,6 +338,7 @@ const Account = () => {
                     throw new Error('Failed to fetch user profile');
                 }
                 const data = await res.json();
+                console.log(`Fetching user profile for ${user?.role.toLowerCase()}/${user?.id}`, data);
                 setUserProfile(data);
             } catch (error) {
                 console.error('Error fetching user profile:', error);
@@ -402,10 +437,9 @@ const Account = () => {
                     >
                         <div
                             className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-white/20 sticky top-8">
-                            {userProfile && <UserInfo user={userProfile}/>}
+                            {userProfile && <UserInfo user={userProfile} userRole={user?.role}/>}
                         </div>
                     </motion.div>
-
                     <motion.div
                         className="lg:col-span-2"
                         initial={{opacity: 0, x: 50}}
@@ -424,115 +458,135 @@ const Account = () => {
                                         Informations supplémentaires
                                     </h3>
                                 </div>
+                                {
+                                    user?.role === 'USER' ? (
+                                        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                                            <TabsList
+                                                className="grid w-full grid-cols-2 mb-8 bg-gray-100 p-1 rounded-xl">
+                                                <TabsTrigger
+                                                    value="bookings"
+                                                    className="cursor-pointer rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm transition-all duration-300"
+                                                >
+                                                    <Calendar className="w-4 h-4 mr-2"/>
+                                                    Réservations
+                                                </TabsTrigger>
+                                                <TabsTrigger
+                                                    value="ratings"
+                                                    className="cursor-pointer rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm transition-all duration-300"
+                                                >
+                                                    <Star className="w-4 h-4 mr-2"/>
+                                                    Avis
+                                                </TabsTrigger>
+                                            </TabsList>
 
-                                <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                                    <TabsList className="grid w-full grid-cols-2 mb-8 bg-gray-100 p-1 rounded-xl">
-                                        <TabsTrigger
-                                            value="bookings"
-                                            className="cursor-pointer rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm transition-all duration-300"
-                                        >
-                                            <Calendar className="w-4 h-4 mr-2"/>
-                                            Réservations
-                                        </TabsTrigger>
-                                        <TabsTrigger
-                                            value="ratings"
-                                            className="cursor-pointer rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm transition-all duration-300"
-                                        >
-                                            <Star className="w-4 h-4 mr-2"/>
-                                            Avis
-                                        </TabsTrigger>
-                                    </TabsList>
+                                            <AnimatePresence>
+                                                <TabsContent value="bookings">
+                                                    <motion.div
+                                                        key="bookings"
+                                                        initial={{opacity: 0, y: 20}}
+                                                        animate={{opacity: 1, y: 0}}
+                                                        exit={{opacity: 0, y: -20}}
+                                                        transition={{duration: 0.3}}
+                                                        className="space-y-8 max-h-[60vh] overflow-y-auto pr-2"
+                                                    >
+                                                        {/* À venir */}
+                                                        {futureBookings && futureBookings.length > 0 && (
+                                                            <div>
+                                                                <h4 className="text-lg font-semibold mb-2">À venir</h4>
+                                                                <div className="space-y-4">
+                                                                    {futureBookings.map((booking, index) => (
+                                                                        <BookingCard key={booking.id} booking={booking}
+                                                                                     index={index}/>
+                                                                    ))}
+                                                                </div>
+                                                            </div>
+                                                        )}
 
-                                    <AnimatePresence>
-                                        <TabsContent value="bookings">
-                                            <motion.div
-                                                key="bookings"
-                                                initial={{opacity: 0, y: 20}}
-                                                animate={{opacity: 1, y: 0}}
-                                                exit={{opacity: 0, y: -20}}
-                                                transition={{duration: 0.3}}
-                                                className="space-y-8 max-h-[60vh] overflow-y-auto pr-2"
+                                                        {/* En cours */}
+                                                        {ongoingBookings && ongoingBookings.length > 0 && (
+                                                            <div>
+                                                                <h4 className="text-lg font-semibold mt-6 mb-2">En
+                                                                    cours</h4>
+                                                                <div className="space-y-4">
+                                                                    {ongoingBookings.map((booking, index) => (
+                                                                        <BookingCard key={booking.id} booking={booking}
+                                                                                     index={index}/>
+                                                                    ))}
+                                                                </div>
+                                                            </div>
+                                                        )}
+
+                                                        {/* Terminées */}
+                                                        {pastBookings && pastBookings.length > 0 && (
+                                                            <div>
+                                                                <h4 className="text-lg font-semibold mt-6 mb-2">Terminées</h4>
+                                                                <div className="space-y-4">
+                                                                    {pastBookings.map((booking, index) => (
+                                                                        <BookingCard key={booking.id} booking={booking}
+                                                                                     index={index}/>
+                                                                    ))}
+                                                                </div>
+                                                            </div>
+                                                        )}
+
+                                                        {/* Annulées */}
+                                                        {cancelledBookings && cancelledBookings.length > 0 && (
+                                                            <div>
+                                                                <h4 className="text-lg font-semibold mt-6 mb-2 text-red-600">Annulées</h4>
+                                                                <div className="space-y-4">
+                                                                    {cancelledBookings.map((booking, index) => (
+                                                                        <BookingCard key={booking.id} booking={booking}
+                                                                                     index={index}/>
+                                                                    ))}
+                                                                </div>
+                                                            </div>
+                                                        )}
+
+                                                        {/* Aucune réservation */}
+                                                        {!futureBookings?.length &&
+                                                            !ongoingBookings?.length &&
+                                                            !pastBookings?.length &&
+                                                            !cancelledBookings?.length && (
+                                                                <p className="text-gray-500 text-sm">Aucune réservation
+                                                                    trouvée.</p>
+                                                            )}
+                                                    </motion.div>
+                                                </TabsContent>
+
+                                                <TabsContent value="ratings">
+                                                    <motion.div
+                                                        key="ratings"
+                                                        initial={{opacity: 0, y: 20}}
+                                                        animate={{opacity: 1, y: 0}}
+                                                        exit={{opacity: 0, y: -20}}
+                                                        transition={{duration: 0.3}}
+                                                        className="space-y-4 max-h-[60vh] overflow-y-auto pr-2"
+                                                    >
+                                                        <RatingCards
+                                                            ratings={userProfile?.ratings}
+                                                            delay={0}
+                                                        />
+                                                    </motion.div>
+                                                </TabsContent>
+                                            </AnimatePresence>
+                                        </Tabs>
+                                    ) : (
+                                        <div className="flex flex-col justify-center text-gray-500 gap-2">
+                                            <p>
+                                                Pour accéder à vos réservations et avis reçus, veuillez aller sur le
+                                                dashboard dédié.
+                                            </p>
+                                            <Link
+                                                to="/coach/dashboard"
+                                                className="text-blue-600 hover:underline group flex items-center justify-center text-sm font-medium transition-colors duration-200 rounded-lg px-4 py-2 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900 dark:hover:bg-blue-800"
                                             >
-                                                {/* À venir */}
-                                                {futureBookings && futureBookings.length > 0 && (
-                                                    <div>
-                                                        <h4 className="text-lg font-semibold mb-2">À venir</h4>
-                                                        <div className="space-y-4">
-                                                            {futureBookings.map((booking, index) => (
-                                                                <BookingCard key={booking.id} booking={booking}
-                                                                             index={index}/>
-                                                            ))}
-                                                        </div>
-                                                    </div>
-                                                )}
-
-                                                {/* En cours */}
-                                                {ongoingBookings && ongoingBookings.length > 0 && (
-                                                    <div>
-                                                        <h4 className="text-lg font-semibold mt-6 mb-2">En cours</h4>
-                                                        <div className="space-y-4">
-                                                            {ongoingBookings.map((booking, index) => (
-                                                                <BookingCard key={booking.id} booking={booking}
-                                                                             index={index}/>
-                                                            ))}
-                                                        </div>
-                                                    </div>
-                                                )}
-
-                                                {/* Terminées */}
-                                                {pastBookings && pastBookings.length > 0 && (
-                                                    <div>
-                                                        <h4 className="text-lg font-semibold mt-6 mb-2">Terminées</h4>
-                                                        <div className="space-y-4">
-                                                            {pastBookings.map((booking, index) => (
-                                                                <BookingCard key={booking.id} booking={booking}
-                                                                             index={index}/>
-                                                            ))}
-                                                        </div>
-                                                    </div>
-                                                )}
-
-                                                {/* Annulées */}
-                                                {cancelledBookings && cancelledBookings.length > 0 && (
-                                                    <div>
-                                                        <h4 className="text-lg font-semibold mt-6 mb-2 text-red-600">Annulées</h4>
-                                                        <div className="space-y-4">
-                                                            {cancelledBookings.map((booking, index) => (
-                                                                <BookingCard key={booking.id} booking={booking}
-                                                                             index={index}/>
-                                                            ))}
-                                                        </div>
-                                                    </div>
-                                                )}
-
-                                                {/* Aucune réservation */}
-                                                {!futureBookings?.length &&
-                                                    !ongoingBookings?.length &&
-                                                    !pastBookings?.length &&
-                                                    !cancelledBookings?.length && (
-                                                        <p className="text-gray-500 text-sm">Aucune réservation
-                                                            trouvée.</p>
-                                                    )}
-                                            </motion.div>
-                                        </TabsContent>
-
-                                        <TabsContent value="ratings">
-                                            <motion.div
-                                                key="ratings"
-                                                initial={{opacity: 0, y: 20}}
-                                                animate={{opacity: 1, y: 0}}
-                                                exit={{opacity: 0, y: -20}}
-                                                transition={{duration: 0.3}}
-                                                className="space-y-4 max-h-[60vh] overflow-y-auto pr-2"
-                                            >
-                                                <RatingCards
-                                                    ratings={userProfile?.ratings}
-                                                    delay={0}
-                                                />
-                                            </motion.div>
-                                        </TabsContent>
-                                    </AnimatePresence>
-                                </Tabs>
+                                                Accéder au dashboard
+                                                <ArrowRight
+                                                    className="inline-block ml-1 w-4 h-4 group-hover:underline group-hover:translate-x-0.5 duration-200"/>
+                                            </Link>
+                                        </div>
+                                    )
+                                }
                             </div>
                         </div>
                     </motion.div>
