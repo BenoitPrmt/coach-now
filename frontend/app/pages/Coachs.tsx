@@ -128,17 +128,7 @@ const CoachesPage = () => {
                                 variants={gridElementTransition}
                                 className="flex"
                             >
-                                <CoachCard coach={
-                                    {
-                                        id: coach.id,
-                                        profilePictureUrl: coach.profilePictureUrl,
-                                        name: coach.user.firstName + ' ' + coach.user.lastName,
-                                        age: calculateAgeFromBirthdate(coach.birthdate),
-                                        gender: coach.gender,
-                                        sports: coach.sports,
-                                        levels: coach.levels,
-                                    }
-                                }/>
+                                <CoachCard coach={coach}/>
                             </motion.div>
                         ))}
                     </motion.div>

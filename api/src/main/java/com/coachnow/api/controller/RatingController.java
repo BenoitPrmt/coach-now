@@ -1,5 +1,6 @@
 package com.coachnow.api.controller;
 
+import com.coachnow.api.model.entity.Booking;
 import com.coachnow.api.model.entity.Coach;
 import com.coachnow.api.model.entity.Rating;
 import com.coachnow.api.model.entity.User;
@@ -77,13 +78,7 @@ public class RatingController {
             if (!bookingService.userHasBookedWithCoach(ratingData.getUserId(), ratingData.getCoachId())) {
                 throw new IllegalArgumentException("User with id " + ratingData.getUserId() + " has not booked with this coach.");
             }
-            // Verification if the booking is in the future
-            if (
-                    bookingService.getBookingByCoachAndUser(ratingData.getCoachId(), ratingData.getUserId()).getStartDate().after(new Date())
-                            || bookingService.getBookingByCoachAndUser(ratingData.getCoachId(), ratingData.getUserId()).getEndDate().after(new Date())
-            ) {
-                throw new IllegalArgumentException("User with id " + ratingData.getUserId() + " cannot rate a coach for a future booking.");
-            }
+
             Rating rating = getRating(ratingData, coach, user);
             return new ResponseEntity<>(new RatingDTO(ratingService.save(rating)), HttpStatus.CREATED);
         } catch (IllegalArgumentException | ParseException e) {

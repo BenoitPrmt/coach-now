@@ -32,7 +32,6 @@ export async function register(values: {
     isCoach?: boolean;
 }) {
     try {
-        console.log("User Form", values);
         const url = getPublicEnv(import.meta.env).VITE_API_URL + "/auth/register";
 
         const res = await fetch(url, {
@@ -65,12 +64,11 @@ export async function registerCoach(values: {
     gender: string;
     hourlyRate?: number;
     sports?: string;
-    profilePicture?: string; // URL de la photo
+    profilePicture?: string;
     birthDate?: Date;
     level?: "BEGINNER" | "MEDIUM" | "HIGHLEVEL";
 }) {
     try {
-        console.log("Coach Form", values);
         const url = getPublicEnv(import.meta.env).VITE_API_URL + "/auth/register/coach";
 
         const res = await fetch(url, {

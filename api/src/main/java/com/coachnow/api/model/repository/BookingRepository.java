@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface BookingRepository extends CrudRepository<Booking, String> {
-    boolean existsByUserIdAndCoachId(String userId, String coachId);
+    boolean existsByUserIdAndCoachIdAndEndDateBefore(String userId, String coachId, java.util.Date endDate);
 
     Optional<Booking> findByCoachIdAndUserId(String coachId, String userId);
 

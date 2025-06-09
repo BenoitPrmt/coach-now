@@ -13,7 +13,6 @@ import Header from "app/components/Layout/Header";
 import "./app.css";
 import type {ReactNode} from "react";
 import Footer from "~/components/Layout/Footer";
-import {Toaster} from "sonner";
 
 export const links: Route.LinksFunction = () => [
     {rel: "preconnect", href: "https://fonts.googleapis.com"},
@@ -30,24 +29,20 @@ export const links: Route.LinksFunction = () => [
 
 export function Layout({children}: { children: ReactNode }) {
     return (
-        <html lang="fr">
+        <html lang="fr" className="scroll-smooth">
         <head>
             <meta charSet="utf-8"/>
             <meta name="viewport" content="width=device-width, initial-scale=1"/>
-            <title>CoachNow</title>
             <Meta/>
             <Links/>
         </head>
-        <body className="min-h-screen flex flex-col">
+        <body className="min-h-screen flex flex-col bg-slate-900 text-white antialiased">
         <Header/>
         <main className="flex-1">
-            <BaseLayout>
-                {children}
-                <ScrollRestoration/>
-                <Scripts/>
-            </BaseLayout>
+            {children}
+            <ScrollRestoration/>
+            <Scripts/>
         </main>
-        <Toaster richColors position="top-right" />
         <Footer/>
         </body>
         </html>
@@ -60,14 +55,14 @@ export default function App() {
 
 export function ErrorBoundary({error}: Route.ErrorBoundaryProps) {
     let message = "Oops!";
-    let details = "An unexpected error occurred.";
+    let details = "Une erreur inattendue s'est produite.";
     let stack: string | undefined;
 
     if (isRouteErrorResponse(error)) {
-        message = error.status === 404 ? "404" : "Error";
+        message = error.status === 404 ? "404" : "Erreur";
         details =
             error.status === 404
-                ? "The requested page could not be found."
+                ? "La page demandée est introuvable."
                 : error.statusText || details;
     } else if (import.meta.env.DEV && error && error instanceof Error) {
         details = error.message;
@@ -75,14 +70,20 @@ export function ErrorBoundary({error}: Route.ErrorBoundaryProps) {
     }
 
     return (
-        <main className="pt-16 p-4 container mx-auto">
-            <h1>{message}</h1>
-            <p>{details}</p>
-            {stack && (
-                <pre className="w-full p-4 overflow-x-auto">
-          <code>{stack}</code>
-        </pre>
-            )}
+        <main className="min-h-screen bg-slate-900 text-white flex items-center justify-center p-4">
+            <div className="max-w-2xl mx-auto text-center">
+                <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-8">
+                    <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-red-400 to-pink-400 bg-clip-text text-transparent">
+                        {message}
+                    </h1>
+                    <p className="text-xl text-slate-400 mb-6">{details}</p>
+                    {stack && (
+                        <pre className="w-full p-4 overflow-x-auto bg-slate-900/50 rounded-lg text-left text-sm text-slate-300">
+                            <code>{stack}</code>
+                        </pre>
+                    )}
+                </div>
+            </div>
         </main>
     );
 }
