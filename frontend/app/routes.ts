@@ -16,6 +16,7 @@ export default [
         route("coachs", "routes/users/coachs.tsx"),
         ...prefix("coach", [
             route(":coachId", "routes/users/coach/profile.tsx"),
+            route("dashboard", "routes/users/coach/dashboard.tsx"),
         ]),
     ]),
 
