@@ -1,7 +1,7 @@
-import type {Route} from "../../../.react-router/types/app/routes/+types";
+import type { MetaArgs } from "react-router";
 import {default as LoginPage} from "~/pages/Login";
 
-export function meta({}: Route.MetaArgs) {
+export function meta({}: MetaArgs) {
     return [
         {title: "CoachNow - Se connecter"},
         {
