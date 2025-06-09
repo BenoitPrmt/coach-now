@@ -9,7 +9,9 @@ type NavigationOptions = {
     url: string;
     needsAuth?: boolean;
     hiddenWhenAuth?: boolean;
-    adminOnly?: boolean;
+    isUser?: boolean;
+    isAdmin?: boolean;
+    isCoach?: boolean;
     links: {
         label: string;
         link: string;
@@ -31,6 +33,7 @@ const navigation: NavigationOptions = [
     {
         page: "Coachs",
         url: "/coachs",
+        isUser: true,
         links: []
     },
     {
@@ -57,7 +60,7 @@ const navigation: NavigationOptions = [
         page: "Administration",
         url: "/admin",
         needsAuth: true,
-        adminOnly: true,
+        isAdmin: true,
         links: []
     }
 ]

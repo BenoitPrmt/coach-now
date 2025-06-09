@@ -47,13 +47,13 @@ const UserInfo = (
     }, [gender])
 
     return (
-        <div className={cn("flex items-center gap-3", isModal && "mb-4 justify-center")}>
+        <div className={cn("flex items-center gap-3", isModal ? "mb-4 justify-center" : "p-2")}>
             <CoachImage
                 src={profilePictureUrl}
                 alt={name}
                 animateOnHover={isModal}
                 className={cn(
-                    "rounded-lg object-cover shadow-2xs ml-2 mt-2",
+                    "rounded-lg object-cover shadow-2xs",
                     isModal ? "hidden" : "w-14 h-14"
                 )}
             />
@@ -134,15 +134,22 @@ const CoachCard = ({
                 whileTap={{scale: 1.0}}
             >
                 <motion.div>
-                    <UserInfo profilePictureUrl={coach.profilePictureUrl} name={coach.user.firstName + ' ' + coach.user.lastName} age={calculateAgeFromBirthdate(coach.birthdate)}
+                    <UserInfo profilePictureUrl={coach.profilePictureUrl}
+                              name={coach.user.firstName + ' ' + coach.user.lastName}
+                              age={calculateAgeFromBirthdate(coach.birthdate)}
                               gender={coach.gender}/>
                 </motion.div>
 
-                <motion.div
-                    className="bg-neutral-50 dark:bg-neutral-700 border border-neutral-400/20 border-dashed rounded-md shadow-2xs flex flex-col gap-2 p-4 h-full"
-                >
-                    <Description levels={coach.levels} sports={coach.sports}/>
-                </motion.div>
+                {
+                    (coach.levels.length > 0 || coach.sports.length > 0) && (
+
+                        <motion.div
+                            className="bg-neutral-50 dark:bg-neutral-700 border border-neutral-400/20 border-dashed rounded-md shadow-2xs flex flex-col gap-2 p-4 h-full"
+                        >
+                            <Description levels={coach.levels} sports={coach.sports}/>
+                        </motion.div>
+                    )
+                }
             </motion.div>
 
             <CoachModal
