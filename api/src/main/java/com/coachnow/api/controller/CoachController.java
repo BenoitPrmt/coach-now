@@ -1,9 +1,11 @@
 package com.coachnow.api.controller;
 
 import com.coachnow.api.model.entity.Coach;
+import com.coachnow.api.model.entity.User;
 import com.coachnow.api.model.entity.dto.CoachDTO;
 import com.coachnow.api.model.service.CoachService;
 import com.coachnow.api.model.service.UserService;
+import com.coachnow.api.web.request.coach.CoachCreation;
 import com.coachnow.api.web.response.coach.availability.DayAvailability;
 import com.coachnow.api.web.response.pagination.PaginatedElements;
 import org.springframework.beans.factory.annotation.Autowired;
