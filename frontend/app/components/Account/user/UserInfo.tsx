@@ -5,6 +5,7 @@ import {Edit, Mail, User as UserIcon} from "lucide-react";
 import {FaCrown, FaDumbbell, FaInfo, FaUser} from "react-icons/fa6";
 import {Button} from "~/components/ui/button";
 import React from "react";
+import UserRoleBadge from "~/components/Account/user/UserRoleBadge";
 
 const UserInfo = ({user, userRole = "USER", onEditClick}: {
     user: User | Coach,
@@ -68,26 +69,7 @@ const UserInfo = ({user, userRole = "USER", onEditClick}: {
                         {isOfTypeCoach(user) ? user.user.email : user.email}
                     </p>
                 </motion.div>
-                <motion.div
-                    className="inline-flex px-3 py-1 bg-primary text-white rounded-full text-xs font-medium"
-                    initial={{y: 20, opacity: 0}}
-                    animate={{y: 0, opacity: 1}}
-                    transition={{delay: 0.4}}
-                >
-                    {
-                        userRole === 'COACH' ? (
-                            <FaDumbbell className="w-4 h-4 mr-1" title="Coach"/>
-                        ) : userRole === 'USER' ? (
-                            <FaUser className="w-4 h-4 mr-1" title="Utilisateur"/>
-                        ) : userRole === 'ADMIN' ? (
-                            <FaCrown
-                                className="w-4 h-4 mr-1" title="Administrateur"/>
-                        ) : (
-                            <FaInfo className="w-4 h-4 mr-1" title="Rôle inconnu"/>
-                        )
-                    }
-                    {userRole}
-                </motion.div>
+                <UserRoleBadge userRole={userRole}/>
             </div>
 
             <motion.div

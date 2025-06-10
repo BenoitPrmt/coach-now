@@ -30,8 +30,8 @@ body {
     --secondary-foreground: oklch(1.0000 0 0);
     --muted: oklch(0.9223 0.0077 241.6696);
     --muted-foreground: oklch(0.5053 0.0201 248.2257);
-    --accent: oklch(0.6408 0.1727 26.8050);
-    --accent-foreground: oklch(1.0000 0 0);
+    --accent: oklch(0.74 0.06 50);
+    --accent-foreground: oklch(0.24 0.07 250);
     --destructive: oklch(0.6358 0.2088 25.4126);
     --destructive-foreground: oklch(1.0000 0 0);
     --border: oklch(0.8414 0.0142 247.9963);
@@ -50,7 +50,7 @@ body {
     --sidebar-accent-foreground: oklch(0.2365 0.0682 250.6963);
     --sidebar-border: oklch(0.8414 0.0142 247.9963);
     --sidebar-ring: oklch(0.7257 0.1294 51.1911);
-    --font-sans: system-ui, sans-serif;
+    --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-serif: Georgia, serif;
     --font-mono: Menlo, monospace;
     --radius: 0.5rem;
@@ -77,7 +77,7 @@ body {
     --secondary-foreground: oklch(1.0000 0 0);
     --muted: oklch(0.3664 0.0218 248.4209);
     --muted-foreground: oklch(0.7604 0.0225 245.9365);
-    --accent: oklch(0.6408 0.1727 26.8050);
+    --accent: oklch(0.48 0.06 50);
     --accent-foreground: oklch(1.0000 0 0);
     --destructive: oklch(0.6358 0.2088 25.4126);
     --destructive-foreground: oklch(1.0000 0 0);
@@ -97,7 +97,7 @@ body {
     --sidebar-accent-foreground: oklch(0.9595 0.0080 253.8534);
     --sidebar-border: oklch(0.3169 0.0181 248.3968);
     --sidebar-ring: oklch(0.7257 0.1294 51.1911);
-    --font-sans: system-ui, sans-serif;
+    --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-serif: Georgia, serif;
     --font-mono: Menlo, monospace;
     --radius: 0.25rem;
@@ -171,6 +171,6 @@ body {
 
     body {
         @apply bg-background text-foreground;
-        font-family: "Outfit", ui-sans-serif, system-ui, sans-serif !important;
+        /*font-family: "Outfit", ui-sans-serif, system-ui, sans-serif !important;*/
     }
 }
