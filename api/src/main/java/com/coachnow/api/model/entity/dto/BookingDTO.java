@@ -1,13 +1,10 @@
 package com.coachnow.api.model.entity.dto;
 
 import com.coachnow.api.model.entity.Booking;
-import com.coachnow.api.model.entity.Coach;
-import com.coachnow.api.types.Gender;
-import com.coachnow.api.types.Level;
-import com.coachnow.api.types.Sports;
+import com.coachnow.api.model.entity.dto.simple.SimpleCoachDTO;
+import com.coachnow.api.model.entity.dto.simple.SimpleUserDTO;
 import lombok.Data;
 
-import java.util.Set;
 
 @Data
 public class BookingDTO {
@@ -17,8 +14,8 @@ public class BookingDTO {
     private Boolean isActive;
     private Float totalPrice;
 
-    private String coachId;
-    private String userId;
+    private SimpleCoachDTO coach;
+    private SimpleUserDTO user;
 
     public BookingDTO(Booking booking) {
         this.id = booking.getId();
@@ -26,8 +23,8 @@ public class BookingDTO {
         this.endDate = booking.getEndDate() != null ? booking.getEndDate().toString() : null;
         this.isActive = booking.getIsActive();
         this.totalPrice = booking.getTotalPrice();
-        this.coachId = booking.getCoach() != null ? booking.getCoach().getId() : null;
-        this.userId = booking.getUser() != null ? booking.getUser().getId() : null;
+        this.coach = booking.getCoach() != null ? new SimpleCoachDTO(booking.getCoach()) : null;
+        this.user = booking.getUser() != null ? new SimpleUserDTO(booking.getUser()) : null;
     }
 
 }

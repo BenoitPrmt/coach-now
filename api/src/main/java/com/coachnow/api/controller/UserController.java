@@ -19,7 +19,7 @@ public class UserController {
     @GetMapping("/users")
     public List<UserDTO> all() {
         List<User> users = userService.selectAll();
-        List<UserDTO> listDTO = new ArrayList<UserDTO>();
+        List<UserDTO> listDTO = new ArrayList<>();
         for (User user : users) {
             listDTO.add(new UserDTO(user));
         }
@@ -29,7 +29,6 @@ public class UserController {
     @GetMapping("/user/{id}")
     public UserDTO get(@PathVariable String id) {
         User user = userService.select(id);
-
         return user != null ? new UserDTO(user) : null;
 
     }
@@ -42,7 +41,17 @@ public class UserController {
     @PutMapping("/user/{id}")
     public UserDTO update(@RequestBody User user, @PathVariable String id) {
         user.setId(id);
-        return new UserDTO(userService.save(user));
+        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+            userService.updateUserPassword(user);
+        } else {
+            User existingUser = userService.select(id);
+            if (existingUser != null) {
+                user.setPassword(existingUser.getPassword());
+            }
+        }
+        UserDTO newUser = new UserDTO(userService.save(user));
+        // Adding missing fields to the UserDTO
+        return new UserDTO(userService.select(newUser.getId()));
     }
 
     @DeleteMapping("/user/{id}")

@@ -4,7 +4,6 @@ import {motion, type Variants} from "motion/react";
 import {getPublicEnv} from "../../env.common";
 import type {Coach} from "~/types";
 import {useUser} from "~/hooks/useUser";
-import {calculateAgeFromBirthdate} from "~/lib/calculations";
 import Loader from "~/components/Loader";
 
 const titleTransition: Variants = {
@@ -128,17 +127,7 @@ const CoachesPage = () => {
                                 variants={gridElementTransition}
                                 className="flex"
                             >
-                                <CoachCard coach={
-                                    {
-                                        id: coach.id,
-                                        profilePictureUrl: coach.profilePictureUrl,
-                                        name: coach.user.firstName + ' ' + coach.user.lastName,
-                                        age: calculateAgeFromBirthdate(coach.birthdate),
-                                        gender: coach.gender,
-                                        sports: coach.sports,
-                                        levels: coach.levels,
-                                    }
-                                }/>
+                                <CoachCard coach={coach}/>
                             </motion.div>
                         ))}
                     </motion.div>

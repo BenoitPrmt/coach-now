@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {getPublicEnv} from "../../env.common";
 import Loader from "~/components/Loader";
 import type {Coach, Gender} from "~/types";
@@ -8,12 +8,12 @@ import {formatGender} from "~/lib/formatting";
 import {useMemo} from "react";
 import {Description} from "app/components/Coach/CoachCard";
 import {useUser} from "~/hooks/useUser";
-import {Link} from "react-router";
-import Rating from "~/components/Rating";
-import {FaClock} from "react-icons/fa";
-import {timeAgo} from "~/lib/time";
 import {Speech} from "lucide-react";
 import CoachImage from "~/components/Coach/CoachImage";
+import RatingStar from "~/components/Rating/RatingCards/RatingCard/RatingStar";
+import RatingCards from "~/components/Rating/RatingCards";
+
+import {Booking} from "~/components/Booking/booking";
 
 type Props = {
     coachId: string;
@@ -159,15 +159,22 @@ const CoachProfile = ({coachId}: Props) => {
                                         gender={coach.gender}
                                     />
 
-                                    <motion.div
-                                        className="mt-6 w-full bg-neutral-50 dark:bg-neutral-700 border border-neutral-400/20 border-dashed rounded-md shadow-2xs flex flex-col gap-2 p-6"
-                                    >
-                                        <Description
-                                            levels={coach.levels}
-                                            sports={coach.sports}
-                                            isModal={true}
-                                        />
-                                    </motion.div>
+                                    {
+                                        (coach.levels.length > 0 || coach.sports.length > 0) && (
+                                            <motion.div
+                                                className="mt-6 w-full bg-neutral-50 dark:bg-neutral-700 border border-neutral-400/20 border-dashed rounded-md shadow-2xs flex flex-col gap-2 p-6"
+                                                initial={{opacity: 0, y: 20}}
+                                                animate={{opacity: 1, y: 0}}
+                                                transition={{duration: 0.5, delay: 0.1}}
+                                            >
+                                                <Description
+                                                    levels={coach.levels}
+                                                    sports={coach.sports}
+                                                    isModal={true}
+                                                />
+                                            </motion.div>
+                                        )
+                                    }
                                     <motion.div
                                         className="mt-6 flex flex-col items-center gap-4"
                                         initial={{opacity: 0, y: 20}}
@@ -178,7 +185,7 @@ const CoachProfile = ({coachId}: Props) => {
                                             Note moyenne
                                         </h3>
                                         {averageRating !== null ? (
-                                            <Rating value={averageRating} className="text-2xl"/>
+                                            <RatingStar value={averageRating} className="text-3xl"/>
                                         ) : (
                                             <p className="text-neutral-500">Aucune note disponible</p>
                                         )}
@@ -195,7 +202,7 @@ const CoachProfile = ({coachId}: Props) => {
                             animate={{scale: 1, opacity: 1}}
                             transition={{delay: 0.1}}
                         >
-                            Réserver un créneau (Benoit)
+                            {coach && <Booking coach={coach}/>}
                         </motion.div>
                     </div>
                 </motion.div>
@@ -218,53 +225,7 @@ const CoachProfile = ({coachId}: Props) => {
                         </p>
                     </div>
                     {/* Ratings */}
-                    <motion.div
-                        className="flex flex-col gap-4 px-6 pb-6"
-                        initial={{opacity: 0, y: 20}}
-                        animate={{opacity: 1, y: 0}}
-                        transition={{duration: 0.5, delay: 0.4, staggerChildren: 0.1}}
-                    >
-                        {coach?.ratings && coach?.ratings.length > 0 ? (
-                            coach?.ratings.sort(
-                                (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-                            ).map((rating, index) => (
-                                <motion.div
-                                    key={index}
-                                    className="bg-white dark:bg-neutral-700 p-4 rounded-lg shadow-sm max-h-1/2 overflow-y-auto"
-                                    initial={{opacity: 0, y: 10}}
-                                    animate={{opacity: 1, y: 0}}
-                                    transition={{duration: 0.3}}
-                                    whileHover={{scale: 1.02}}
-                                >
-                                    <p className="text-sm text-neutral-600 dark:text-neutral-300">
-                                        {rating.comment}
-                                    </p>
-                                    <div
-                                        className="flex max-lg:flex-col text-xs text-neutral-500 dark:text-neutral-400 mt-2">
-                                        <Link
-                                            to={`/user/${rating.user.id}`}
-                                            className="text-blue-500 hover:underline"
-                                        >
-                                            {rating.user.firstName} {rating.user.lastName}
-                                        </Link>
-                                        <div className="flex items-center lg:ml-2 max-lg:justify-between">
-                                        <span className="flex items-center gap-1">
-                                        <span className="max-lg:hidden text-neutral-400">|</span>
-                                        <FaClock/>
-                                            {timeAgo(rating.date)}
-                                        </span>
-                                            <Rating
-                                                value={rating.rating}
-                                                className="ml-2"
-                                            />
-                                        </div>
-                                    </div>
-                                </motion.div>
-                            ))
-                        ) : (
-                            <p className="text-neutral-500">Aucun avis pour ce coach.</p>
-                        )}
-                    </motion.div>
+                    <RatingCards ratings={coach?.ratings}/>
                 </motion.div>
             </div>
         </div>

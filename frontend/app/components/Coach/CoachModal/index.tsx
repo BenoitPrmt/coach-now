@@ -1,27 +1,21 @@
 import {motion} from "motion/react";
-import {XIcon} from "lucide-react";
+import {CircleUserIcon, XIcon} from "lucide-react";
 import {Button} from "~/components/ui/button";
 import {Link} from "react-router";
 import {cn} from "~/lib/utils";
-import type {Gender, Level} from "~/types";
+import type {Coach, Gender, Level} from "~/types";
 import {formatGender} from "~/lib/formatting";
 import {MarsIcon, VenusIcon, XIcon as XIcon2} from "lucide-react";
 import {useMemo} from "react";
 import {Description} from "~/components/Coach/CoachCard";
 import CoachImage from "../CoachImage";
+import {Booking} from "~/components/Booking/booking";
+import {calculateAgeFromBirthdate} from "~/lib/calculations";
 
 interface CoachModalProps {
     isOpen: boolean;
     onClose: () => void;
-    coach: {
-        id: string;
-        profilePictureUrl: string;
-        name: string;
-        age: number;
-        gender: Gender;
-        sports: string[];
-        levels: Level[];
-    };
+    coach: Coach;
     showBookingButton?: boolean;
     showProfileButton?: boolean;
     className?: string;
@@ -108,7 +102,9 @@ const CoachModal = ({
             initial={{opacity: 0}}
             animate={{opacity: 1}}
             exit={{opacity: 0}}
-            onClick={onClose}
+            onClick={(e) => {
+                if (e.target === e.currentTarget) onClose();
+            }}
         >
             <motion.div
                 className={cn(
@@ -141,26 +137,30 @@ const CoachModal = ({
                     <CoachImage
                         animateOnHover
                         src={coach.profilePictureUrl}
-                        alt={coach.name}
+                        alt={coach.user.firstName + ' ' + coach.user.lastName}
                     />
                 </motion.div>
 
                 <motion.div className="text-center mb-6">
                     <UserInfo
                         profilePictureUrl={coach.profilePictureUrl}
-                        name={coach.name}
-                        age={coach.age}
+                        name={coach.user.firstName + ' ' + coach.user.lastName}
+                        age={calculateAgeFromBirthdate(coach.birthdate)}
                         gender={coach.gender}
                         isModal={true}
                     />
                 </motion.div>
 
-                <motion.div
-                    className="bg-neutral-50 dark:bg-neutral-700 border border-neutral-400/20 border-dashed rounded-md shadow-2xs flex flex-col gap-2 p-6">
-                    <motion.div>
-                        <Description levels={coach.levels} sports={coach.sports} isModal={true}/>
-                    </motion.div>
-                </motion.div>
+                {
+                    (coach.levels.length > 0 || coach.sports.length > 0) && (
+                        <motion.div
+                            className="bg-neutral-50 dark:bg-neutral-700 border border-neutral-400/20 border-dashed rounded-md shadow-2xs flex flex-col gap-2 p-6">
+                            <motion.div>
+                                <Description levels={coach.levels} sports={coach.sports} isModal={true}/>
+                            </motion.div>
+                        </motion.div>
+                    )
+                }
 
                 {(showBookingButton || showProfileButton) && (
                     <motion.div
@@ -171,11 +171,8 @@ const CoachModal = ({
                         exit={{opacity: 0, y: 20}}
                     >
                         {showBookingButton && (
-                            <Button
-                                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium h-11 rounded-lg transition-colors cursor-pointer"
-                            >
-                                Réserver
-                            </Button>
+                            <Booking coach={coach}
+                                     buttonClassName="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium h-11 rounded-lg transition-colors cursor-pointer"/>
                         )}
                         {showProfileButton && (
                             <Button
@@ -183,7 +180,8 @@ const CoachModal = ({
                                 asChild
                             >
                                 <Link to={`/coach/${coach.id}`}>
-                                    Voir profil
+                                    <CircleUserIcon/>
+                                    Voir le profil
                                 </Link>
                             </Button>
                         )}

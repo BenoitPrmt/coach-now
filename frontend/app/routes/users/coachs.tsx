@@ -1,7 +1,7 @@
-import type {Route} from "./+types/home";
 import CoachesPage from "~/pages/Coachs";
+import type {MetaArgs} from "react-router";
 
-export function meta({}: Route.MetaArgs) {
+export function meta({}: MetaArgs) {
     return [
         {title: "CoachNow - Nos Coachs"},
         {

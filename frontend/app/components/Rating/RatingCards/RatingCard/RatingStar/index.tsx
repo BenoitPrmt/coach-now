@@ -1,7 +1,7 @@
 import {FaStarHalf, FaStar} from "react-icons/fa";
 import {cn} from "~/lib/utils";
 
-const Rating = ({value, className}: { value: number; className?: string }) => {
+const RatingStar = ({value, className}: { value: number; className?: string }) => {
     const fullStars = Math.floor(value);
     const halfStar = value % 1 >= 0.5 ? 1 : 0;
     const emptyStars = 5 - fullStars - halfStar;
@@ -19,4 +19,4 @@ const Rating = ({value, className}: { value: number; className?: string }) => {
     );
 };
 
-export default Rating;
+export default RatingStar;

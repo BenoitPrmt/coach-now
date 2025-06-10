@@ -5,8 +5,6 @@ import jakarta.persistence.Entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +39,7 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Rating> ratings;
-  
+
     @Override
     public String toString() {
         return "User{" +
@@ -50,6 +48,8 @@ public class User {
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", role=" + role +
+                ", bookings=" + (bookings != null ? bookings : "[]") +
+                ", ratings=" + (ratings != null ? ratings : "[]") +
                 '}';
     }
 

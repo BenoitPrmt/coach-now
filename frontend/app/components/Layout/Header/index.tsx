@@ -84,8 +84,16 @@ export default function Header() {
         return (
             <>
                 {headerElements.filter((headerElement) => {
-                    if (headerElement.adminOnly) {
+                    if (headerElement.isAdmin) {
                         return isAdmin;
+                    }
+
+                    if (headerElement.isCoach) {
+                        return isCoach;
+                    }
+
+                    if (headerElement.isUser) {
+                        return !isAdmin && !isCoach;
                     }
 
                     if (headerElement.hiddenWhenAuth) {

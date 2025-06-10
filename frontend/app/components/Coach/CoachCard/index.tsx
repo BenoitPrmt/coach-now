@@ -2,11 +2,12 @@ import {cn} from "~/lib/utils";
 import {motion} from "motion/react";
 import {useMemo, useState} from "react";
 import {MarsIcon, VenusIcon, XIcon} from "lucide-react";
-import type {Gender, Level} from "~/types";
+import type {Coach, Gender, Level} from "~/types";
 import {formatGender} from "~/lib/formatting";
 import CoachBadge from "~/components/Coach/CoachCard/CoachBadge";
 import CoachModal from "~/components/Coach/CoachModal";
 import CoachImage from "~/components/Coach/CoachImage";
+import {calculateAgeFromBirthdate} from "~/lib/calculations";
 
 interface UserInfoProps {
     profilePictureUrl: string;
@@ -46,13 +47,13 @@ const UserInfo = (
     }, [gender])
 
     return (
-        <div className={cn("flex items-center gap-3", isModal && "mb-4 justify-center")}>
+        <div className={cn("flex items-center gap-3", isModal ? "mb-4 justify-center" : "p-2")}>
             <CoachImage
                 src={profilePictureUrl}
                 alt={name}
                 animateOnHover={isModal}
                 className={cn(
-                    "rounded-lg object-cover shadow-2xs ml-2 mt-2",
+                    "rounded-lg object-cover shadow-2xs",
                     isModal ? "hidden" : "w-14 h-14"
                 )}
             />
@@ -107,15 +108,7 @@ export const Description = ({levels, sports, isModal = false}: DescriptionProps)
 };
 
 interface CoachCardProps {
-    coach: {
-        id: string;
-        profilePictureUrl: string;
-        name: string;
-        age: number;
-        gender: Gender;
-        sports: string[];
-        levels: Level[];
-    }
+    coach: Coach;
     className?: string;
 }
 
@@ -141,15 +134,22 @@ const CoachCard = ({
                 whileTap={{scale: 1.0}}
             >
                 <motion.div>
-                    <UserInfo profilePictureUrl={coach.profilePictureUrl} name={coach.name} age={coach.age}
+                    <UserInfo profilePictureUrl={coach.profilePictureUrl}
+                              name={coach.user.firstName + ' ' + coach.user.lastName}
+                              age={calculateAgeFromBirthdate(coach.birthdate)}
                               gender={coach.gender}/>
                 </motion.div>
 
-                <motion.div
-                    className="bg-neutral-50 dark:bg-neutral-700 border border-neutral-400/20 border-dashed rounded-md shadow-2xs flex flex-col gap-2 p-4 h-full"
-                >
-                    <Description levels={coach.levels} sports={coach.sports}/>
-                </motion.div>
+                {
+                    (coach.levels.length > 0 || coach.sports.length > 0) && (
+
+                        <motion.div
+                            className="bg-neutral-50 dark:bg-neutral-700 border border-neutral-400/20 border-dashed rounded-md shadow-2xs flex flex-col gap-2 p-4 h-full"
+                        >
+                            <Description levels={coach.levels} sports={coach.sports}/>
+                        </motion.div>
+                    )
+                }
             </motion.div>
 
             <CoachModal
