@@ -8,11 +8,12 @@ import {Tabs, TabsContent, TabsList, TabsTrigger} from "~/components/ui/tabs"
 import {Link} from "react-router";
 import RatingCards from "~/components/Rating/RatingCards";
 import {isOfTypeCoach} from "~/validation/typesValidations";
-import { getPublicEnv } from 'env.common';
+import {getPublicEnv} from 'env.common';
 import ProfileEditModal from "~/components/Account/profile/edit-modal";
 import BookingCard from "~/components/Booking/card";
 import UserInfo from "~/components/Account/user/user-info";
 import {Badge} from "~/components/ui/badge";
+import {cn} from "~/lib/utils";
 
 const AccountComponent = () => {
     const {user, userToken, isLoading} = useUser();
@@ -244,50 +245,83 @@ const AccountComponent = () => {
                                                     <Tabs defaultValue="future">
                                                         <TabsList className="grid grid-cols-4 mb-8 p-1">
                                                             <TabsTrigger value="future">
-                                                                À venir {futureBookings.length > 0 && (
-                                                                <Badge className="h-4 min-w-4 rounded-full px-1 tabular-nums" variant="light">
-                                                                    {futureBookings.length}
-                                                                </Badge>
-                                                            )}
+                                                                <span className={cn(
+                                                                    "flex items-center gap-1",
+                                                                    futureBookings.length > 0 ? "text-blue-600" : "text-gray-500"
+                                                                )}>
+                                                                    <span>À venir</span>
+                                                                    {futureBookings.length > 0 && (
+                                                                        <Badge
+                                                                            className="h-4 min-w-4 rounded-full px-1 tabular-nums"
+                                                                            variant="light">
+                                                                            {futureBookings.length}
+                                                                        </Badge>
+                                                                    )}
+                                                                </span>
                                                             </TabsTrigger>
                                                             <TabsTrigger value="ongoing">
-                                                                En cours {ongoingBookings.length > 0 && (
-                                                                <Badge className="h-4 min-w-4 rounded-full px-1 tabular-nums" variant="light">
-                                                                    {ongoingBookings.length}
-                                                                </Badge>
-                                                            )}
+                                                                <span className={cn(
+                                                                    "flex items-center gap-1",
+                                                                    ongoingBookings.length > 0 ? "text-green-600" : "text-gray-500"
+                                                                )}>
+                                                                    <span>En cours</span>
+                                                                    {ongoingBookings.length > 0 && (
+                                                                        <Badge
+                                                                            className="h-4 min-w-4 rounded-full px-1 tabular-nums"
+                                                                            variant="light">
+                                                                            {ongoingBookings.length}
+                                                                        </Badge>
+                                                                    )}
+                                                                </span>
                                                             </TabsTrigger>
                                                             <TabsTrigger value="past">
-                                                                Passées {pastBookings.length > 0 && (
-                                                                <Badge className="h-4 min-w-4 rounded-full px-1 tabular-nums" variant="light">
-                                                                    {pastBookings.length}
-                                                                </Badge>
-                                                            )}
+                                                                <span className={cn(
+                                                                    "flex items-center gap-1",
+                                                                    pastBookings.length > 0 ? "text-gray-600" : "text-gray-500"
+                                                                )}>
+                                                                    <span>Terminées</span>
+                                                                    {pastBookings.length > 0 && (
+                                                                        <Badge
+                                                                            className="h-4 min-w-4 rounded-full px-1 tabular-nums"
+                                                                            variant="light">
+                                                                            {pastBookings.length}
+                                                                        </Badge>
+                                                                    )}
+                                                                </span>
                                                             </TabsTrigger>
                                                             <TabsTrigger value="cancelled">
-                                                                Annulées {cancelledBookings.length > 0 && (
-                                                                <Badge className="h-4 min-w-4 rounded-full px-1 tabular-nums" variant="light">
-                                                                    {cancelledBookings.length}
-                                                                </Badge>
-                                                            )}
+                                                            <span className={cn(
+                                                                "flex items-center gap-1 text-red-600",
+                                                                cancelledBookings.length > 0 ? "text-red-600" : "text-gray-500"
+                                                            )}>
+                                                                <span>Annulées</span>
+                                                                {cancelledBookings.length > 0 && (
+                                                                    <Badge
+                                                                        className="h-4 min-w-4 rounded-full px-1 tabular-nums"
+                                                                        variant="light">
+                                                                        {cancelledBookings.length}
+                                                                    </Badge>
+                                                                )}
+                                                            </span>
                                                             </TabsTrigger>
                                                         </TabsList>
-                                                        <TabsContent value="all">
-                                                        </TabsContent>
                                                         <TabsContent value="future">
                                                             {futureBookings && futureBookings.length > 0 && (
                                                                 <div>
-                                                                    <h4 className="text-lg font-semibold mb-2">À venir</h4>
+                                                                    <h4 className="text-lg font-semibold mb-2">À
+                                                                        venir</h4>
                                                                     <div className="space-y-4">
                                                                         {futureBookings.map((booking, index) => (
-                                                                            <BookingCard key={booking.id} booking={booking}
+                                                                            <BookingCard key={booking.id}
+                                                                                         booking={booking}
                                                                                          index={index}/>
                                                                         ))}
                                                                     </div>
                                                                 </div>
                                                             )}
                                                             {!futureBookings || futureBookings.length === 0 && (
-                                                                <p className="text-gray-500 mt-4">Aucune réservation à venir.</p>
+                                                                <p className="text-gray-500 mt-4">Aucune réservation à
+                                                                    venir.</p>
                                                             )}
                                                         </TabsContent>
                                                         <TabsContent value="ongoing">
@@ -297,14 +331,16 @@ const AccountComponent = () => {
                                                                         cours</h4>
                                                                     <div className="space-y-4">
                                                                         {ongoingBookings.map((booking, index) => (
-                                                                            <BookingCard key={booking.id} booking={booking}
+                                                                            <BookingCard key={booking.id}
+                                                                                         booking={booking}
                                                                                          index={index}/>
                                                                         ))}
                                                                     </div>
                                                                 </div>
                                                             )}
                                                             {!ongoingBookings || ongoingBookings.length === 0 && (
-                                                                <p className="text-gray-500 mt-4">Aucune réservation en cours.</p>
+                                                                <p className="text-gray-500 mt-4">Aucune réservation en
+                                                                    cours.</p>
                                                             )}
                                                         </TabsContent>
                                                         <TabsContent value="past">
@@ -313,14 +349,16 @@ const AccountComponent = () => {
                                                                     <h4 className="text-lg font-semibold mt-6 mb-2">Terminées</h4>
                                                                     <div className="space-y-4">
                                                                         {pastBookings.map((booking, index) => (
-                                                                            <BookingCard key={booking.id} booking={booking}
+                                                                            <BookingCard key={booking.id}
+                                                                                         booking={booking}
                                                                                          index={index}/>
                                                                         ))}
                                                                     </div>
                                                                 </div>
                                                             )}
                                                             {!pastBookings || pastBookings.length === 0 && (
-                                                                <p className="text-gray-500 mt-4">Aucune réservation terminée.</p>
+                                                                <p className="text-gray-500 mt-4">Aucune réservation
+                                                                    terminée.</p>
                                                             )}
                                                         </TabsContent>
                                                         <TabsContent value="cancelled">
@@ -329,14 +367,16 @@ const AccountComponent = () => {
                                                                     <h4 className="text-lg font-semibold mt-6 mb-2 text-red-600">Annulées</h4>
                                                                     <div className="space-y-4">
                                                                         {cancelledBookings.map((booking, index) => (
-                                                                            <BookingCard key={booking.id} booking={booking}
+                                                                            <BookingCard key={booking.id}
+                                                                                         booking={booking}
                                                                                          index={index}/>
                                                                         ))}
                                                                     </div>
                                                                 </div>
                                                             )}
                                                             {!cancelledBookings || cancelledBookings.length === 0 && (
-                                                                <p className="text-gray-500 mt-4">Aucune réservation annulée.</p>
+                                                                <p className="text-gray-500 mt-4">Aucune réservation
+                                                                    annulée.</p>
                                                             )}
                                                         </TabsContent>
                                                     </Tabs>
