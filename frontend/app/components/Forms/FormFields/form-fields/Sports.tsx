@@ -189,6 +189,8 @@ export const MultiSelect = React.forwardRef<
     };
 
     return (
+      <>
+      <FormLabel>Vos domaines de compétences</FormLabel>
       <Popover
         open={isPopoverOpen}
         onOpenChange={setIsPopoverOpen}
@@ -206,7 +208,6 @@ export const MultiSelect = React.forwardRef<
           >
             {selectedValues.length > 0 ? (
               <div className="flex justify-between items-center w-full">
-                <FormLabel>Vos domaines de compétences</FormLabel>
                 <div className="flex flex-wrap items-center">
                   {selectedValues.slice(0, maxCount).map((value) => {
                     const option = options.find((o) => o.value === value);
@@ -374,6 +375,7 @@ export const MultiSelect = React.forwardRef<
           />
         )}
       </Popover>
+      </>
     );
   }
 );

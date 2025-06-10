@@ -47,7 +47,6 @@ export function Layout({children}: { children: ReactNode }) {
                 <Scripts/>
             </BaseLayout>
         </main>
-        <Toaster richColors position="top-right" />
         <Footer/>
         </body>
         </html>
