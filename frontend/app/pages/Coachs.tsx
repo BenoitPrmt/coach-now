@@ -294,7 +294,7 @@ const CoachesPage = () => {
       {isLoading && <Loader />}
 
       {!isLoading && coaches && coaches.length === 0 && (
-        <div className="text-center text-gray-500">
+        <div className="text-center text-gray-500 py-2">
           {search || filter ? 'Aucun coach trouvé pour cette recherche.' : 'Aucun coach disponible pour le moment.'}
         </div>
       )}
