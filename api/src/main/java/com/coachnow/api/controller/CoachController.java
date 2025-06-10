@@ -16,6 +16,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -30,8 +31,17 @@ public class CoachController {
     @GetMapping("/coachs")
     public PaginatedElements<CoachDTO> all(
             @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Integer pageSize
+            @RequestParam(required = false) Integer pageSize,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String filter,
+            @RequestParam(required = false) String filterBy,
+            @RequestParam(value = "sort", required = false, defaultValue = "id") String sortBy
     ) {
+        Optional<String> searchOpt = Optional.ofNullable(search);
+        Optional<String> filterOpt = Optional.ofNullable(filter);
+        Optional<String> filterByOpt = Optional.ofNullable(filterBy);
+        Optional<String> sortByOpt = Optional.ofNullable(sortBy);
+
         if (page != null) {
             int pageSizeDefault = 10;
 
@@ -41,26 +51,29 @@ public class CoachController {
 
             int validPageSize = (pageSize != null && pageSize > 0) ? pageSize : pageSizeDefault;
 
-            List<Coach> coachs = coachService.selectAllWithPagination(page, validPageSize);
+            List<Coach> coachs = coachService.selectAllWithPagination(page, validPageSize, searchOpt, filterOpt, filterByOpt, sortByOpt);
 
             List<CoachDTO> listDTO = new ArrayList<>();
             for (Coach coach : coachs) {
                 listDTO.add(new CoachDTO(coach));
             }
-            int totalElements = coachService.selectAll().size();
+
+            int totalElements = coachService.getTotalCountWithFilters(searchOpt, filterOpt, filterByOpt);
             int totalPages = (int) Math.ceil((double) totalElements / validPageSize);
+
             return new PaginatedElements<>(
-                    true, page, validPageSize, totalPages, totalElements, listDTO
+                    true, page, validPageSize, totalPages, totalElements, listDTO, searchOpt
             );
         }
 
-        List<Coach> coachs = coachService.selectAll();
+        List<Coach> coachs = coachService.selectAllWithFilters(searchOpt, filterOpt, filterByOpt, sortByOpt);
+
         List<CoachDTO> listDTO = new ArrayList<>();
         for (Coach coach : coachs) {
             listDTO.add(new CoachDTO(coach));
         }
         return new PaginatedElements<>(
-                false, 0, 0, 0, listDTO.size(), listDTO
+                false, 0, 0, 0, listDTO.size(), listDTO, searchOpt
         );
     }
 

@@ -13,6 +13,7 @@ import Header from "app/components/Layout/Header";
 import "./app.css";
 import type {ReactNode} from "react";
 import Footer from "~/components/Layout/Footer";
+import {NuqsAdapter} from 'nuqs/adapters/react-router/v7'
 import {Toaster} from "sonner";
 
 export const links: Route.LinksFunction = () => [
@@ -54,7 +55,11 @@ export function Layout({children}: { children: ReactNode }) {
 }
 
 export default function App() {
-    return <Outlet/>;
+    return (
+        <NuqsAdapter>
+            <Outlet/>
+        </NuqsAdapter>
+    );
 }
 
 export function ErrorBoundary({error}: Route.ErrorBoundaryProps) {

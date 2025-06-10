@@ -57,7 +57,7 @@ const UserInfo = (
                     isModal ? "hidden" : "w-14 h-14"
                 )}
             />
-            <div className="flex flex-col">
+            <div className="flex flex-col pl-2">
                 <motion.h6
                     className={cn(
                         "font-semibold text-neutral-900 dark:text-neutral-200 text-lg"
