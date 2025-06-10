@@ -3,28 +3,69 @@ package com.coachnow.api.web.request.coach;
 import com.coachnow.api.types.Gender;
 import com.coachnow.api.types.Level;
 import com.coachnow.api.types.Sports;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.util.Set;
 
 @Data
-public class CoachCreation {
+public class CoachRegistration {
+    // 🔹 Données utilisateur
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String password;
+    @JsonProperty("isCoach")
+    private boolean coach;
+
+    // 🔹 Données coach
     private String birthdate;
     private String profilePictureUrl;
     private Float hourlyRate;
     private Set<Sports> sports;
     private Set<Level> levels;
     private Gender gender;
-    private String userId;
 
-    public CoachCreation(CoachRegistration coachRegistration, String userId) {
-        this.birthdate = coachRegistration.getBirthdate();
-        this.profilePictureUrl = coachRegistration.getProfilePictureUrl();
-        this.hourlyRate = coachRegistration.getHourlyRate();
-        this.sports = coachRegistration.getSports();
-        this.levels = coachRegistration.getLevels();
-        this.gender = coachRegistration.getGender();
-        this.userId = userId;
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    @JsonProperty("isCoach")
+    public boolean isCoach() {
+        return coach;
+    }
+
+    @JsonProperty("isCoach")
+    public void setCoach(boolean coach) {
+        this.coach = coach;
     }
 
     public String getBirthdate() {
@@ -75,11 +116,4 @@ public class CoachCreation {
         this.gender = gender;
     }
 
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
 }

@@ -9,6 +9,7 @@ import com.coachnow.api.model.service.UserService;
 import com.coachnow.api.types.Roles;
 import com.coachnow.api.web.request.AuthRequest;
 import com.coachnow.api.web.request.coach.CoachCreation;
+import com.coachnow.api.web.request.coach.CoachRegistration;
 import com.coachnow.api.web.response.AuthResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -70,28 +71,30 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register/coach")
-    public ResponseEntity<?> registerCoach(@RequestBody CoachCreation coachCreation) {
-        Optional<User> userFound = userRepository.findUserByEmail(coachCreation.getEmail());
+    public ResponseEntity<?> registerCoach(@RequestBody CoachRegistration coachRegistration) {
+        Optional<User> userFound = userRepository.findUserByEmail(coachRegistration.getEmail());
 
         if (userFound.isPresent()) {
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
-                    .body("L'email  " + coachCreation.getEmail() + " est déjà utilisé.");
+                    .body("L'email  " + coachRegistration.getEmail() + " est déjà utilisé.");
         }
 
-        if (!coachCreation.isCoach()) {
+        if (!coachRegistration.isCoach()) {
             return ResponseEntity.badRequest()
                     .body("Ce formulaire est réservé aux coachs.");
         }
 
         User user = new User();
-        user.setFirstName(coachCreation.getFirstName());
-        user.setLastName(coachCreation.getLastName());
-        user.setEmail(coachCreation.getEmail());
-        user.setPassword(coachCreation.getPassword());
+        user.setFirstName(coachRegistration.getFirstName());
+        user.setLastName(coachRegistration.getLastName());
+        user.setEmail(coachRegistration.getEmail());
+        user.setPassword(coachRegistration.getPassword());
         user.setRole(Roles.COACH);
 
         User savedUser = userService.registerUser(user);
+
+        CoachCreation coachCreation = new CoachCreation(coachRegistration, savedUser.getId());
 
         Coach coach = new Coach();
         coach.setUser(savedUser);
