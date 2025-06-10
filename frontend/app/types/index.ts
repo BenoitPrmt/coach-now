@@ -1,3 +1,12 @@
+export type PaginatedResponse<T> = {
+    isPaginationEnabled: boolean;
+    page: number;
+    pageSize: number;
+    totalPages: number;
+    totalElements: number;
+    elements: T[];
+}
+
 export type UserRole = 'USER' | 'COACH' | 'ADMIN';
 
 export type Gender = "MALE" | "FEMALE"

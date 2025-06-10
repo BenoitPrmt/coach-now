@@ -5,6 +5,7 @@ import com.coachnow.api.model.entity.dto.CoachDTO;
 import com.coachnow.api.model.service.CoachService;
 import com.coachnow.api.model.service.UserService;
 import com.coachnow.api.web.response.coach.availability.DayAvailability;
+import com.coachnow.api.web.response.pagination.PaginatedElements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -27,7 +28,7 @@ public class CoachController {
     UserService userService;
 
     @GetMapping("/coachs")
-    public List<CoachDTO> all(
+    public PaginatedElements<CoachDTO> all(
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer pageSize
     ) {
@@ -40,10 +41,17 @@ public class CoachController {
 
             int validPageSize = (pageSize != null && pageSize > 0) ? pageSize : pageSizeDefault;
 
-            return coachService.selectAllWithPagination(page, validPageSize)
-                    .stream()
-                    .map(CoachDTO::new)
-                    .toList();
+            List<Coach> coachs = coachService.selectAllWithPagination(page, validPageSize);
+
+            List<CoachDTO> listDTO = new ArrayList<>();
+            for (Coach coach : coachs) {
+                listDTO.add(new CoachDTO(coach));
+            }
+            int totalElements = coachService.selectAll().size();
+            int totalPages = (int) Math.ceil((double) totalElements / validPageSize);
+            return new PaginatedElements<>(
+                    true, page, validPageSize, totalPages, totalElements, listDTO
+            );
         }
 
         List<Coach> coachs = coachService.selectAll();
@@ -51,7 +59,9 @@ public class CoachController {
         for (Coach coach : coachs) {
             listDTO.add(new CoachDTO(coach));
         }
-        return listDTO;
+        return new PaginatedElements<>(
+                false, 0, 0, 0, listDTO.size(), listDTO
+        );
     }
 
 

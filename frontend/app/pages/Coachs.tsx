@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react';
 import CoachCard from "app/components/Coach/CoachCard";
 import {motion, type Variants} from "motion/react";
 import {getPublicEnv} from "../../env.common";
-import type {Coach} from "~/types";
+import type {Coach, PaginatedResponse} from "~/types";
 import {useUser} from "~/hooks/useUser";
 import Loader from "~/components/Loader";
 
@@ -72,8 +72,8 @@ const CoachesPage = () => {
                 if (!response.ok) {
                     throw new Error('Failed to fetch coaches');
                 }
-                const data = await response.json();
-                setCoaches(data);
+                const data: PaginatedResponse<Coach> = await response.json();
+                setCoaches(data.elements);
             } catch (error) {
                 console.error('Error fetching coaches:', error);
             } finally {
