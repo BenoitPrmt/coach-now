@@ -24,6 +24,21 @@ public class CoachService {
         return (List<Coach>) coachRepository.findAll();
     }
 
+    public List<Coach> selectAllWithPagination(int page, int pageSize) {
+        int start = page * pageSize;
+        int end = Math.min(start + pageSize, (int) coachRepository.count());
+        List<Coach> allCoaches = (List<Coach>) coachRepository.findAll();
+
+        if (start >= allCoaches.size()) {
+            return Collections.emptyList();
+        }
+        if (end > allCoaches.size()) {
+            end = allCoaches.size();
+        }
+
+        return allCoaches.subList(start, end);
+    }
+
     public Coach select(String id) {
         Optional<Coach> optionalPlayer = coachRepository.findById(id);
         return optionalPlayer.orElse(null);
@@ -96,7 +111,7 @@ public class CoachService {
                         int bookingEndHour = calendar.get(Calendar.HOUR_OF_DAY);
 
                         if (booking.getStartDate().toString().equals((date)) &&
-                            bookingEndHour == hour + 1) {
+                                bookingEndHour == hour + 1) {
                             hourAvailability.setAvailable(false);
                             break;
                         }

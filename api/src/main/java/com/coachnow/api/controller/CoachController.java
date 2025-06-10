@@ -1,11 +1,9 @@
 package com.coachnow.api.controller;
 
 import com.coachnow.api.model.entity.Coach;
-import com.coachnow.api.model.entity.User;
 import com.coachnow.api.model.entity.dto.CoachDTO;
 import com.coachnow.api.model.service.CoachService;
 import com.coachnow.api.model.service.UserService;
-import com.coachnow.api.web.request.coach.CoachCreation;
 import com.coachnow.api.web.response.coach.availability.DayAvailability;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -29,14 +27,33 @@ public class CoachController {
     UserService userService;
 
     @GetMapping("/coachs")
-    public List<CoachDTO> all() {
+    public List<CoachDTO> all(
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer pageSize
+    ) {
+        if (page != null) {
+            int pageSizeDefault = 10;
+
+            if (page < 0) {
+                throw new IllegalArgumentException("Page index must be 0 or greater.");
+            }
+
+            int validPageSize = (pageSize != null && pageSize > 0) ? pageSize : pageSizeDefault;
+
+            return coachService.selectAllWithPagination(page, validPageSize)
+                    .stream()
+                    .map(CoachDTO::new)
+                    .toList();
+        }
+
         List<Coach> coachs = coachService.selectAll();
-        List<CoachDTO> listDTO = new ArrayList<CoachDTO>();
-        for(Coach coach : coachs) {
+        List<CoachDTO> listDTO = new ArrayList<>();
+        for (Coach coach : coachs) {
             listDTO.add(new CoachDTO(coach));
         }
         return listDTO;
     }
+
 
     @GetMapping("/coach/{id}")
     public CoachDTO get(@PathVariable String id) {
