@@ -1,5 +1,25 @@
 package com.coachnow.api.controller;
 
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.coachnow.api.model.entity.Coach;
 import com.coachnow.api.model.entity.User;
 import com.coachnow.api.model.entity.dto.CoachDTO;
@@ -8,17 +28,6 @@ import com.coachnow.api.model.service.UserService;
 import com.coachnow.api.web.request.coach.CoachCreation;
 import com.coachnow.api.web.response.coach.availability.DayAvailability;
 import com.coachnow.api.web.response.pagination.PaginatedElements;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -37,7 +46,7 @@ public class CoachController {
             @RequestParam(required = false) String search,
             @RequestParam(required = false) String filter,
             @RequestParam(required = false) String filterBy,
-            @RequestParam(value = "sort", required = false, defaultValue = "id") String sortBy
+            @RequestParam(value = "sort", required = false, defaultValue = "lastname") String sortBy
     ) {
         Optional<String> searchOpt = Optional.ofNullable(search);
         Optional<String> filterOpt = Optional.ofNullable(filter);
@@ -78,7 +87,6 @@ public class CoachController {
                 false, 0, 0, 0, listDTO.size(), listDTO, searchOpt
         );
     }
-
 
     @GetMapping("/coach/{id}")
     public CoachDTO get(@PathVariable String id) {

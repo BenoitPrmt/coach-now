@@ -1,23 +1,30 @@
 package com.coachnow.api.model.service;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.coachnow.api.model.entity.Booking;
 import com.coachnow.api.model.entity.Coach;
 import com.coachnow.api.model.repository.CoachRepository;
 import com.coachnow.api.web.response.coach.availability.DayAvailability;
 import com.coachnow.api.web.response.coach.availability.HourAvailability;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 @Service
 public class CoachService {
+
     @Autowired
     private CoachRepository coachRepository;
 
@@ -28,7 +35,6 @@ public class CoachService {
     public List<Coach> selectAllWithPagination(int page, int pageSize, Optional<String> search, Optional<String> filter, Optional<String> filterBy, Optional<String> sortBy) {
         List<Coach> allCoaches = (List<Coach>) coachRepository.findAll();
 
-        // Appliquer la recherche
         if (search.isPresent() && !search.get().trim().isEmpty()) {
             String searchTerm = search.get().toLowerCase().trim();
             allCoaches = allCoaches.stream()
@@ -36,13 +42,11 @@ public class CoachService {
                     .collect(Collectors.toList());
         }
 
-        // Appliquer le filtrage
-        if (filter.isPresent() && !filter.get().trim().isEmpty() &&
-                filterBy.isPresent() && !filterBy.get().trim().isEmpty()) {
+        if (filter.isPresent() && !filter.get().trim().isEmpty()
+                && filterBy.isPresent() && !filterBy.get().trim().isEmpty()) {
             allCoaches = applyFilter(allCoaches, filter.get(), filterBy.get());
         }
 
-        // Appliquer le tri
         if (sortBy.isPresent() && !sortBy.get().trim().isEmpty()) {
             allCoaches = sortCoaches(allCoaches, sortBy.get());
         }
@@ -67,75 +71,87 @@ public class CoachService {
 
         switch (filterBy.toLowerCase()) {
             case "firstname":
-                return coach.getUser().getFirstName() != null &&
-                        coach.getUser().getFirstName().toLowerCase().equals(filterValue);
+                return coach.getUser().getFirstName() != null
+                        && coach.getUser().getFirstName().toLowerCase().equals(filterValue);
             case "lastname":
-                return coach.getUser().getLastName() != null &&
-                        coach.getUser().getLastName().toLowerCase().equals(filterValue);
+                return coach.getUser().getLastName() != null
+                        && coach.getUser().getLastName().toLowerCase().equals(filterValue);
             case "email":
-                return coach.getUser().getEmail() != null &&
-                        coach.getUser().getEmail().toLowerCase().equals(filterValue);
+                return coach.getUser().getEmail() != null
+                        && coach.getUser().getEmail().toLowerCase().equals(filterValue);
             case "id":
-                return coach.getId() != null &&
-                        coach.getId().toLowerCase().equals(filterValue);
+                return coach.getId() != null
+                        && coach.getId().toLowerCase().equals(filterValue);
             case "gender":
-                return coach.getGender() != null &&
-                        coach.getGender().toString().toLowerCase().equals(filterValue);
+                return coach.getGender() != null
+                        && coach.getGender().toString().toLowerCase().equals(filterValue);
             case "levels":
-                return coach.getLevels() != null &&
-                        coach.getLevels().stream()
-                                .anyMatch(level -> level.toString().toLowerCase().equals(filterValue));
+                return coach.getLevels() != null
+                        && coach.getLevels().stream()
+                        .anyMatch(level -> level.toString().toLowerCase().equals(filterValue));
             case "sports":
-                return coach.getSports() != null &&
-                        coach.getSports().stream()
-                                .anyMatch(sport -> sport.toString().toLowerCase().equals(filterValue));
+                return coach.getSports() != null
+                        && coach.getSports().stream()
+                        .anyMatch(sport -> sport.toString().toLowerCase().equals(filterValue));
             case "hourlyrate":
                 try {
                     Float filterRate = Float.parseFloat(filterValue);
-                    return coach.getHourlyRate() != null &&
-                            coach.getHourlyRate().equals(filterRate);
+                    return coach.getHourlyRate() != null
+                            && coach.getHourlyRate().equals(filterRate);
+                } catch (NumberFormatException e) {
+                    return false;
+                }
+            case "hourlyrate_desc":
+                try {
+                    Float filterRate = Float.parseFloat(filterValue);
+                    return
+                            coach.getHourlyRate() != null
+                                    && coach.getHourlyRate() >= filterRate;
                 } catch (NumberFormatException e) {
                     return false;
                 }
             default:
-                return true; // Si le critère n'est pas reconnu, on ne filtre pas
+                return true;
         }
     }
 
     private boolean matchesSearchCriteria(Coach coach, String searchTerm) {
-        return (coach.getUser().getFirstName() != null && coach.getUser().getFirstName().toLowerCase().contains(searchTerm)) ||
-                (coach.getUser().getLastName() != null && coach.getUser().getLastName().toLowerCase().contains(searchTerm)) ||
-                (coach.getUser().getEmail() != null && coach.getUser().getEmail().toLowerCase().contains(searchTerm));
+        return (coach.getUser().getFirstName() != null && coach.getUser().getFirstName().toLowerCase().contains(searchTerm))
+                || (coach.getUser().getLastName() != null && coach.getUser().getLastName().toLowerCase().contains(searchTerm))
+                || (coach.getUser().getEmail() != null && coach.getUser().getEmail().toLowerCase().contains(searchTerm));
     }
 
     private List<Coach> sortCoaches(List<Coach> coaches, String sortBy) {
+        if (sortBy == null || sortBy.trim().isEmpty()) {
+            return coaches;
+        }
+
         return coaches.stream()
                 .sorted(getCoachComparator(sortBy))
                 .collect(Collectors.toList());
     }
 
     private Comparator<Coach> getCoachComparator(String sortBy) {
-        switch (sortBy.toLowerCase()) {
-            case "firstname":
-                return Comparator.comparing(coach -> coach.getUser().getFirstName() != null ? coach.getUser().getFirstName().toLowerCase() : "");
-            case "lastname":
-                return Comparator.comparing(coach -> coach.getUser().getLastName() != null ? coach.getUser().getLastName().toLowerCase() : "");
-            case "email":
-                return Comparator.comparing(coach -> coach.getUser().getEmail() != null ? coach.getUser().getEmail().toLowerCase() : "");
-            case "gender":
-                return Comparator.comparing(coach -> coach.getGender() != null ? coach.getGender().toString().toLowerCase() : "");
-            case "hourlyrate":
-                return Comparator.comparing(coach -> coach.getHourlyRate() != null ? coach.getHourlyRate() : 0.0f);
-            case "id":
-            default:
-                return Comparator.comparing(Coach::getId);
-        }
+        return switch (sortBy.toLowerCase()) {
+            case "firstname" ->
+                    Comparator.comparing((Coach coach) -> coach.getUser().getFirstName() != null ? coach.getUser().getFirstName().toLowerCase() : "");
+            case "lastname" ->
+                    Comparator.comparing((Coach coach) -> coach.getUser().getLastName() != null ? coach.getUser().getLastName().toLowerCase() : "");
+            case "email" ->
+                    Comparator.comparing((Coach coach) -> coach.getUser().getEmail() != null ? coach.getUser().getEmail().toLowerCase() : "");
+            case "gender" ->
+                    Comparator.comparing((Coach coach) -> coach.getGender() != null ? coach.getGender().toString().toLowerCase() : "");
+            case "hourlyrate" ->
+                    Comparator.comparing((Coach coach) -> coach.getHourlyRate() != null ? coach.getHourlyRate() : 0.0f);
+            case "hourlyrate_desc" ->
+                    Comparator.comparing((Coach coach) -> coach.getHourlyRate() != null ? coach.getHourlyRate() : 0.0f).reversed();
+            default -> Comparator.comparing(Coach::getId);
+        };
     }
 
     public int getTotalCountWithFilters(Optional<String> search, Optional<String> filter, Optional<String> filterBy) {
         List<Coach> allCoaches = (List<Coach>) coachRepository.findAll();
 
-        // Appliquer la recherche
         if (search.isPresent() && !search.get().trim().isEmpty()) {
             String searchTerm = search.get().toLowerCase().trim();
             allCoaches = allCoaches.stream()
@@ -143,9 +159,8 @@ public class CoachService {
                     .collect(Collectors.toList());
         }
 
-        // Appliquer le filtrage
-        if (filter.isPresent() && !filter.get().trim().isEmpty() &&
-                filterBy.isPresent() && !filterBy.get().trim().isEmpty()) {
+        if (filter.isPresent() && !filter.get().trim().isEmpty()
+                && filterBy.isPresent() && !filterBy.get().trim().isEmpty()) {
             allCoaches = applyFilter(allCoaches, filter.get(), filterBy.get());
         }
 
@@ -155,7 +170,6 @@ public class CoachService {
     public List<Coach> selectAllWithFilters(Optional<String> search, Optional<String> filter, Optional<String> filterBy, Optional<String> sortBy) {
         List<Coach> allCoaches = (List<Coach>) coachRepository.findAll();
 
-        // Appliquer la recherche
         if (search.isPresent() && !search.get().trim().isEmpty()) {
             String searchTerm = search.get().toLowerCase().trim();
             allCoaches = allCoaches.stream()
@@ -163,13 +177,13 @@ public class CoachService {
                     .collect(Collectors.toList());
         }
 
-        // Appliquer le filtrage
-        if (filter.isPresent() && !filter.get().trim().isEmpty() &&
-                filterBy.isPresent() && !filterBy.get().trim().isEmpty()) {
+
+        if (filter.isPresent() && !filter.get().trim().isEmpty()
+                && filterBy.isPresent() && !filterBy.get().trim().isEmpty()) {
             allCoaches = applyFilter(allCoaches, filter.get(), filterBy.get());
         }
 
-        // Appliquer le tri
+
         if (sortBy.isPresent() && !sortBy.get().trim().isEmpty()) {
             allCoaches = sortCoaches(allCoaches, sortBy.get());
         }
@@ -248,8 +262,8 @@ public class CoachService {
                         calendar.setTime(booking.getEndDate());
                         int bookingEndHour = calendar.get(Calendar.HOUR_OF_DAY);
 
-                        if (booking.getStartDate().toString().equals((date)) &&
-                                bookingEndHour == hour + 1) {
+                        if (booking.getStartDate().toString().equals((date))
+                                && bookingEndHour == hour + 1) {
                             hourAvailability.setAvailable(false);
                             break;
                         }
