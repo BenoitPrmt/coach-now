@@ -1,31 +1,19 @@
 import type {Booking} from "~/types";
-import React, {useCallback, useMemo} from "react";
+import React, {useMemo} from "react";
 import {motion} from "motion/react";
 import {cn} from "~/lib/utils";
 import {Link} from "react-router";
 import CoachImage from "~/components/Coach/CoachImage";
 import {Calendar, Clock, Euro} from "lucide-react";
-import {formatDate} from "~/lib/time";
+import {displayDuration, formatDate, getDurationFromDate} from "~/lib/time";
+import {ManageBooking} from "~/components/Booking/booking/manage/ManageBooking";
+import CoachBadge from "~/components/Coach/CoachCard/CoachBadge";
+import type {TimeDuration} from "~/types/Time";
 
 const BookingCard = ({booking, index}: { booking: Booking; index: number }) => {
     const startDate = new Date(booking.startDate);
     const endDate = new Date(booking.endDate);
-    const durationMs = endDate.getTime() - startDate.getTime();
-    const totalMinutes = Math.floor(durationMs / 60000);
-    const hours = Math.floor(totalMinutes / 60);
-    const minutes = totalMinutes % 60;
-
-    const displayDuration = useCallback((
-        hours: number,
-        minutes: number
-    ) => {
-        if (hours === 0 && minutes === 0) return "0min";
-        return new Intl.NumberFormat('fr-FR', {
-            minimumIntegerDigits: 1,
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0
-        }).format(hours) + 'h' + (minutes > 0 ? minutes : '');
-    }, []);
+    const duration: TimeDuration = getDurationFromDate(new Date(booking.startDate), new Date(booking.endDate));
 
     const bookingStatus = useMemo(() => {
         if (!booking.isActive) {
@@ -81,13 +69,18 @@ const BookingCard = ({booking, index}: { booking: Booking; index: number }) => {
                         </h4>
                     </div>
                 </Link>
-                <div className={cn('px-3 py-1 rounded-full text-xs font-medium',
-                    bookingStatus === "Annulée" ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200" :
-                        bookingStatus === "À venir" ? "bg-yellow-100 text-yellow-800" :
-                            bookingStatus === "En cours" ? "bg-green-100 text-green-800" :
-                                "bg-gray-100 text-gray-800"
-                )}>
-                    {bookingStatus}
+                <div className="flex flex-row items-center space-x-2">
+                    {bookingStatus === "À venir" && (
+                        <ManageBooking booking={booking} />
+                    )}
+                    <div className={cn('px-3 py-1 rounded-full text-xs font-medium',
+                        bookingStatus === "Annulée" ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200" :
+                            bookingStatus === "À venir" ? "bg-yellow-100 text-yellow-800" :
+                                bookingStatus === "En cours" ? "bg-green-100 text-green-800" :
+                                    "bg-gray-100 text-gray-800"
+                    )}>
+                        {bookingStatus}
+                    </div>
                 </div>
             </div>
 
@@ -101,7 +94,7 @@ const BookingCard = ({booking, index}: { booking: Booking; index: number }) => {
                         <p className={cn(
                             "text-sm font-medium",
                             isBookingCancelled && "text-gray-400"
-                        )}>Début</p>
+                        )}>Date</p>
                         <p className={cn(
                             "text-xs text-gray-500",
                             isBookingCancelled && "text-gray-400"
@@ -124,12 +117,12 @@ const BookingCard = ({booking, index}: { booking: Booking; index: number }) => {
                             "text-xs text-gray-500",
                             isBookingCancelled && "text-gray-400"
                         )}>{
-                            displayDuration(hours, minutes)
+                            displayDuration(duration.hours, duration.minutes)
                         }</p>
                     </div>
                 </div>
                 <div className="flex items-center md:justify-center space-x-2">
-                    <Calendar className={cn(
+                    <Euro className={cn(
                         "w-4 h-4 text-gray-400",
                         isBookingCancelled && "text-gray-300"
                     )}/>
@@ -137,59 +130,31 @@ const BookingCard = ({booking, index}: { booking: Booking; index: number }) => {
                         <p className={cn(
                             "text-sm font-medium",
                             isBookingCancelled && "text-gray-400"
-                        )}>Fin</p>
+                        )}>Tarif</p>
                         <p className={cn(
                             "text-xs text-gray-500",
                             isBookingCancelled && "text-gray-400"
-                        )}>{formatDate(endDate)}</p>
+                        )}>{booking.totalPrice} €</p>
                     </div>
                 </div>
             </div>
 
             <div className="flex justify-between items-center pt-4 border-t border-gray-200 dark:border-neutral-600">
-                <div className="flex items-center space-x-2">
-                    <Euro className={cn(
-                        "w-4 h-4 text-green-600",
-                        isBookingCancelled && "text-gray-400"
-                    )}/>
-                    <span className={cn(
-                        "font-bold text-green-600",
-                        isBookingCancelled && "text-gray-400 line-through"
-                    )}>{booking.totalPrice}€</span>
-                </div>
-                <div className={cn(
-                    "text-xs text-gray-500",
-                    isBookingCancelled && "text-gray-400"
-                )}>
-                    {booking.coach.hourlyRate}€/h
-                </div>
                 {
                     booking.coach.levels && booking.coach.levels.length > 0 && (
                         <div className="flex items-center space-x-1">
-                            {booking.coach.levels.map((level, i) => (
-                                <span
-                                    key={`${booking.id}-level-${level}-${i}`}
-                                    className={cn(
-                                        "px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium",
-                                        isBookingCancelled && "bg-gray-100 text-gray-500"
-                                    )}>
-                                    {level}
-                                </span>
-                            ))}
+                            {booking.coach.levels.length > 0 && (
+                                booking.coach.levels.map((level, index) => (
+                                    <CoachBadge value={level} className="mr-1 my-0.5" key={index}/>
+                                ))
+                            )}
                         </div>
                     )
                 }
                 {booking.coach.sports && booking.coach.sports.length > 0 && (
                         <div className="flex items-center space-x-1">
-                            {booking.coach.sports.map((sport, i) => (
-                                <span
-                                    key={`${booking.id}-sport-${sport}-${i}`}
-                                    className={cn(
-                                        "px-2 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-medium",
-                                        isBookingCancelled && "bg-gray-100 text-gray-500"
-                                    )}>
-                                    {sport}
-                                </span>
+                            {booking.coach.sports.map((sport, index) => (
+                                <CoachBadge value={sport} className="mr-1 my-0.5" key={index}/>
                             ))}
                         </div>
                     )
