@@ -50,14 +50,18 @@ export const columns: ColumnDef<Coach>[] = [
         accessorKey: "uuid",
         header: "UUID",
         cell: ({ row }) => (
-            <div>{row.original.id}</div>
+            <div className="text-sm truncate w-32">
+                {row.original.id}
+            </div>
         ),
     },
     {
         accessorKey: "userId",
-        header: "Coach ID",
+        header: "User ID",
         cell: ({ row }) => (
-            <div>{row.original.user.id}</div>
+            <div className="text-sm truncate w-32">
+                {row.original.user.id}
+            </div>
         ),
     },
     {
@@ -104,7 +108,7 @@ export const columns: ColumnDef<Coach>[] = [
             return (
                 <div className="flex items-center gap-2">
                     <CoachFormModal mode="edit" coach={row.original} />
-                    <CoachDeleteModal userId={row.original.id} />
+                    <CoachDeleteModal coachId={row.original.id} />
                 </div>
             )
         },

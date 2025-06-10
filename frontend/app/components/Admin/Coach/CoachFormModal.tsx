@@ -27,7 +27,7 @@ import {
 import { Input } from "~/components/ui/input";
 import { Checkbox } from "~/components/ui/checkbox";
 import { EditIcon, PlusCircleIcon } from "lucide-react";
-import { useForm } from "react-hook-form";
+import {Controller, useForm} from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import type { Coach, User, Level, Gender } from "~/types";
@@ -38,6 +38,8 @@ import {levels} from "~/constants/levels";
 import {sports} from "~/constants/sports";
 import type {Sport} from "~/constants/sports";
 import {getAllUsers} from "~/actions/user.action";
+import {MultiSelect} from "~/components/Forms/FormFields/form-fields/Sports";
+import {LevelField} from "~/components/Forms/FormFields/form-fields/Levels";
 
 const SPORTS = sports.map((sport: Sport) => ({
     key: sport.key,
@@ -97,7 +99,7 @@ export function CoachFormModal({ mode, coach }: Props) {
             hourlyRate: coach?.hourlyRate || 0,
             sports: coach?.sports || [],
             levels: coach?.levels || [],
-            gender: coach?.gender || "MALE",
+            gender: coach?.gender || undefined,
         },
     });
 
@@ -106,7 +108,7 @@ export function CoachFormModal({ mode, coach }: Props) {
         try {
             getAllUsers(userToken).then((data) => {
                 if (data) {
-                    setUsers(data);
+                    setUsers(data.filter((user) => user.role === "COACH"));
                 } else {
                     console.warn("Aucun utilisateur trouvé");
                 }
@@ -137,6 +139,7 @@ export function CoachFormModal({ mode, coach }: Props) {
 
             setOpen(false);
             form.reset();
+            window.location.reload();
         } catch (error) {
             console.error("Erreur lors de la soumission:", error);
         }
@@ -267,7 +270,7 @@ export function CoachFormModal({ mode, coach }: Props) {
                                 name="hourlyRate"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Tarif horaire (€)</FormLabel>
+                                        <FormLabel>Taux horaire (€)</FormLabel>
                                         <FormControl>
                                             <Input
                                                 type="number"
@@ -302,93 +305,39 @@ export function CoachFormModal({ mode, coach }: Props) {
                             />
                         </div>
 
-                        <FormField
+                        <Controller
                             control={form.control}
                             name="sports"
-                            render={() => (
-                                <FormItem>
-                                    <FormLabel>Sports pratiqués</FormLabel>
-                                    <div className="grid grid-cols-2 gap-2">
-                                        {SPORTS.map((sport) => (
-                                            <FormField
-                                                key={sport.key}
-                                                control={form.control}
-                                                name="sports"
-                                                render={({ field }) => {
-                                                    return (
-                                                        <FormItem
-                                                            className="flex flex-row items-start space-x-3 space-y-0"
-                                                        >
-                                                            <FormControl>
-                                                                <Checkbox
-                                                                    checked={field.value?.includes(sport.key)}
-                                                                    onCheckedChange={(checked) => {
-                                                                        return checked
-                                                                            ? field.onChange([...field.value, sport.key])
-                                                                            : field.onChange(
-                                                                                field.value?.filter(
-                                                                                    (value) => value !== sport.key
-                                                                                )
-                                                                            );
-                                                                    }}
-                                                                />
-                                                            </FormControl>
-                                                            <FormLabel className="text-sm font-normal">
-                                                                {sport.name}
-                                                            </FormLabel>
-                                                        </FormItem>
-                                                    );
-                                                }}
-                                            />
-                                        ))}
-                                    </div>
-                                    <FormMessage />
-                                </FormItem>
+                            render={({ field }) => (
+                                <MultiSelect
+                                    options={sports.map(sport => ({
+                                        label: sport.name,
+                                        value: sport.key
+                                    }))}
+                                    value={field.value}
+                                    onValueChange={field.onChange}
+                                    maxCount={2}
+                                    defaultValue={field.value}
+                                    placeholder="Sélectionnez vos sports"
+                                />
                             )}
                         />
 
-                        <FormField
+                        <Controller
                             control={form.control}
                             name="levels"
-                            render={() => (
-                                <FormItem>
-                                    <FormLabel>Niveaux d'enseignement</FormLabel>
-                                    <div className="flex gap-4">
-                                        {LEVELS.map((level) => (
-                                            <FormField
-                                                key={level.key}
-                                                control={form.control}
-                                                name="levels"
-                                                render={({ field }) => {
-                                                    return (
-                                                        <FormItem
-                                                            className="flex flex-row items-start space-x-3 space-y-0"
-                                                        >
-                                                            <FormControl>
-                                                                <Checkbox
-                                                                    checked={field.value?.includes(level.key)}
-                                                                    onCheckedChange={(checked) => {
-                                                                        return checked
-                                                                            ? field.onChange([...field.value, level.key])
-                                                                            : field.onChange(
-                                                                                field.value?.filter(
-                                                                                    (value) => value !== level.key
-                                                                                )
-                                                                            );
-                                                                    }}
-                                                                />
-                                                            </FormControl>
-                                                            <FormLabel className="text-sm font-normal">
-                                                                {level.name}
-                                                            </FormLabel>
-                                                        </FormItem>
-                                                    );
-                                                }}
-                                            />
-                                        ))}
-                                    </div>
-                                    <FormMessage />
-                                </FormItem>
+                            render={({ field }) => (
+                                <MultiSelect
+                                    options={levels.map(level => ({
+                                        label: level.name,
+                                        value: level.key
+                                    }))}
+                                    value={field.value}
+                                    onValueChange={field.onChange}
+                                    maxCount={2}
+                                    defaultValue={field.value}
+                                    placeholder="Sélectionnez vos niveaux"
+                                />
                             )}
                         />
 
@@ -401,6 +350,11 @@ export function CoachFormModal({ mode, coach }: Props) {
                             <Button
                                 type="submit"
                                 disabled={form.formState.isSubmitting}
+                                onClick={() => {
+                                    console.log("Button clicked");
+                                    console.log("Form values:", form.getValues());
+                                    console.log("Form errors:", form.formState.errors);
+                                }}
                             >
                                 {form.formState.isSubmitting
                                     ? "Enregistrement..."

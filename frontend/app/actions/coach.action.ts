@@ -1,7 +1,7 @@
 "use server";
 
 import {getPublicEnv} from "env.common";
-import type {Coach} from "~/types";
+import type {Coach, PaginatedResponse} from "~/types";
 import type {CoachFormData} from "~/components/Admin/Coach/CoachFormModal";
 
 async function getAvailabilities(bearerToken: any, coachId: string, startDate: string, endDate: string) {
@@ -45,7 +45,8 @@ async function getAllCoachs(bearerToken: any): Promise<Coach[]> {
             throw new Error(`Login failed: ${error}`);
         }
 
-        return await res.json() as Coach[];
+        const responseData: PaginatedResponse<Coach> = await res.json();
+        return responseData.elements;
     } catch (err) {
         console.error("Login action failed:", err);
         throw err;
@@ -58,6 +59,7 @@ async function createCoach(
 ): Promise<Coach> {
     try {
         const url = getPublicEnv(import.meta.env).VITE_API_URL + `/coach`;
+        console.log("Call", url, "with data:", data);
 
         const res = await fetch(url, {
             method: 'POST',

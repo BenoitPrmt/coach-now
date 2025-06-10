@@ -14,7 +14,7 @@ const translations: Translation[] = [
     },
     {
         english: "HIGHLEVEL",
-        french: "EXPERT"
+        french: "HAUT NIVEAU"
     }
 ]
 
