@@ -12,6 +12,7 @@ import { getPublicEnv } from 'env.common';
 import ProfileEditModal from "~/components/Account/profile/edit-modal";
 import BookingCard from "~/components/Booking/card";
 import UserInfo from "~/components/Account/user/user-info";
+import {Badge} from "~/components/ui/badge";
 
 const AccountComponent = () => {
     const {user, userToken, isLoading} = useUser();
@@ -242,10 +243,34 @@ const AccountComponent = () => {
                                                 <TabsContent value="bookings">
                                                     <Tabs defaultValue="future">
                                                         <TabsList className="grid grid-cols-4 mb-8 p-1">
-                                                            <TabsTrigger value="future">À venir</TabsTrigger>
-                                                            <TabsTrigger value="ongoing">En cours</TabsTrigger>
-                                                            <TabsTrigger value="past">Passées</TabsTrigger>
-                                                            <TabsTrigger value="cancelled">Annulées</TabsTrigger>
+                                                            <TabsTrigger value="future">
+                                                                À venir {futureBookings.length > 0 && (
+                                                                <Badge className="h-4 min-w-4 rounded-full px-1 tabular-nums" variant="light">
+                                                                    {futureBookings.length}
+                                                                </Badge>
+                                                            )}
+                                                            </TabsTrigger>
+                                                            <TabsTrigger value="ongoing">
+                                                                En cours {ongoingBookings.length > 0 && (
+                                                                <Badge className="h-4 min-w-4 rounded-full px-1 tabular-nums" variant="light">
+                                                                    {ongoingBookings.length}
+                                                                </Badge>
+                                                            )}
+                                                            </TabsTrigger>
+                                                            <TabsTrigger value="past">
+                                                                Passées {pastBookings.length > 0 && (
+                                                                <Badge className="h-4 min-w-4 rounded-full px-1 tabular-nums" variant="light">
+                                                                    {pastBookings.length}
+                                                                </Badge>
+                                                            )}
+                                                            </TabsTrigger>
+                                                            <TabsTrigger value="cancelled">
+                                                                Annulées {cancelledBookings.length > 0 && (
+                                                                <Badge className="h-4 min-w-4 rounded-full px-1 tabular-nums" variant="light">
+                                                                    {cancelledBookings.length}
+                                                                </Badge>
+                                                            )}
+                                                            </TabsTrigger>
                                                         </TabsList>
                                                         <TabsContent value="all">
                                                         </TabsContent>
