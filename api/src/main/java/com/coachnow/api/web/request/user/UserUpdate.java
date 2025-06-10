@@ -1,7 +1,9 @@
 package com.coachnow.api.web.request.user;
 
 import com.coachnow.api.types.Roles;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserUpdate {
     private String firstName;
     private String lastName;

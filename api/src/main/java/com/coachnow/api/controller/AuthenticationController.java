@@ -94,7 +94,7 @@ public class AuthenticationController {
 
         User savedUser = userService.registerUser(user);
 
-        CoachCreation coachCreation = new CoachCreation(coachRegistration, savedUser.getId());
+        CoachCreation coachCreation = CoachCreation.fromCoachRegistration(coachRegistration, savedUser.getId());
 
         Coach coach = new Coach();
         coach.setUser(savedUser);

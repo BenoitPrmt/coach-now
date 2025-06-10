@@ -17,14 +17,37 @@ public class CoachCreation {
     private Gender gender;
     private String userId;
 
-    public CoachCreation(CoachRegistration coachRegistration, String userId) {
-        this.birthdate = coachRegistration.getBirthdate();
-        this.profilePictureUrl = coachRegistration.getProfilePictureUrl();
-        this.hourlyRate = coachRegistration.getHourlyRate();
-        this.sports = coachRegistration.getSports();
-        this.levels = coachRegistration.getLevels();
-        this.gender = coachRegistration.getGender();
-        this.userId = userId;
+//    public CoachCreation(CoachRegistration coachRegistration, String userId) {
+//        this.birthdate = coachRegistration.getBirthdate();
+//        this.profilePictureUrl = coachRegistration.getProfilePictureUrl();
+//        this.hourlyRate = coachRegistration.getHourlyRate();
+//        this.sports = coachRegistration.getSports();
+//        this.levels = coachRegistration.getLevels();
+//        this.gender = coachRegistration.getGender();
+//        this.userId = userId;
+//    }
+
+    public CoachCreation() {
+    }
+
+    public CoachCreation(CoachCreation coachCreation) {
+        this.birthdate = coachCreation.getBirthdate();
+        this.profilePictureUrl = coachCreation.getProfilePictureUrl();
+        this.hourlyRate = coachCreation.getHourlyRate();
+        this.sports = coachCreation.getSports();
+        this.levels = coachCreation.getLevels();
+    }
+
+    public static CoachCreation fromCoachRegistration(CoachRegistration coachRegistration, String userId) {
+        CoachCreation coachCreation = new CoachCreation();
+        coachCreation.setBirthdate(coachRegistration.getBirthdate());
+        coachCreation.setProfilePictureUrl(coachRegistration.getProfilePictureUrl());
+        coachCreation.setHourlyRate(coachRegistration.getHourlyRate());
+        coachCreation.setSports(coachRegistration.getSports());
+        coachCreation.setLevels(coachRegistration.getLevels());
+        coachCreation.setGender(coachRegistration.getGender());
+        coachCreation.setUserId(userId);
+        return coachCreation;
     }
 
     public String getBirthdate() {

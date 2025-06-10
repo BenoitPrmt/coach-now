@@ -3,12 +3,14 @@ package com.coachnow.api.web.request.coach;
 import com.coachnow.api.types.Gender;
 import com.coachnow.api.types.Level;
 import com.coachnow.api.types.Sports;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import java.util.Set;
 
 @Data
-public class CoachCreation {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class CoachUpdate {
     private String birthdate;
     private String profilePictureUrl;
     private Float hourlyRate;
@@ -16,16 +18,6 @@ public class CoachCreation {
     private Set<Level> levels;
     private Gender gender;
     private String userId;
-
-    public CoachCreation(CoachRegistration coachRegistration, String userId) {
-        this.birthdate = coachRegistration.getBirthdate();
-        this.profilePictureUrl = coachRegistration.getProfilePictureUrl();
-        this.hourlyRate = coachRegistration.getHourlyRate();
-        this.sports = coachRegistration.getSports();
-        this.levels = coachRegistration.getLevels();
-        this.gender = coachRegistration.getGender();
-        this.userId = userId;
-    }
 
     public String getBirthdate() {
         return birthdate;

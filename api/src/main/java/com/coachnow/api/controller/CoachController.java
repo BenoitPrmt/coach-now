@@ -1,11 +1,15 @@
 package com.coachnow.api.controller;
 
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import com.coachnow.api.model.entity.dto.UserDTO;
+import com.coachnow.api.web.request.coach.CoachUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -116,9 +120,42 @@ public class CoachController {
     }
 
     @PutMapping("/coach/{id}")
-    public CoachDTO create(@RequestBody Coach coach, @PathVariable String id) {
-        coach.setId(id);
-        return new CoachDTO(coachService.save(coach));
+    public CoachDTO update(@RequestBody CoachUpdate coachUpdate, @PathVariable String id) throws ParseException {
+        Coach existingCoach = coachService.select(id);
+
+        if (existingCoach == null) {
+            throw new IllegalArgumentException("Coach with id " + id + " does not exist.");
+        }
+
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        if (coachUpdate.getBirthdate() != null) {
+            existingCoach.setBirthdate(new java.sql.Date(formatter.parse(coachUpdate.getBirthdate()).getTime()));
+        }
+        if (coachUpdate.getProfilePictureUrl() != null) {
+            existingCoach.setProfilePictureUrl(coachUpdate.getProfilePictureUrl());
+        }
+        if (coachUpdate.getHourlyRate() != null) {
+            existingCoach.setHourlyRate(coachUpdate.getHourlyRate());
+        }
+        if (coachUpdate.getSports() != null) {
+            existingCoach.setSports(coachUpdate.getSports());
+        }
+        if (coachUpdate.getLevels() != null) {
+            existingCoach.setLevels(coachUpdate.getLevels());
+        }
+        if (coachUpdate.getGender() != null) {
+            existingCoach.setGender(coachUpdate.getGender());
+        }
+        if (coachUpdate.getUserId() != null) {
+            User user = userService.select(coachUpdate.getUserId());
+            if (user == null) {
+                throw new IllegalArgumentException("User with id " + coachUpdate.getUserId() + " does not exist.");
+            }
+            existingCoach.setUser(user);
+        }
+
+        return new CoachDTO(coachService.save(existingCoach));
     }
 
     @DeleteMapping("/coach/{id}")
