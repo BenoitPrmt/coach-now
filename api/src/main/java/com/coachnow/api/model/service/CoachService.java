@@ -88,25 +88,22 @@ public class CoachService {
             case "levels":
                 return coach.getLevels() != null
                         && coach.getLevels().stream()
-                        .anyMatch(level -> level.toString().toLowerCase().equals(filterValue));
+                                .anyMatch(level -> level.toString().toLowerCase().equals(filterValue));
             case "sports":
                 return coach.getSports() != null
                         && coach.getSports().stream()
-                        .anyMatch(sport -> sport.toString().toLowerCase().equals(filterValue));
-            case "hourlyrate":
+                                .anyMatch(sport -> sport.toString().toLowerCase().equals(filterValue));
+            case "hourlyrate_min":
                 try {
-                    Float filterRate = Float.parseFloat(filterValue);
-                    return coach.getHourlyRate() != null
-                            && coach.getHourlyRate().equals(filterRate);
+                    Float minRate = Float.parseFloat(filterValue);
+                    return coach.getHourlyRate() != null && coach.getHourlyRate() >= minRate;
                 } catch (NumberFormatException e) {
                     return false;
                 }
-            case "hourlyrate_desc":
+            case "hourlyrate_max":
                 try {
-                    Float filterRate = Float.parseFloat(filterValue);
-                    return
-                            coach.getHourlyRate() != null
-                                    && coach.getHourlyRate() >= filterRate;
+                    Float maxRate = Float.parseFloat(filterValue);
+                    return coach.getHourlyRate() != null && coach.getHourlyRate() <= maxRate;
                 } catch (NumberFormatException e) {
                     return false;
                 }
@@ -134,18 +131,19 @@ public class CoachService {
     private Comparator<Coach> getCoachComparator(String sortBy) {
         return switch (sortBy.toLowerCase()) {
             case "firstname" ->
-                    Comparator.comparing((Coach coach) -> coach.getUser().getFirstName() != null ? coach.getUser().getFirstName().toLowerCase() : "");
+                Comparator.comparing((Coach coach) -> coach.getUser().getFirstName() != null ? coach.getUser().getFirstName().toLowerCase() : "");
             case "lastname" ->
-                    Comparator.comparing((Coach coach) -> coach.getUser().getLastName() != null ? coach.getUser().getLastName().toLowerCase() : "");
+                Comparator.comparing((Coach coach) -> coach.getUser().getLastName() != null ? coach.getUser().getLastName().toLowerCase() : "");
             case "email" ->
-                    Comparator.comparing((Coach coach) -> coach.getUser().getEmail() != null ? coach.getUser().getEmail().toLowerCase() : "");
+                Comparator.comparing((Coach coach) -> coach.getUser().getEmail() != null ? coach.getUser().getEmail().toLowerCase() : "");
             case "gender" ->
-                    Comparator.comparing((Coach coach) -> coach.getGender() != null ? coach.getGender().toString().toLowerCase() : "");
+                Comparator.comparing((Coach coach) -> coach.getGender() != null ? coach.getGender().toString().toLowerCase() : "");
             case "hourlyrate" ->
-                    Comparator.comparing((Coach coach) -> coach.getHourlyRate() != null ? coach.getHourlyRate() : 0.0f);
+                Comparator.comparing((Coach coach) -> coach.getHourlyRate() != null ? coach.getHourlyRate() : 0.0f);
             case "hourlyrate_desc" ->
-                    Comparator.comparing((Coach coach) -> coach.getHourlyRate() != null ? coach.getHourlyRate() : 0.0f).reversed();
-            default -> Comparator.comparing(Coach::getId);
+                Comparator.comparing((Coach coach) -> coach.getHourlyRate() != null ? coach.getHourlyRate() : 0.0f).reversed();
+            default ->
+                Comparator.comparing(Coach::getId);
         };
     }
 
@@ -177,12 +175,10 @@ public class CoachService {
                     .collect(Collectors.toList());
         }
 
-
         if (filter.isPresent() && !filter.get().trim().isEmpty()
                 && filterBy.isPresent() && !filterBy.get().trim().isEmpty()) {
             allCoaches = applyFilter(allCoaches, filter.get(), filterBy.get());
         }
-
 
         if (sortBy.isPresent() && !sortBy.get().trim().isEmpty()) {
             allCoaches = sortCoaches(allCoaches, sortBy.get());

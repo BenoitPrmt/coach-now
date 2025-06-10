@@ -4,7 +4,8 @@ const FILTER_OPTIONS = [
   { value: 'gender', label: 'Genre' },
   { value: 'sports', label: 'Sport' },
   { value: 'levels', label: 'Niveau' },
-  { value: 'hourlyrate', label: 'Tarif horaire' },
+  { value: 'hourlyrate_min', label: 'Tarif horaire minimum' },
+  { value: 'hourlyrate_max', label: 'Tarif horaire maximum' },
 ];
 
 const SORT_OPTIONS = [
