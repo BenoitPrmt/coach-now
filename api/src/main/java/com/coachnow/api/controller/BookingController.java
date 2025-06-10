@@ -9,6 +9,7 @@ import com.coachnow.api.model.service.CoachService;
 import com.coachnow.api.model.service.UserService;
 import com.coachnow.api.types.Roles;
 import com.coachnow.api.web.request.booking.BookingCreation;
+import com.coachnow.api.web.request.booking.BookingUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -108,8 +109,42 @@ public class BookingController {
     }
 
     @PutMapping("/booking/{id}")
-    public BookingDTO create(@RequestBody Booking booking, @PathVariable String id) {
-        booking.setId(id);
+    public BookingDTO update(@RequestBody BookingUpdate bookingUpdate, @PathVariable String id) throws ParseException {
+        Booking booking = bookingService.select(id);
+
+        if (booking == null) {
+            throw new IllegalArgumentException("Booking with id " + id + " does not exist.");
+        }
+
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        if (bookingUpdate.getStartDate() != null) {
+            booking.setStartDate(formatter.parse(bookingUpdate.getStartDate()));
+        }
+        if (bookingUpdate.getEndDate() != null) {
+            booking.setEndDate(formatter.parse(bookingUpdate.getEndDate()));
+        }
+        if (bookingUpdate.getIsActive() != null) {
+            booking.setIsActive(bookingUpdate.getIsActive());
+        }
+        if (bookingUpdate.getTotalPrice() != null) {
+            booking.setTotalPrice(bookingUpdate.getTotalPrice());
+        }
+        if (bookingUpdate.getCoachId() != null) {
+            Coach coach = coachService.select(bookingUpdate.getCoachId());
+            if (coach == null) {
+                throw new IllegalArgumentException("Coach with id " + bookingUpdate.getCoachId() + " does not exist.");
+            }
+            booking.setCoach(coach);
+        }
+        if (bookingUpdate.getUserId() != null) {
+            User user = userService.select(bookingUpdate.getUserId());
+            if (user == null) {
+                throw new IllegalArgumentException("User with id " + bookingUpdate.getUserId() + " does not exist.");
+            }
+            booking.setUser(user);
+        }
+
         return new BookingDTO(bookingService.save(booking));
     }
 

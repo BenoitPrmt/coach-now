@@ -223,17 +223,15 @@ const AccountComponent = () => {
                                     user?.role === 'USER' ? (
                                         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                                             <TabsList
-                                                className="grid w-full grid-cols-2 mb-8 bg-gray-100 p-1 rounded-xl">
+                                                className="grid w-full grid-cols-2 mb-8 p-1">
                                                 <TabsTrigger
                                                     value="bookings"
-                                                    className="cursor-pointer rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm transition-all duration-300"
                                                 >
                                                     <Calendar className="w-4 h-4 mr-2"/>
                                                     Réservations
                                                 </TabsTrigger>
                                                 <TabsTrigger
                                                     value="ratings"
-                                                    className="cursor-pointer rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm transition-all duration-300"
                                                 >
                                                     <Star className="w-4 h-4 mr-2"/>
                                                     Avis
@@ -242,76 +240,81 @@ const AccountComponent = () => {
 
                                             <AnimatePresence>
                                                 <TabsContent value="bookings">
-                                                    <motion.div
-                                                        key="bookings"
-                                                        initial={{opacity: 0, y: 20}}
-                                                        animate={{opacity: 1, y: 0}}
-                                                        exit={{opacity: 0, y: -20}}
-                                                        transition={{duration: 0.3}}
-                                                        className="space-y-8 max-h-[60vh] overflow-y-auto pr-2"
-                                                    >
-                                                        {/* À venir */}
-                                                        {futureBookings && futureBookings.length > 0 && (
-                                                            <div>
-                                                                <h4 className="text-lg font-semibold mb-2">À venir</h4>
-                                                                <div className="space-y-4">
-                                                                    {futureBookings.map((booking, index) => (
-                                                                        <BookingCard key={booking.id} booking={booking}
-                                                                                     index={index}/>
-                                                                    ))}
+                                                    <Tabs defaultValue="future">
+                                                        <TabsList className="grid grid-cols-4 mb-8 p-1">
+                                                            <TabsTrigger value="future">À venir</TabsTrigger>
+                                                            <TabsTrigger value="ongoing">En cours</TabsTrigger>
+                                                            <TabsTrigger value="past">Passées</TabsTrigger>
+                                                            <TabsTrigger value="cancelled">Annulées</TabsTrigger>
+                                                        </TabsList>
+                                                        <TabsContent value="all">
+                                                        </TabsContent>
+                                                        <TabsContent value="future">
+                                                            {futureBookings && futureBookings.length > 0 && (
+                                                                <div>
+                                                                    <h4 className="text-lg font-semibold mb-2">À venir</h4>
+                                                                    <div className="space-y-4">
+                                                                        {futureBookings.map((booking, index) => (
+                                                                            <BookingCard key={booking.id} booking={booking}
+                                                                                         index={index}/>
+                                                                        ))}
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                        )}
-
-                                                        {/* En cours */}
-                                                        {ongoingBookings && ongoingBookings.length > 0 && (
-                                                            <div>
-                                                                <h4 className="text-lg font-semibold mt-6 mb-2">En
-                                                                    cours</h4>
-                                                                <div className="space-y-4">
-                                                                    {ongoingBookings.map((booking, index) => (
-                                                                        <BookingCard key={booking.id} booking={booking}
-                                                                                     index={index}/>
-                                                                    ))}
-                                                                </div>
-                                                            </div>
-                                                        )}
-
-                                                        {/* Terminées */}
-                                                        {pastBookings && pastBookings.length > 0 && (
-                                                            <div>
-                                                                <h4 className="text-lg font-semibold mt-6 mb-2">Terminées</h4>
-                                                                <div className="space-y-4">
-                                                                    {pastBookings.map((booking, index) => (
-                                                                        <BookingCard key={booking.id} booking={booking}
-                                                                                     index={index}/>
-                                                                    ))}
-                                                                </div>
-                                                            </div>
-                                                        )}
-
-                                                        {/* Annulées */}
-                                                        {cancelledBookings && cancelledBookings.length > 0 && (
-                                                            <div>
-                                                                <h4 className="text-lg font-semibold mt-6 mb-2 text-red-600">Annulées</h4>
-                                                                <div className="space-y-4">
-                                                                    {cancelledBookings.map((booking, index) => (
-                                                                        <BookingCard key={booking.id} booking={booking}
-                                                                                     index={index}/>
-                                                                    ))}
-                                                                </div>
-                                                            </div>
-                                                        )}
-
-                                                        {/* Aucune réservation */}
-                                                        {!futureBookings?.length &&
-                                                            !ongoingBookings?.length &&
-                                                            !pastBookings?.length &&
-                                                            !cancelledBookings?.length && (
-                                                                <p className="text-gray-500 text-sm">Aucune réservation
-                                                                    trouvée.</p>
                                                             )}
-                                                    </motion.div>
+                                                            {!futureBookings || futureBookings.length === 0 && (
+                                                                <p className="text-gray-500 mt-4">Aucune réservation à venir.</p>
+                                                            )}
+                                                        </TabsContent>
+                                                        <TabsContent value="ongoing">
+                                                            {ongoingBookings && ongoingBookings.length > 0 && (
+                                                                <div>
+                                                                    <h4 className="text-lg font-semibold mt-6 mb-2">En
+                                                                        cours</h4>
+                                                                    <div className="space-y-4">
+                                                                        {ongoingBookings.map((booking, index) => (
+                                                                            <BookingCard key={booking.id} booking={booking}
+                                                                                         index={index}/>
+                                                                        ))}
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                            {!ongoingBookings || ongoingBookings.length === 0 && (
+                                                                <p className="text-gray-500 mt-4">Aucune réservation en cours.</p>
+                                                            )}
+                                                        </TabsContent>
+                                                        <TabsContent value="past">
+                                                            {pastBookings && pastBookings.length > 0 && (
+                                                                <div>
+                                                                    <h4 className="text-lg font-semibold mt-6 mb-2">Terminées</h4>
+                                                                    <div className="space-y-4">
+                                                                        {pastBookings.map((booking, index) => (
+                                                                            <BookingCard key={booking.id} booking={booking}
+                                                                                         index={index}/>
+                                                                        ))}
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                            {!pastBookings || pastBookings.length === 0 && (
+                                                                <p className="text-gray-500 mt-4">Aucune réservation terminée.</p>
+                                                            )}
+                                                        </TabsContent>
+                                                        <TabsContent value="cancelled">
+                                                            {cancelledBookings && cancelledBookings.length > 0 && (
+                                                                <div>
+                                                                    <h4 className="text-lg font-semibold mt-6 mb-2 text-red-600">Annulées</h4>
+                                                                    <div className="space-y-4">
+                                                                        {cancelledBookings.map((booking, index) => (
+                                                                            <BookingCard key={booking.id} booking={booking}
+                                                                                         index={index}/>
+                                                                        ))}
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                            {!cancelledBookings || cancelledBookings.length === 0 && (
+                                                                <p className="text-gray-500 mt-4">Aucune réservation annulée.</p>
+                                                            )}
+                                                        </TabsContent>
+                                                    </Tabs>
                                                 </TabsContent>
 
                                                 <TabsContent value="ratings">

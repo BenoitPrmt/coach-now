@@ -1,3 +1,6 @@
+import {useCallback} from "react";
+import type {TimeDuration} from "~/types/Time";
+
 const timeAgo = (dateString: string): string => {
     const now = new Date();
     const date = new Date(dateString);
@@ -24,5 +27,25 @@ const formatDate = (date: Date) =>
     year: "numeric",
   });
 
+const displayDuration = (hours: number, minutes: number) => {
+    if (hours === 0 && minutes === 0) return "0min";
 
-export {timeAgo, formatDate};
+    return new Intl.NumberFormat('fr-FR', {
+        minimumIntegerDigits: 1,
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+    }).format(hours) + 'h' + (minutes > 0 ? minutes : '');
+};
+
+const getDurationFromDate = (startDate: Date, endDate: Date): TimeDuration => {
+    const durationMs = endDate.getTime() - startDate.getTime();
+    const totalMinutes = Math.floor(durationMs / 60000);
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    return {
+        hours,
+        minutes
+    };
+}
+
+export {timeAgo, formatDate, displayDuration, getDurationFromDate};
