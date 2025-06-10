@@ -24,8 +24,11 @@ export default [
 
 
     ...prefix("admin", [
+        index("routes/admins/dashboard.tsx"),
         layout("routes/admins/layout.tsx", [
             route("users", "routes/admins/users.tsx"),
+            route("coachs", "routes/admins/coachs.tsx"),
+            route("bookings", "routes/admins/bookings.tsx"),
         ]),
     ]),
 
