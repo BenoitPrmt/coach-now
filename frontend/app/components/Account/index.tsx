@@ -180,7 +180,7 @@ const AccountComponent = () => {
                     transition={{delay: 0.2}}
                 >
                     <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-secondary via-accent bg-clip-text text-transparent mb-2">
-                        Mon Compte
+                        Mon compte
                     </h1>
                     <p className="text-gray-600">Gérez votre profil et consultez votre activité</p>
                 </motion.div>

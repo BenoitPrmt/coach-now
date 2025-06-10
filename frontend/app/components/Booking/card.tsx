@@ -5,7 +5,7 @@ import {cn} from "~/lib/utils";
 import {Link} from "react-router";
 import CoachImage from "~/components/Coach/CoachImage";
 import {Calendar, Clock, Euro} from "lucide-react";
-import {displayDuration, formatDate, getDurationFromDate} from "~/lib/time";
+import {displayDuration, formatDateWithTime, getDurationFromDate} from "~/lib/time";
 import {ManageBooking} from "~/components/Booking/booking/manage/ManageBooking";
 import CoachBadge from "~/components/Coach/CoachCard/CoachBadge";
 import type {TimeDuration} from "~/types/Time";
@@ -97,7 +97,7 @@ const BookingCard = ({booking, index}: { booking: Booking; index: number }) => {
                             "text-xs text-gray-500",
                             isBookingCancelled && "text-gray-400"
                         )}>{
-                            formatDate(startDate)
+                            formatDateWithTime(startDate)
                         }</p>
                     </div>
                 </div>

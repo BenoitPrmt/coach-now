@@ -27,6 +27,17 @@ const formatDate = (date: Date) =>
     year: "numeric",
   });
 
+const formatDateWithTime = (date: Date) =>
+    date.toLocaleDateString("fr-FR", {
+        weekday: "short",
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+    }) + ' à ' + date.toLocaleTimeString("fr-FR", {
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+
 const displayDuration = (hours: number, minutes: number) => {
     if (hours === 0 && minutes === 0) return "0min";
 
@@ -48,4 +59,4 @@ const getDurationFromDate = (startDate: Date, endDate: Date): TimeDuration => {
     };
 }
 
-export {timeAgo, formatDate, displayDuration, getDurationFromDate};
+export {timeAgo, formatDate, formatDateWithTime, displayDuration, getDurationFromDate};
