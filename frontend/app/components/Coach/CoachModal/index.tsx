@@ -3,7 +3,7 @@ import {CircleUserIcon, XIcon} from "lucide-react";
 import {Button} from "~/components/ui/button";
 import {Link} from "react-router";
 import {cn} from "~/lib/utils";
-import type {Coach, Gender, Level} from "~/types";
+import type {Coach, Gender} from "~/types";
 import {formatGender} from "~/lib/formatting";
 import {MarsIcon, VenusIcon, XIcon as XIcon2} from "lucide-react";
 import {useMemo} from "react";
@@ -26,12 +26,14 @@ const UserInfo = ({
                       name,
                       age,
                       gender,
+                      hourlyRate,
                       isModal = false
                   }: {
     profilePictureUrl: string;
     name: string;
     age: number;
     gender: Gender;
+    hourlyRate?: number;
     isModal?: boolean;
 }) => {
     const renderGenderSpan = useMemo(() => {
@@ -79,7 +81,7 @@ const UserInfo = ({
                         isModal && "mx-auto"
                     )}
                 >
-                    {age} ans | {renderGenderSpan}
+                    {age} ans | {renderGenderSpan} | {hourlyRate ? `${hourlyRate} €/h` : "Tarif non défini"}
                 </motion.p>
             </div>
         </div>
@@ -147,6 +149,7 @@ const CoachModal = ({
                         name={coach.user.firstName + ' ' + coach.user.lastName}
                         age={calculateAgeFromBirthdate(coach.birthdate)}
                         gender={coach.gender}
+                        hourlyRate={coach.hourlyRate}
                         isModal={true}
                     />
                 </motion.div>
