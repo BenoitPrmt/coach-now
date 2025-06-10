@@ -5,7 +5,6 @@ import {getPublicEnv} from "../../env.common";
 import type {Coach, PaginatedResponse} from "~/types";
 import {useUser} from "~/hooks/useUser";
 import Loader from "~/components/Loader";
-import {parseAsInteger, useQueryState} from 'nuqs'
 import PaginationComponent from "~/components/Pagination";
 import {Input} from "~/components/ui/input";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "~/components/ui/select";
@@ -13,6 +12,7 @@ import {Button} from "~/components/ui/button";
 import pkg from 'lodash';
 import {search as searchOptions} from "~/constants";
 import {cn} from "~/lib/utils";
+import {useSearchParams} from "react-router";
 
 const {debounce} = pkg;
 
@@ -67,14 +67,15 @@ const gridElementTransition: Variants = {
 }
 
 const CoachesPage = () => {
+    const [searchParams, setSearchParams] = useSearchParams();
     const [coaches, setCoaches] = useState<Coach[] | undefined>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [search, setSearch] = useQueryState('search', {defaultValue: ""});
-    const [filter, setFilter] = useQueryState('filter', {defaultValue: ""});
-    const [filterBy, setFilterBy] = useQueryState('filterBy', {defaultValue: ""});
-    const [sortBy, setSortBy] = useQueryState('sort', {defaultValue: ""});
-    const [page, setPage] = useQueryState('page', parseAsInteger.withDefault(1));
-    const [pageSize, setPageSize] = useQueryState('pageSize', parseAsInteger.withDefault(10));
+    const [search, setSearch] = useState(searchParams.get('search') || "");
+    const [filter, setFilter] = useState(searchParams.get('filter') || "");
+    const [filterBy, setFilterBy] = useState(searchParams.get('filterBy') || "");
+    const [sortBy, setSortBy] = useState(searchParams.get('sort') || "id");
+    const [page, setPage] = useState(parseInt(searchParams.get('page') || "1", 10));
+    const [pageSize, setPageSize] = useState(parseInt(searchParams.get('pageSize') || "10", 10));
     const [totalPages, setTotalPages] = useState<number>(0);
     const {userToken} = useUser();
 
@@ -118,7 +119,7 @@ const CoachesPage = () => {
             } finally {
                 setIsLoading(false);
             }
-        }, 300),
+        }, 500),
         [userToken, debounce]
     );
 
@@ -133,6 +134,19 @@ const CoachesPage = () => {
             debouncedFetchCoaches.cancel();
         };
     }, [debouncedFetchCoaches]);
+
+    // Update URL params when state changes
+    useEffect(() => {
+        const params = new URLSearchParams();
+        if (search) params.set('search', search);
+        if (filter) params.set('filter', filter);
+        if (filterBy) params.set('filterBy', filterBy);
+        if (sortBy) params.set('sort', sortBy);
+        if (page > 1) params.set('page', page.toString());
+        if (pageSize !== 10) params.set('pageSize', pageSize.toString());
+
+        setSearchParams(params, {replace: true});
+    }, [search, filter, filterBy, sortBy, page, pageSize, setSearchParams]);
 
     const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         setSearch(e.target.value);
@@ -163,6 +177,7 @@ const CoachesPage = () => {
         setFilterBy("");
         setSortBy("id");
         setPage(1);
+        setPageSize(10);
     }, [setSearch, setFilter, setSortBy, setPage]);
 
     const getFilterOptions = useCallback(() => {
