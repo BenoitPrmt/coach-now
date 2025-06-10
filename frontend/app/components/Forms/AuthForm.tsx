@@ -112,7 +112,7 @@ const AuthForm = ({
       hourlyRate: 0,
       sports: [],
       level: "BEGINNER",
-      profilePicture: "",
+      profilePictureUrl: "",
       birthDate: new Date(),
     },
   });
@@ -134,7 +134,7 @@ const AuthForm = ({
   }, [password, confirmPassword, isLogin]);
 
   const onSubmit = async (values: z.infer<typeof registerSchema>) => {
-    const { firstName, lastName, email, password, isCoach, gender, hourlyRate, sports, profilePicture, birthDate, level } = values;
+    const { firstName, lastName, email, password, isCoach, gender, hourlyRate, sports, profilePictureUrl, birthDate, level } = values;
 
     const commonData = { firstName, lastName, email, password, isCoach };
 
@@ -148,7 +148,7 @@ const AuthForm = ({
         }
       } else {
         if (isCoach) {
-          await registerCoach({ ...commonData, gender, hourlyRate, sports, profilePicture, birthDate, level });
+          await registerCoach({ ...commonData, gender, hourlyRate, sports, profilePictureUrl, birthDate, level });
         } else {
           await register(commonData);
         }

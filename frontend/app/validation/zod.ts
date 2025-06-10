@@ -24,7 +24,7 @@ export const registerSchema = z.object({
     gender: z.enum(["MALE", "FEMALE"], { required_error: "Le genre est requis." }),
     hourlyRate: z.coerce.number().optional(),
     sports: z.string().array().optional(),
-    profilePicture: z.string().optional(),
+    profilePictureUrl: z.string().optional(),
     birthDate: z.date().optional(),
     level: z.enum(["BEGINNER", "MEDIUM", "HIGHLEVEL"]).optional(),
 }).superRefine((data, ctx) => {

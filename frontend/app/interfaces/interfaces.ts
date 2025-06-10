@@ -19,7 +19,7 @@ export interface DataRegisterCoachInterface {
   gender: string;
   hourlyRate?: number;
   sports?: string[];
-  profilePicture?: string;
+  profilePictureUrl?: string;
   birthDate?: Date;
   level?: string;
 }

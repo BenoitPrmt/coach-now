@@ -39,7 +39,7 @@ export const registerCoach = (values: {
   password: string;
   isCoach: boolean;
   birthDate?: Date;
-  profilePicture?: string;
+  profilePictureUrl?: string;
   hourlyRate?: number;
   sports?: string[];
   level?: "BEGINNER" | "MEDIUM" | "HIGHLEVEL";
@@ -47,7 +47,7 @@ export const registerCoach = (values: {
 }) => {
   const formattedValues = {
     ...values,
-    level: [values.level],
+    levels: [values.level],
     birthdate: values.birthDate
       ? new Date(values.birthDate).toISOString().slice(0, 10)
       : undefined,
