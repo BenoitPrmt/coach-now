@@ -1,18 +1,20 @@
 package com.coachnow.api.web.request.booking;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 @Data
-public class BookingCreation {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class BookingUpdate {
+
     private String startDate;
     private String endDate;
-
     private Boolean isActive;
     private Float totalPrice;
     private String coachId;
     private String userId;
 
-    public BookingCreation(String startDate, String endDate, Boolean isActive, Float totalPrice, String coachId, String userId) {
+    public BookingUpdate(String startDate, String endDate, Boolean isActive, Float totalPrice, String coachId, String userId) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.isActive = isActive;
