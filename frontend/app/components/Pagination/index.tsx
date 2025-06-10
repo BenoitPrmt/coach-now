@@ -15,6 +15,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "~/components/ui/select"
+import {cn} from "~/lib/utils";
 
 type PaginationProps = {
     currentPage: number
@@ -22,7 +23,8 @@ type PaginationProps = {
     paginationItemsToDisplay?: number
     setCurrentPage?: (page: number) => void
     pageSize?: number
-    setPageSize?: (pageSize: number) => void
+    setPageSize?: (pageSize: number) => void,
+    className?: string
 }
 
 export default function PaginationComponent({
@@ -32,6 +34,7 @@ export default function PaginationComponent({
                                                 setCurrentPage,
                                                 pageSize,
                                                 setPageSize,
+                                                className,
                                             }: PaginationProps) {
     const {pages, showLeftEllipsis, showRightEllipsis} = usePagination({
         currentPage,
@@ -40,7 +43,7 @@ export default function PaginationComponent({
     })
 
     return (
-        <div className="flex items-center justify-between gap-3">
+        <div className={cn("flex items-center justify-between gap-3", className)}>
             {/* Page number information */}
             <p
                 className="text-muted-foreground flex-1 text-sm whitespace-nowrap"

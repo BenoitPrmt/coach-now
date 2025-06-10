@@ -318,15 +318,14 @@ const CoachesPage = () => {
                         ))}
                     </motion.div>
 
-                    {totalPages > 1 && (
-                        <PaginationComponent
-                            currentPage={page}
-                            setCurrentPage={setPage}
-                            totalPages={totalPages}
-                            pageSize={pageSize}
-                            setPageSize={setPageSize}
-                        />
-                    )}
+                    <PaginationComponent
+                        className="mt-8"
+                        currentPage={page}
+                        setCurrentPage={setPage}
+                        totalPages={totalPages}
+                        pageSize={pageSize}
+                        setPageSize={setPageSize}
+                    />
                 </div>
             )}
         </div>
