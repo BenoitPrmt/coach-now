@@ -1,5 +1,25 @@
 package com.coachnow.api.controller;
 
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.coachnow.api.model.entity.Coach;
 import com.coachnow.api.model.entity.User;
 import com.coachnow.api.model.entity.dto.CoachDTO;
@@ -7,16 +27,7 @@ import com.coachnow.api.model.service.CoachService;
 import com.coachnow.api.model.service.UserService;
 import com.coachnow.api.web.request.coach.CoachCreation;
 import com.coachnow.api.web.response.coach.availability.DayAvailability;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import com.coachnow.api.web.response.pagination.PaginatedElements;
 
 @RestController
 @RequestMapping("/api")
@@ -29,13 +40,52 @@ public class CoachController {
     UserService userService;
 
     @GetMapping("/coachs")
-    public List<CoachDTO> all() {
-        List<Coach> coachs = coachService.selectAll();
-        List<CoachDTO> listDTO = new ArrayList<CoachDTO>();
-        for(Coach coach : coachs) {
+    public PaginatedElements<CoachDTO> all(
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer pageSize,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String filter,
+            @RequestParam(required = false) String filterBy,
+            @RequestParam(value = "sort", required = false, defaultValue = "lastname") String sortBy
+    ) {
+        Optional<String> searchOpt = Optional.ofNullable(search);
+        Optional<String> filterOpt = Optional.ofNullable(filter);
+        Optional<String> filterByOpt = Optional.ofNullable(filterBy);
+        Optional<String> sortByOpt = Optional.ofNullable(sortBy);
+
+        if (page != null) {
+            int pageSizeDefault = 10;
+
+            if (page < 0) {
+                throw new IllegalArgumentException("Page index must be 0 or greater.");
+            }
+
+            int validPageSize = (pageSize != null && pageSize > 0) ? pageSize : pageSizeDefault;
+
+            List<Coach> coachs = coachService.selectAllWithPagination(page, validPageSize, searchOpt, filterOpt, filterByOpt, sortByOpt);
+
+            List<CoachDTO> listDTO = new ArrayList<>();
+            for (Coach coach : coachs) {
+                listDTO.add(new CoachDTO(coach));
+            }
+
+            int totalElements = coachService.getTotalCountWithFilters(searchOpt, filterOpt, filterByOpt);
+            int totalPages = (int) Math.ceil((double) totalElements / validPageSize);
+
+            return new PaginatedElements<>(
+                    true, page, validPageSize, totalPages, totalElements, listDTO, searchOpt
+            );
+        }
+
+        List<Coach> coachs = coachService.selectAllWithFilters(searchOpt, filterOpt, filterByOpt, sortByOpt);
+
+        List<CoachDTO> listDTO = new ArrayList<>();
+        for (Coach coach : coachs) {
             listDTO.add(new CoachDTO(coach));
         }
-        return listDTO;
+        return new PaginatedElements<>(
+                false, 0, 0, 0, listDTO.size(), listDTO, searchOpt
+        );
     }
 
     @GetMapping("/coach/{id}")
