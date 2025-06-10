@@ -9,9 +9,9 @@ import {Link} from "react-router";
 import RatingCards from "~/components/Rating/RatingCards";
 import {isOfTypeCoach} from "~/validation/typesValidations";
 import {getPublicEnv} from 'env.common';
-import ProfileEditModal from "~/components/Account/profile/edit-modal";
+import ProfileEditModal from "~/components/Account/profile/EditModal";
 import BookingCard from "~/components/Booking/card";
-import UserInfo from "~/components/Account/user/user-info";
+import UserInfo from "~/components/Account/user/UserInfo";
 import {Badge} from "~/components/ui/badge";
 import {cn} from "~/lib/utils";
 

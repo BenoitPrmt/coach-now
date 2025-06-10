@@ -1,5 +1,5 @@
+import CoachsPage from "~/pages/admin/Coachs";
+
 export default function Coachs() {
-    return (
-        <p>Coachs</p>
-    );
+    return <CoachsPage />;
 }
