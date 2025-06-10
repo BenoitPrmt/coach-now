@@ -41,7 +41,7 @@ const RatingCard = ({rating}: Props) => {
                     )
                 }
                 <div className="flex items-center justify-between pt-1">
-                                        <span className="flex items-center gap-1">
+                                        <span className="flex items-center gap-2">
                                         <FaClock/>
                                             {timeAgo(rating.date)}
                                         </span>

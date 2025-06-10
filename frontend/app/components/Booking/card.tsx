@@ -1,19 +1,39 @@
 import type {Booking} from "~/types";
-import React, {useMemo} from "react";
+import React, {useCallback, useMemo} from "react";
 import {motion} from "motion/react";
 import {cn} from "~/lib/utils";
 import {Link} from "react-router";
 import CoachImage from "~/components/Coach/CoachImage";
-import {Calendar, Clock, Euro} from "lucide-react";
+import {Calendar, Clock, Euro, Star} from "lucide-react";
 import {displayDuration, formatDateWithTime, getDurationFromDate} from "~/lib/time";
 import {ManageBooking} from "~/components/Booking/booking/manage/ManageBooking";
 import CoachBadge from "~/components/Coach/CoachCard/CoachBadge";
 import type {TimeDuration} from "~/types/Time";
+import {Button} from "~/components/ui/button";
 
-const BookingCard = ({booking, index}: { booking: Booking; index: number }) => {
+const BookingCard = ({userProfile, booking, index, onRate}: {
+    userProfile?: {
+        ratings?: { coachId: string }[];
+    },
+    booking: Booking;
+    index: number,
+    onRate?: (booking: Booking) => void;
+}) => {
     const startDate = new Date(booking.startDate);
     const endDate = new Date(booking.endDate);
     const duration: TimeDuration = getDurationFromDate(new Date(booking.startDate), new Date(booking.endDate));
+
+    const userCanRate = useMemo(() => {
+        if (!userProfile) return false;
+        console.log(`Checking if user can rate coach: ${booking?.coach.id}`, userProfile.ratings?.some(rating => rating.coachId === booking?.coach.id));
+        return userProfile.ratings?.some(rating => rating.coachId === booking?.coach.id);
+    }, [booking.coach.id, userProfile]);
+
+    const handleRateClick = useCallback(() => {
+        if (onRate) {
+            onRate(booking);
+        }
+    }, [onRate, booking]);
 
     const bookingStatus = useMemo(() => {
         if (!booking.isActive) {
@@ -69,7 +89,18 @@ const BookingCard = ({booking, index}: { booking: Booking; index: number }) => {
                 </Link>
                 <div className="flex flex-row items-center space-x-2">
                     {bookingStatus === "À venir" && (
-                        <ManageBooking booking={booking} />
+                        <ManageBooking booking={booking}/>
+                    )}
+                    {bookingStatus === "Terminée" && onRate && userCanRate && (
+                        <Button
+                            onClick={handleRateClick}
+                            variant="ghost"
+                            size="icon"
+                            className="p-0.5 rounded-full hover:text-yellow-500 hover:bg-slate-100 transition-colors"
+                        >
+                            <span className="sr-only">Noter le coach</span>
+                            <Star/>
+                        </Button>
                     )}
                     <div className={cn('px-3 py-1 rounded-full text-xs font-medium',
                         bookingStatus === "Annulée" ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200" :
@@ -150,12 +181,12 @@ const BookingCard = ({booking, index}: { booking: Booking; index: number }) => {
                     )
                 }
                 {booking.coach.sports && booking.coach.sports.length > 0 && (
-                        <div className="flex items-center space-x-1">
-                            {booking.coach.sports.map((sport, index) => (
-                                <CoachBadge value={sport} className="mr-1 my-0.5" key={index}/>
-                            ))}
-                        </div>
-                    )
+                    <div className="flex items-center space-x-1">
+                        {booking.coach.sports.map((sport, index) => (
+                            <CoachBadge value={sport} className="mr-1 my-0.5" key={index}/>
+                        ))}
+                    </div>
+                )
                 }
             </div>
         </motion.div>
