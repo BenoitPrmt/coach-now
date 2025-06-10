@@ -338,7 +338,7 @@ const AccountComponent = () => {
                                                 dashboard dédié.
                                             </p>
                                             <Link
-                                                to="/coach/dashboard"
+                                                to="/dashboard"
                                                 className="text-blue-600 hover:underline group flex items-center justify-center text-sm font-medium transition-colors duration-200 rounded-lg px-4 py-2 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900 dark:hover:bg-blue-800"
                                             >
                                                 Accéder au dashboard

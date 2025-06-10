@@ -20,8 +20,9 @@ export default [
         ]),
     ]),
 
-    // layout("routes/coachs/layout.tsx", []),
-
+    layout("routes/coachs/layout.tsx", [
+        route("dashboard", "routes/coachs/dashboard.tsx"),
+    ]),
 
     ...prefix("admin", [
         index("routes/admins/dashboard.tsx"),
