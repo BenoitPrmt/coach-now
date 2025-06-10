@@ -32,8 +32,6 @@ const BookingCard = ({booking, index}: { booking: Booking; index: number }) => {
 
     const isBookingCancelled = !booking.isActive;
 
-    console.log(booking.coach.sports)
-
     return (
         <motion.div
             className={cn(

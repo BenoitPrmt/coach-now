@@ -47,6 +47,7 @@ export const registerCoach = (values: {
 }) => {
   const formattedValues = {
     ...values,
+    level: [values.level],
     birthdate: values.birthDate
       ? new Date(values.birthDate).toISOString().slice(0, 10)
       : undefined,

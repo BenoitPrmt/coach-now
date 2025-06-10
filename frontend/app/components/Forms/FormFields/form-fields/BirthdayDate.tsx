@@ -6,6 +6,8 @@ import {CalendarIcon} from "lucide-react";
 import {Calendar} from "~/components/ui/calendar";
 import { format } from "date-fns";
 import type {Props} from "~/interfaces/interfaces";
+import * as React from "react";
+import {formatDate} from "~/lib/time";
 
 
 export function BirthdayDateField({control}: Props) {
@@ -28,17 +30,18 @@ export function BirthdayDateField({control}: Props) {
                     )}
                   >
                     <CalendarIcon/>
-                    {field.value ? format(field.value, "PPP") : <span>Choisir une date</span>}
+                    {field.value ? formatDate(field.value) : <span>Choisir une date</span>}
                   </Button>
                 </FormControl>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={field.value}
-                  onSelect={field.onChange}
-                  initialFocus
-                />
+                  <Calendar
+                      mode="single"
+                      lang="fr"
+                      selected={field.value}
+                      captionLayout="dropdown"
+                      onSelect={field.onChange}
+                  />
               </PopoverContent>
             </Popover>
             <FormMessage/>

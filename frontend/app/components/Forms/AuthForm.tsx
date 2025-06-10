@@ -35,11 +35,8 @@ import { PasswordField } from "~/components/Forms/FormFields/form-fields/Passwor
 import { ConfirmPasswordField } from "~/components/Forms/FormFields/form-fields/ConfirmPassword";
 import { MultiSelect } from "~/components/Forms/FormFields/form-fields/Sports";
 import { toast } from "sonner";
-
-const sportsOptions = [
-  { label: "Fitness", value: "FITNESS" },
-  { label: "Running", value: "RUNNING" },
-];
+import {sports} from "~/constants/sports";
+import {levels} from "~/constants/levels";
 
 type AuthFormProps = ComponentProps<"div"> & {
   type?: "login" | "register";
@@ -114,9 +111,9 @@ const AuthForm = ({
       gender: "MALE",
       hourlyRate: 0,
       sports: [],
+      level: "BEGINNER",
       profilePicture: "",
       birthDate: new Date(),
-      level: "BEGINNER",
     },
   });
 
@@ -465,7 +462,10 @@ const AuthForm = ({
                 name="sports"
                 render={({ field }) => (
                   <MultiSelect
-                    options={sportsOptions}
+                    options={sports.map(sport => ({
+                        label: sport.name,
+                        value: sport.key
+                    }))}
                     value={field.value}
                     onValueChange={field.onChange}
                     maxCount={2}
