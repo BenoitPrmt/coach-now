@@ -1,11 +1,16 @@
 package com.coachnow.api.controller;
 
+import com.coachnow.api.model.entity.Coach;
 import com.coachnow.api.model.entity.User;
 import com.coachnow.api.model.repository.UserRepository;
+import com.coachnow.api.model.service.CoachService;
 import com.coachnow.api.model.service.JwtService;
 import com.coachnow.api.model.service.UserService;
+import com.coachnow.api.types.Roles;
 import com.coachnow.api.web.request.AuthRequest;
+import com.coachnow.api.web.request.coach.CoachCreation;
 import com.coachnow.api.web.response.AuthResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,6 +33,9 @@ public class AuthenticationController {
 
     @Autowired
     private JwtService jwtService;
+
+    @Autowired
+    private CoachService coachService;
 
     @Autowired
     private UserRepository userRepository;
@@ -60,4 +68,40 @@ public class AuthenticationController {
                 .status(HttpStatus.CREATED) // 201 Created
                 .body(savedUser);
     }
+
+    @PostMapping("/register/coach")
+    public ResponseEntity<?> registerCoach(@RequestBody CoachCreation coachCreation) {
+        Optional<User> userFound = userRepository.findUserByEmail(coachCreation.getEmail());
+
+        if (userFound.isPresent()) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body("L'email  " + coachCreation.getEmail() + " est déjà utilisé.");
+        }
+
+        if (!coachCreation.isCoach()) {
+            return ResponseEntity.badRequest()
+                    .body("Ce formulaire est réservé aux coachs.");
+        }
+
+        User user = new User();
+        user.setFirstName(coachCreation.getFirstName());
+        user.setLastName(coachCreation.getLastName());
+        user.setEmail(coachCreation.getEmail());
+        user.setPassword(coachCreation.getPassword());
+        user.setRole(Roles.COACH);
+
+        User savedUser = userService.registerUser(user);
+
+        Coach coach = new Coach();
+        coach.setUser(savedUser);
+        coach.setCoachFromCoachCreation(coachCreation);
+
+        coachService.save(coach);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED) // 201 Created
+                .body(savedUser);
+    }
+
 }
