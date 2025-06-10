@@ -247,7 +247,7 @@ const AccountComponent = () => {
                                                             <TabsTrigger value="future">
                                                                 <span className={cn(
                                                                     "flex items-center gap-1",
-                                                                    futureBookings.length > 0 ? "text-blue-600" : "text-gray-500"
+                                                                    futureBookings.length > 0 ? "text-slate-800" : "text-gray-500"
                                                                 )}>
                                                                     <span>À venir</span>
                                                                     {futureBookings.length > 0 && (
@@ -262,7 +262,7 @@ const AccountComponent = () => {
                                                             <TabsTrigger value="ongoing">
                                                                 <span className={cn(
                                                                     "flex items-center gap-1",
-                                                                    ongoingBookings.length > 0 ? "text-green-600" : "text-gray-500"
+                                                                    ongoingBookings.length > 0 ? "text-slate-800" : "text-gray-500"
                                                                 )}>
                                                                     <span>En cours</span>
                                                                     {ongoingBookings.length > 0 && (
@@ -277,7 +277,7 @@ const AccountComponent = () => {
                                                             <TabsTrigger value="past">
                                                                 <span className={cn(
                                                                     "flex items-center gap-1",
-                                                                    pastBookings.length > 0 ? "text-gray-600" : "text-gray-500"
+                                                                    pastBookings.length > 0 ? "text-slate-800" : "text-gray-500"
                                                                 )}>
                                                                     <span>Terminées</span>
                                                                     {pastBookings.length > 0 && (
@@ -291,8 +291,8 @@ const AccountComponent = () => {
                                                             </TabsTrigger>
                                                             <TabsTrigger value="cancelled">
                                                             <span className={cn(
-                                                                "flex items-center gap-1 text-red-600",
-                                                                cancelledBookings.length > 0 ? "text-red-600" : "text-gray-500"
+                                                                "flex items-center gap-1",
+                                                                cancelledBookings.length > 0 ? "text-slate-800" : "text-gray-500"
                                                             )}>
                                                                 <span>Annulées</span>
                                                                 {cancelledBookings.length > 0 && (
@@ -308,8 +308,9 @@ const AccountComponent = () => {
                                                         <TabsContent value="future">
                                                             {futureBookings && futureBookings.length > 0 && (
                                                                 <div>
-                                                                    <h4 className="text-lg font-semibold mb-2">À
-                                                                        venir</h4>
+                                                                    <h4 className="text-lg font-semibold mb-2">
+                                                                        À venir
+                                                                    </h4>
                                                                     <div className="space-y-4">
                                                                         {futureBookings.map((booking, index) => (
                                                                             <BookingCard key={booking.id}
