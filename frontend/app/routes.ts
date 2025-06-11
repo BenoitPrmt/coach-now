@@ -16,15 +16,20 @@ export default [
         route("coachs", "routes/users/coachs.tsx"),
         ...prefix("coach", [
             route(":coachId", "routes/users/coach/profile.tsx"),
+            route("dashboard", "routes/users/coach/dashboard.tsx"),
         ]),
     ]),
 
-    // layout("routes/coachs/layout.tsx", []),
-
+    layout("routes/coachs/layout.tsx", [
+        route("dashboard", "routes/coachs/dashboard.tsx"),
+    ]),
 
     ...prefix("admin", [
+        index("routes/admins/dashboard.tsx"),
         layout("routes/admins/layout.tsx", [
             route("users", "routes/admins/users.tsx"),
+            route("coachs", "routes/admins/coachs.tsx"),
+            route("bookings", "routes/admins/bookings.tsx"),
         ]),
     ]),
 

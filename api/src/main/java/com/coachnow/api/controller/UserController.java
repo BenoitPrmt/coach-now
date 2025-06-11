@@ -3,6 +3,7 @@ package com.coachnow.api.controller;
 import com.coachnow.api.model.entity.User;
 import com.coachnow.api.model.entity.dto.UserDTO;
 import com.coachnow.api.model.service.UserService;
+import com.coachnow.api.web.request.user.UserUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,19 +40,33 @@ public class UserController {
     }
 
     @PutMapping("/user/{id}")
-    public UserDTO update(@RequestBody User user, @PathVariable String id) {
-        user.setId(id);
-        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
-            userService.updateUserPassword(user);
-        } else {
-            User existingUser = userService.select(id);
-            if (existingUser != null) {
-                user.setPassword(existingUser.getPassword());
-            }
+    public UserDTO update(@RequestBody UserUpdate userUpdate, @PathVariable String id) {
+        User existingUser = userService.select(id);
+
+        if (existingUser == null) {
+            throw new IllegalArgumentException("User with id " + id + " does not exist.");
         }
-        UserDTO newUser = new UserDTO(userService.save(user));
-        // Adding missing fields to the UserDTO
-        return new UserDTO(userService.select(newUser.getId()));
+
+        if (userUpdate.getFirstName() != null) {
+            existingUser.setFirstName(userUpdate.getFirstName());
+        }
+        if (userUpdate.getLastName() != null) {
+            existingUser.setLastName(userUpdate.getLastName());
+        }
+        if (userUpdate.getEmail() != null) {
+            existingUser.setEmail(userUpdate.getEmail());
+        }
+        if (userUpdate.getRole() != null) {
+            existingUser.setRole(userUpdate.getRole());
+        }
+        if (userUpdate.getPassword() != null && !userUpdate.getPassword().isEmpty()) {
+            existingUser.setPassword(userUpdate.getPassword());
+            userService.updateUserPassword(existingUser);
+        } else {
+            userService.save(existingUser);
+        }
+
+        return new UserDTO(existingUser);
     }
 
     @DeleteMapping("/user/{id}")

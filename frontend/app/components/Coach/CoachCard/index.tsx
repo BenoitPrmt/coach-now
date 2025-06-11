@@ -13,7 +13,8 @@ interface UserInfoProps {
     profilePictureUrl: string;
     name: string;
     age: number;
-    gender: Gender
+    gender: Gender;
+    hourlyRate: number;
     isModal?: boolean;
 }
 
@@ -23,6 +24,7 @@ const UserInfo = (
         name,
         age,
         gender,
+        hourlyRate,
         isModal = false
     }: UserInfoProps) => {
 
@@ -57,7 +59,7 @@ const UserInfo = (
                     isModal ? "hidden" : "w-14 h-14"
                 )}
             />
-            <div className="flex flex-col">
+            <div className="flex flex-col pl-2">
                 <motion.h6
                     className={cn(
                         "font-semibold text-neutral-900 dark:text-neutral-200 text-lg"
@@ -71,7 +73,7 @@ const UserInfo = (
                         isModal && "mx-auto"
                     )}
                 >
-                    {age} ans | {renderGenderSpan}
+                    {age} ans | {renderGenderSpan} | {hourlyRate ? `${hourlyRate} €/h` : "Tarif non défini"}
                 </motion.p>
             </div>
         </div>
@@ -137,7 +139,8 @@ const CoachCard = ({
                     <UserInfo profilePictureUrl={coach.profilePictureUrl}
                               name={coach.user.firstName + ' ' + coach.user.lastName}
                               age={calculateAgeFromBirthdate(coach.birthdate)}
-                              gender={coach.gender}/>
+                              gender={coach.gender}
+                              hourlyRate={coach.hourlyRate}/>
                 </motion.div>
 
                 {

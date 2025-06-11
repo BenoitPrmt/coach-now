@@ -24,7 +24,7 @@ export const links: Route.LinksFunction = () => [
     },
     {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap",
     },
 ];
 
@@ -47,7 +47,6 @@ export function Layout({children}: { children: ReactNode }) {
                 <Scripts/>
             </BaseLayout>
         </main>
-        <Toaster richColors position="top-right" />
         <Footer/>
         </body>
         </html>
@@ -55,7 +54,9 @@ export function Layout({children}: { children: ReactNode }) {
 }
 
 export default function App() {
-    return <Outlet/>;
+    return (
+        <Outlet/>
+    );
 }
 
 export function ErrorBoundary({error}: Route.ErrorBoundaryProps) {

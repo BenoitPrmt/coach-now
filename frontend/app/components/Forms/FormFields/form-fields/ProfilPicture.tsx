@@ -7,7 +7,7 @@ export function ProfilePictureField({ control }: Props) {
     <div className="grid w-full max-w-sm items-center gap-3">
       <FormField
         control={control}
-        name="profilePicture"
+        name="profilePictureUrl"
         render={({ field }) => (
           <FormItem className="grid w-full max-w-sm gap-3">
             <FormLabel>Photo de profil (URL)</FormLabel>

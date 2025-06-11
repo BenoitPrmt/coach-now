@@ -124,6 +124,7 @@ export function Booking({ coach, buttonClassName }: Props) {
 			});
 			setIsOpen(false);
 			resetSelectedDate();
+			window.location.reload();
 		}).catch((error) => {
 			console.error("Error creating booking:", error);
 			toast.error("Une erreur est survenue lors de la création de la réservation.", {

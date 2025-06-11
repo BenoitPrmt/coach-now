@@ -11,7 +11,7 @@ export function HourlyRateField({control}: Props) {
         name="hourlyRate"
         render={({field}) => (
           <FormItem className="grid w-full max-w-sm gap-3">
-            <FormLabel>Taux horaires (€)</FormLabel>
+            <FormLabel>Taux horaire (€)</FormLabel>
             <FormControl>
               <Input type="number" step="0.01" placeholder="45.99€" {...field} />
             </FormControl>

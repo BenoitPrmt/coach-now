@@ -21,10 +21,10 @@ export const registerSchema = z.object({
     lastName: z.string().min(1, "Le nom est requis."),
     confirmPassword: z.string().min(8, "La confirmation du mot de passe doit comporter au moins 8 caractères."),
     isCoach: z.boolean().default(false),
-    gender: z.enum(["male", "female", "other"], { required_error: "Le genre est requis." }),
+    gender: z.enum(["MALE", "FEMALE"], { required_error: "Le genre est requis." }),
     hourlyRate: z.coerce.number().optional(),
     sports: z.string().array().optional(),
-    profilePicture: z.string().optional(),
+    profilePictureUrl: z.string().optional(),
     birthDate: z.date().optional(),
     level: z.enum(["BEGINNER", "MEDIUM", "HIGHLEVEL"]).optional(),
 }).superRefine((data, ctx) => {

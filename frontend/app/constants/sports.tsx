@@ -13,6 +13,7 @@ type Sport = {
     badgeClass: string;
     icon: LucideIcon | IconType;
 }
+
 const sports: Sport[] = [
     {
         name: "Fitness",
@@ -52,3 +53,4 @@ const sports: Sport[] = [
 ]
 
 export {sports};
+export type { Sport };
