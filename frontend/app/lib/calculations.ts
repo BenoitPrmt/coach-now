@@ -1,3 +1,5 @@
+import type {Rating} from "~/types";
+
 export const calculateAgeFromBirthdate = (birthdate: string): number => {
     const birthDateObj = new Date(birthdate);
     const today = new Date();
@@ -9,4 +11,9 @@ export const calculateAgeFromBirthdate = (birthdate: string): number => {
     }
 
     return age;
+}
+
+export const calculateAverageRating = (ratings: Rating[]): number => {
+    const totalRatings = ratings.reduce((acc, rating) => acc + rating.rating, 0);
+    return totalRatings / ratings.length || 0;
 }

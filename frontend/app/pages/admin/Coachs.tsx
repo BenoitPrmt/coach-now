@@ -1,5 +1,5 @@
 import {CoachFormModal} from "~/components/Admin/Coach/CoachFormModal";
-import {CoachsTable} from "~/components/Admin/Coach/CoachsTable";
+import {CoachsTable} from "~/components/Admin/Coach/Table/CoachsTable";
 
 const CoachsPage = () => {
     return (
