@@ -21,7 +21,7 @@ export const registerSchema = z.object({
     lastName: z.string().min(1, "Le nom est requis."),
     confirmPassword: z.string().min(8, "La confirmation du mot de passe doit comporter au moins 8 caractères."),
     isCoach: z.boolean().default(false),
-    gender: z.enum(["MALE", "FEMALE"], { required_error: "Le genre est requis." }),
+    gender: z.enum(["MALE", "FEMALE"], {required_error: "Le genre est requis."}),
     hourlyRate: z.coerce.number().optional(),
     sports: z.string().array().optional(),
     profilePictureUrl: z.string().optional(),
@@ -68,3 +68,15 @@ export const registerSchema = z.object({
         }
     }
 });
+
+
+export const coachReviewSchema = z.object({
+    rating: z.string()
+        .min(1, {message: "La note est nécessaire"})
+        .regex(/^[1-5]$/, "La note doit être entre 1 et 5"),
+    comment: z
+        .string()
+        .max(500, "Le commentaire ne peut pas dépasser 500 caractères.")
+        .optional()
+        .transform((val) => val?.trim() || undefined)
+})

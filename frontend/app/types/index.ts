@@ -38,7 +38,7 @@ export type Rating = {
     id: string;
     date: string;
     comment: string;
-    coach: string;
+    coach: Coach;
     user: User;
 }
 

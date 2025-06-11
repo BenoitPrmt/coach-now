@@ -225,7 +225,7 @@ const CoachProfile = ({coachId}: Props) => {
                         </p>
                     </div>
                     {/* Ratings */}
-                    <RatingCards ratings={coach?.ratings}/>
+                    <RatingCards ratings={coach?.ratings} coachPage/>
                 </motion.div>
             </div>
         </div>

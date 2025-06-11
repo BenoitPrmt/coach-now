@@ -6,9 +6,10 @@ import RatingCard from "~/components/Rating/RatingCards/RatingCard";
 type Props = {
     ratings?: Rating[];
     delay?: number;
+    coachPage?: boolean;
 };
 
-const RatingCards = ({ratings, delay = 0.4}: Props) => {
+const RatingCards = ({ratings, delay = 0.4, coachPage}: Props) => {
     return (
         <motion.div
             className="flex flex-col gap-4 px-6 pb-6"
@@ -29,6 +30,7 @@ const RatingCards = ({ratings, delay = 0.4}: Props) => {
                         <RatingCard
                             key={index}
                             rating={rating}
+                            coachPage={coachPage}
                         />
                     </motion.div>
                 ))
