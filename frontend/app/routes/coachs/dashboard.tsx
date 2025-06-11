@@ -1,9 +1,5 @@
-import React from "react";
+import CoachDashboardComponent from '~/components/CoachDashboard/Dashboard';
 
 export default function Dashboard() {
-    return (
-        <div>
-            <h1>Dashboard du coach</h1>
-        </div>
-    );
+    return <CoachDashboardComponent/>
 }

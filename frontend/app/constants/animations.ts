@@ -1,4 +1,4 @@
-const authContainerVariants = {
+const AUTH_CONTAINER_VARIANTS = {
     hidden: {opacity: 0},
     visible: {
         opacity: 1,
@@ -9,7 +9,7 @@ const authContainerVariants = {
     }
 };
 
-const authItemVariants = {
+const AUTH_ITEM_VARIANTS = {
     hidden: {opacity: 0, y: 20},
     visible: {
         opacity: 1,
@@ -18,7 +18,7 @@ const authItemVariants = {
     }
 };
 
-const authFormVariants = {
+const AUTH_FORM_VARIANTS = {
     login: {
         x: 0,
         transition: {duration: 0.6, ease: "easeInOut"}
@@ -29,7 +29,7 @@ const authFormVariants = {
     }
 };
 
-const authImageContainerVariants = {
+const AUTH_IMAGE_CONTAINER_VARIANTS = {
     login: {
         x: 0,
         transition: {duration: 0.6, ease: "easeInOut"}
@@ -40,7 +40,7 @@ const authImageContainerVariants = {
     }
 };
 
-const authImageVariants = {
+const AUTH_IMAGE_VARIANTS = {
         initial: {
             scale: 1.05,
             opacity: 0,
@@ -66,9 +66,9 @@ const authImageVariants = {
     };
 
 export {
-    authContainerVariants,
-    authItemVariants,
-    authFormVariants,
-    authImageContainerVariants,
-    authImageVariants
+    AUTH_CONTAINER_VARIANTS,
+    AUTH_ITEM_VARIANTS,
+    AUTH_FORM_VARIANTS,
+    AUTH_IMAGE_CONTAINER_VARIANTS,
+    AUTH_IMAGE_VARIANTS
 }

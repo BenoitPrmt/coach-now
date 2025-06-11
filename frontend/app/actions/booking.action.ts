@@ -1,7 +1,7 @@
 "use server";
 
-import {getPublicEnv} from "env.common";
-import type {Booking, Coach, PaginatedResponse} from "~/types";
+import type {Booking, Coach, ExportFormat} from "~/types";
+import {API_URL} from "~/constants/api";
 
 type BookingData = {
     startDate: string;
@@ -14,7 +14,7 @@ type BookingData = {
 
 export async function getAllBookings(bearerToken: any): Promise<Booking[]> {
     try {
-        const url = getPublicEnv(import.meta.env).VITE_API_URL + `/bookings`;
+        const url = API_URL + `/bookings`;
 
         const res = await fetch(url, {
             method: 'GET',
@@ -41,7 +41,7 @@ export async function createBooking(
     bookingData: BookingData
 ) {
     try {
-        const url = getPublicEnv(import.meta.env).VITE_API_URL + `/booking`;
+        const url = API_URL + `/booking`;
 
         const res = await fetch(url, {
             method: 'POST',
@@ -69,7 +69,7 @@ export async function cancelBooking(
     bookingId: string,
 ) {
     try {
-        const url = getPublicEnv(import.meta.env).VITE_API_URL + `/booking/${bookingId}`;
+        const url = API_URL + `/booking/${bookingId}`;
 
         const res = await fetch(url, {
             method: 'PUT',
@@ -100,7 +100,7 @@ export async function updateBooking(
     data: Partial<Booking>
 ): Promise<Coach> {
     try {
-        const url = getPublicEnv(import.meta.env).VITE_API_URL + `/booking/${bookingId}`;
+        const url = API_URL + `/booking/${bookingId}`;
 
         const res = await fetch(url, {
             method: 'PUT',
@@ -125,7 +125,7 @@ export async function updateBooking(
 
 export async function deleteBooking(bearerToken: any, bookingId: string): Promise<void> {
     try {
-        const url = getPublicEnv(import.meta.env).VITE_API_URL + `/booking/${bookingId}`;
+        const url = API_URL + `/booking/${bookingId}`;
 
         const res = await fetch(url, {
             method: 'DELETE',
@@ -141,6 +141,30 @@ export async function deleteBooking(bearerToken: any, bookingId: string): Promis
         }
     } catch (err) {
         console.error("Delete booking action failed:", err);
+        throw err;
+    }
+}
+
+export async function exportBookings(bearerToken: any, format: ExportFormat, coachId?: string): Promise<any> {
+    try {
+        const url = API_URL + `/bookings/export/${format}` + (coachId ? `/${coachId}` : '');
+
+        const res = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${bearerToken}`,
+            },
+        });
+
+        if (!res.ok) {
+            const error = await res.text();
+            throw new Error(`Export failed: ${error}`);
+        }
+
+        return await res.blob();
+    } catch (err) {
+        console.error("Export bookings action failed:", err);
         throw err;
     }
 }

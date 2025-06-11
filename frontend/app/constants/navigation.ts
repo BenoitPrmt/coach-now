@@ -19,7 +19,7 @@ type NavigationOptions = {
 }[];
 
 
-const navigation: NavigationOptions = [
+const NAVIGATION: NavigationOptions = [
     {
         page: "Accueil",
         url: "/",
@@ -57,6 +57,13 @@ const navigation: NavigationOptions = [
         links: []
     },
     {
+        page: "Dashboard",
+        url: "/dashboard",
+        needsAuth: true,
+        isCoach:true,
+        links: []
+    },
+    {
         page: "Administration",
         url: "/admin",
         needsAuth: true,
@@ -66,5 +73,5 @@ const navigation: NavigationOptions = [
 ]
 
 export {
-    navigation
+    NAVIGATION
 }

@@ -3,7 +3,7 @@ import {memo, useMemo} from "react";
 import {isOfTypeLevel} from "~/validation/typesValidations";
 import {translateIntoFrench} from "~/lib/translations";
 import {Badge} from "~/components/ui/badge";
-import {sports} from "~/constants";
+import {SPORTS} from "~/constants";
 import {cn} from "~/lib/utils";
 import {GraduationCap} from "lucide-react";
 
@@ -36,7 +36,7 @@ const CoachBadge = memo(({value, className}: { value: Level | string; className?
     if (isValidLevel) {
         return <LevelBadge className={className} level={value as Level}/>;
     } else {
-        const correspondingSport = sports.sports.find((sport) => sport.key.includes(value as string));
+        const correspondingSport = SPORTS.SPORTS.find((sport) => sport.key.includes(value as string));
         return (
             <Badge className={cn(correspondingSport?.badgeClass, className)} variant="light">
                 {correspondingSport?.icon && <correspondingSport.icon className={correspondingSport.iconClass}/>}

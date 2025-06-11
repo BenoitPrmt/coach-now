@@ -1,5 +1,5 @@
-import {translations} from '~/constants';
+import {TRANSLATIONS} from '~/constants';
 
 export const translateIntoFrench = (english: string): string => {
-    return translations.translations.find(translation => translation.english === english)?.french || english;
+    return TRANSLATIONS.TRANSLATIONS.find(translation => translation.english === english)?.french || english;
 }

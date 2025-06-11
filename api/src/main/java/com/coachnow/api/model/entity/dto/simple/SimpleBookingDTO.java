@@ -1,13 +1,10 @@
-package com.coachnow.api.model.entity.dto;
+package com.coachnow.api.model.entity.dto.simple;
 
 import com.coachnow.api.model.entity.Booking;
-import com.coachnow.api.model.entity.dto.simple.SimpleCoachDTO;
-import com.coachnow.api.model.entity.dto.simple.SimpleUserDTO;
 import lombok.Data;
 
-
 @Data
-public class BookingDTO {
+public class SimpleBookingDTO {
     private String id;
     private String startDate;
     private String endDate;
@@ -17,7 +14,7 @@ public class BookingDTO {
     private SimpleCoachDTO coach;
     private SimpleUserDTO user;
 
-    public BookingDTO(Booking booking) {
+    public SimpleBookingDTO(Booking booking) {
         this.id = booking.getId();
         this.startDate = booking.getStartDate() != null ? booking.getStartDate().toString() : null;
         this.endDate = booking.getEndDate() != null ? booking.getEndDate().toString() : null;

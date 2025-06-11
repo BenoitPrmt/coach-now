@@ -18,6 +18,10 @@ public class BookingService {
         return (List<Booking>) bookingRepository.findAll();
     }
 
+    public List<Booking> selectAllByCoachId(String coachId) {
+        return bookingRepository.findByCoachId(coachId);
+    }
+
     public Booking select(String id) {
         Optional<Booking> optionalPlayer = bookingRepository.findById(id);
         return optionalPlayer.orElse(null);
