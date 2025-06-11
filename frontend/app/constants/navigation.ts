@@ -19,7 +19,7 @@ type NavigationOptions = {
 }[];
 
 
-const navigation: NavigationOptions = [
+const NAVIGATION: NavigationOptions = [
     {
         page: "Accueil",
         url: "/",
@@ -73,5 +73,5 @@ const navigation: NavigationOptions = [
 ]
 
 export {
-    navigation
+    NAVIGATION
 }

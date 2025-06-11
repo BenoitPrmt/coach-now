@@ -1,4 +1,4 @@
-import { sports } from "~/constants/sports";
+import {SPORTS} from "~/constants";
 
 const FILTER_OPTIONS = [
   { value: 'gender', label: 'Genre' },
@@ -17,7 +17,7 @@ const SORT_OPTIONS = [
   { value: 'email', label: 'Email (A-Z)' },
 ];
 
-const SPORTS_OPTIONS = sports.map(sport => ({
+const SPORTS_OPTIONS = SPORTS.SPORTS.map(sport => ({
   value: sport.key,
   label: sport.name,
 }));

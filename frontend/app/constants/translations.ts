@@ -3,7 +3,7 @@ type Translation = {
     french: string;
 }
 
-const translations: Translation[] = [
+const TRANSLATIONS: Translation[] = [
     {
         english: "BEGINNER",
         french: "DÉBUTANT"
@@ -19,5 +19,5 @@ const translations: Translation[] = [
 ]
 
 export {
-    translations
+    TRANSLATIONS
 }
