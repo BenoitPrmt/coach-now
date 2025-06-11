@@ -1,4 +1,4 @@
-import {UsersTable} from "~/components/Admin/User/UsersTable";
+import {UsersTable} from "~/components/Admin/User/Table/UsersTable";
 import {UserFormModal} from "~/components/Admin/User/UserFormModal";
 
 const UsersPage = () => {

@@ -2,7 +2,6 @@ import type {Coach, User, UserRole} from "~/types";
 import {isOfTypeCoach} from "~/validation/typesValidations";
 import {motion} from "motion/react";
 import {Edit, Mail, User as UserIcon} from "lucide-react";
-import {FaCrown, FaDumbbell, FaInfo, FaUser} from "react-icons/fa6";
 import {Button} from "~/components/ui/button";
 import React from "react";
 import UserRoleBadge from "~/components/Account/user/UserRoleBadge";

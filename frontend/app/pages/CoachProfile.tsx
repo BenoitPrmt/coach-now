@@ -14,6 +14,8 @@ import RatingStar from "~/components/Rating/RatingCards/RatingCard/RatingStar";
 import RatingCards from "~/components/Rating/RatingCards";
 
 import {Booking} from "~/components/Booking/booking";
+import { calculateAverageRating } from '~/lib/calculations';
+import CoachGender from "~/components/Coach/CoachGender";
 
 type Props = {
     coachId: string;
@@ -46,23 +48,7 @@ const UserInfo = ({
     }, [birthdate]);
 
     const renderGenderSpan = useMemo(() => {
-        switch (gender) {
-            case "FEMALE":
-                return <span className="text-pink-500 flex items-center">
-          <VenusIcon className="inline w-4 h-4 mr-1"/>
-                    {formatGender(gender)}
-        </span>;
-            case "MALE":
-                return <span className="text-blue-500 flex items-center">
-          <MarsIcon className="inline w-4 h-4 mr-1"/>
-                    {formatGender(gender)}
-        </span>;
-            default:
-                return <span className="text-neutral-500 flex items-center">
-          <XIcon className="inline w-4 h-4 mr-1"/>
-                    {formatGender(gender)}
-        </span>;
-        }
+        return <CoachGender gender={gender} />
     }, [gender]);
 
     return (
@@ -123,9 +109,7 @@ const CoachProfile = ({coachId}: Props) => {
 
     useEffect(() => {
         if (coach) {
-            const totalRatings = coach.ratings.reduce((acc, rating) => acc + rating.rating, 0);
-            const averageRating = totalRatings / coach.ratings.length || 0;
-            setAverageRating(averageRating);
+            setAverageRating(calculateAverageRating(coach.ratings));
         }
     }, [coach]);
 
@@ -225,7 +209,7 @@ const CoachProfile = ({coachId}: Props) => {
                         </p>
                     </div>
                     {/* Ratings */}
-                    <RatingCards ratings={coach?.ratings}/>
+                    <RatingCards ratings={coach?.ratings} coachPage/>
                 </motion.div>
             </div>
         </div>

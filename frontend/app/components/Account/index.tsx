@@ -1,7 +1,7 @@
 import React, {useEffect, useMemo, useState, useCallback, useRef} from 'react';
 import {useUser} from "~/hooks/useUser";
 import Loader from "~/components/Loader";
-import type {User, Booking, Coach} from "~/types";
+import type {User, Booking, Coach, Rating} from "~/types";
 import {motion, AnimatePresence} from "motion/react";
 import {Info, Calendar, Star, ArrowRight} from "lucide-react";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "~/components/ui/tabs"
@@ -14,13 +14,29 @@ import BookingCard from "~/components/Booking/card";
 import UserInfo from "~/components/Account/user/UserInfo";
 import {Badge} from "~/components/ui/badge";
 import {cn} from "~/lib/utils";
+import {useRating} from "~/store/ratingStore";
+import CoachRatingModal from "~/components/Coach/CoachModal/CoachRatingModal";
 
 const AccountComponent = () => {
     const {user, userToken, isLoading} = useUser();
+    const {
+        openRatingModal,
+        isModalOpen,
+        closeRatingModal,
+        selectedBooking
+    } = useRating();
     const [userProfile, setUserProfile] = useState<User | null>(null);
     const [userProfileLoading, setUserProfileLoading] = useState(false);
     const [activeTab, setActiveTab] = useState("bookings");
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+    const handleOpenRatingModal = useCallback((booking: Booking) => {
+        if (!booking || !booking.id) {
+            console.error('Invalid booking data:', booking);
+            return;
+        }
+        openRatingModal(booking);
+    }, [openRatingModal]);
 
     const fetchKey = useMemo(() => {
         if (!user?.id || !user?.role || !userToken) return null;
@@ -72,7 +88,7 @@ const AccountComponent = () => {
         if (fetchKey && !isLoading) {
             fetchUserProfile();
         }
-    }, [fetchKey, isLoading, fetchUserProfile]);
+    }, [fetchKey, isLoading]);
 
     const bookingCategories = useMemo(() => {
         if (!userProfile?.bookings) {
@@ -121,6 +137,19 @@ const AccountComponent = () => {
             setUserProfile(updatedUser);
         }
         console.log(`Profile updated:`, updatedUser);
+    }, []);
+
+    const handleRatingSubmit = useCallback((newRating: Rating) => {
+        setUserProfile((prevProfile) => {
+            if (!prevProfile) return null;
+
+            const updatedRatings = [...(prevProfile.ratings || []), newRating];
+
+            return {
+                ...prevProfile,
+                ratings: updatedRatings
+            };
+        });
     }, []);
 
     if (isLoading) return <Loader/>;
@@ -352,7 +381,10 @@ const AccountComponent = () => {
                                                                         {pastBookings.map((booking, index) => (
                                                                             <BookingCard key={booking.id}
                                                                                          booking={booking}
-                                                                                         index={index}/>
+                                                                                         index={index}
+                                                                                         userProfile={userProfile}
+                                                                                         onRate={handleOpenRatingModal}
+                                                                            />
                                                                         ))}
                                                                     </div>
                                                                 </div>
@@ -432,6 +464,13 @@ const AccountComponent = () => {
                         onProfileUpdate={handleProfileUpdate}
                     />
                 )}
+                {/* Modal de notation du coach → Obligé de passer chaque propriété, car gros BUG */}
+                <CoachRatingModal
+                    isModalOpen={isModalOpen}
+                    closeRatingModal={closeRatingModal}
+                    selectedBooking={selectedBooking}
+                    onRatingSubmitted={handleRatingSubmit}
+                />
             </motion.div>
         </div>
     );

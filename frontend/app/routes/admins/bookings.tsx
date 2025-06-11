@@ -1,5 +1,5 @@
+import BookingsPage from "~/pages/admin/Bookings";
+
 export default function Bookings() {
-    return (
-        <p>Bookings</p>
-    );
+    return <BookingsPage />;
 }
