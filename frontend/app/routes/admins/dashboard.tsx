@@ -10,7 +10,6 @@ export default function Dashboard() {
 
             <div className="flex flex-row items-center gap-2 mb-4">
                 <Button
-                    variant="outline"
                     className="transition-colors cursor-pointer"
                     asChild
                 >
@@ -21,7 +20,6 @@ export default function Dashboard() {
                 </Button>
 
                 <Button
-                    variant="outline"
                     className="transition-colors cursor-pointer"
                     asChild
                 >
@@ -32,7 +30,6 @@ export default function Dashboard() {
                 </Button>
 
                 <Button
-                    variant="outline"
                     className="transition-colors cursor-pointer"
                     asChild
                 >

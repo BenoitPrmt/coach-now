@@ -13,9 +13,7 @@ import {
     getSortedRowModel,
     useReactTable,
 } from "@tanstack/react-table"
-import {EditIcon, TrashIcon} from "lucide-react"
 
-import { Button } from "~/components/ui/button"
 import {
     Table,
     TableBody,
@@ -25,52 +23,90 @@ import {
     TableRow,
 } from "~/components/ui/table"
 import {useEffect, useState} from "react";
-import type {User} from "~/types";
-import {getAllUsers} from "~/actions/user.action";
+import type {Booking} from "~/types";
+import {getAllBookings} from "~/actions/booking.action";
 import {useUser} from "~/hooks/useUser";
-import {UserFormModal} from "~/components/Admin/User/UserFormModal";
-import UserRoleBadge from "~/components/Account/user/UserRoleBadge";
-import {UserDeleteModal} from "~/components/Admin/User/UserDeleteModal";
+import {BookingFormModal} from "~/components/Admin/Booking/BookingFormModal";
+import {BookingDeleteModal} from "~/components/Admin/Booking/BookingDeleteModal";
+import {cn} from "~/lib/utils";
+import CoachImage from "~/components/Coach/CoachImage";
+import {Badge} from "~/components/ui/badge";
+import {displayDuration, formatDateWithTime, getDurationFromDate} from "~/lib/time";
+import type {TimeDuration} from "~/types/Time";
+import {BadgeCheckIcon, BadgeXIcon} from "lucide-react";
 
-export const columns: ColumnDef<User>[] = [
+export const columns: ColumnDef<Booking>[] = [
+    {
+        accessorKey: "isActive",
+        header: "Actif",
+        cell: ({ row }) => (
+            <Badge variant={row.original.isActive ? "success" : "destructive"}>
+                {row.original.isActive ? <BadgeCheckIcon /> : <BadgeXIcon />}
+            </Badge>
+        ),
+    },
     {
         accessorKey: "uuid",
         header: "UUID",
         cell: ({ row }) => (
-            <div className="text-sm truncate w-32">{row.original.id}</div>
+            <div className="text-sm truncate w-32">
+                {row.original.id}
+            </div>
         ),
     },
     {
-        accessorKey: "name",
-        header: "Nom",
+        accessorKey: "coach.profilePictureUrl",
+        header: "Coach",
         cell: ({ row }) => (
-            <div>{row.original.firstName} {row.original.lastName}</div>
+            <CoachImage
+                src={row.original.coach.profilePictureUrl}
+                alt={`${row.original.coach.user.firstName} ${row.original.coach.user.lastName}`}
+                className={cn(
+                    "w-8 h-8 rounded-full object-cover shadow-sm",
+                )}
+            />
         ),
     },
     {
-        accessorKey: "email",
-        header: "Email",
-        cell: ({ row }) => <div className="lowercase">{row.original.email}</div>,
-    },
-    {
-        accessorKey: "role",
-        header: "Role",
+        accessorKey: "userId",
+        header: "User ID",
         cell: ({ row }) => (
-            <div><UserRoleBadge userRole={row.original.role} /></div>
+            <div className="text-sm truncate w-32">
+                {row.original.user.id}
+            </div>
         ),
     },
     {
-        accessorKey: "bookings",
-        header: "Réservations",
-        cell: ({ row }) => (
-            <div>{row.original.bookings?.length}</div>
-        ),
+        accessorKey: "startDate",
+        header: "Date",
+        cell: ({ row }) => {
+            const startDate = new Date(row.original.startDate);
+            const isPast = startDate < new Date();
+            return (
+                <div className={cn(
+                    "text-sm",
+                    isPast ? "text-gray-500" : "text-gray-900"
+                )}>
+                    {formatDateWithTime(startDate)}
+                </div>
+            )
+        },
     },
     {
-        accessorKey: "ratings",
-        header: "Notes",
+        accessorKey: "duration",
+        header: "Durée",
+        cell: ({ row }) => {
+            const duration: TimeDuration = getDurationFromDate(new Date(row.original.startDate), new Date(row.original.endDate))
+            return (
+                <div>{displayDuration(duration.hours, duration.minutes)}</div>
+            )
+        },
+    },
+    {
+        accessorKey: "totalPrice",
+        header: "Prix total",
         cell: ({ row }) => (
-            <div>{row.original.ratings?.length}</div>
+            <div>{row.original.totalPrice}€</div>
         ),
     },
     {
@@ -79,15 +115,15 @@ export const columns: ColumnDef<User>[] = [
         cell: ({ row }) => {
             return (
                 <div className="flex items-center gap-2">
-                    <UserFormModal mode="edit" user={row.original} />
-                    <UserDeleteModal userId={row.original.id} />
+                    <BookingFormModal mode="edit" booking={row.original} />
+                    <BookingDeleteModal bookingId={row.original.id} />
                 </div>
             )
         },
     },
 ]
 
-export function UsersTable() {
+export function BookingsTable() {
     const [sorting, setSorting] = useState<SortingState>([])
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
         []
@@ -95,22 +131,24 @@ export function UsersTable() {
     const [columnVisibility, setColumnVisibility] =
         useState<VisibilityState>({})
     const [rowSelection, setRowSelection] = useState({})
-    const [users, setUsers] = useState<User[]>([]);
+    const [bookings, setBookings] = useState<Booking[]>([]);
 
     const { userToken } = useUser();
 
     useEffect(() => {
-        getAllUsers(userToken).then((data) => {
+        getAllBookings(userToken).then((data) => {
             if (data) {
-                setUsers(data.sort((a, b) => {
-                    return a.firstName.localeCompare(b.firstName) || a.lastName.localeCompare(b.lastName);
+                setBookings(data.sort((a, b) => {
+                    const dateA = new Date(a.startDate);
+                    const dateB = new Date(b.startDate);
+                    return dateB.getTime() - dateA.getTime();
                 }));
             }
         })
     }, [])
 
     const table = useReactTable({
-        data: users,
+        data: bookings,
         columns,
         onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,

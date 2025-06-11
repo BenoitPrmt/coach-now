@@ -41,7 +41,7 @@ export const columns: ColumnDef<Coach>[] = [
                 src={row.original.profilePictureUrl}
                 alt={`${row.original.user.firstName} ${row.original.user.lastName}`}
                 className={cn(
-                    "w-12 h-12 rounded-full object-cover shadow-sm",
+                    "w-10 h-10 rounded-full object-cover shadow-sm",
                 )}
             />
         ),
@@ -56,11 +56,11 @@ export const columns: ColumnDef<Coach>[] = [
         ),
     },
     {
-        accessorKey: "userId",
-        header: "User ID",
+        accessorKey: "user.firstName",
+        header: "User",
         cell: ({ row }) => (
             <div className="text-sm truncate w-32">
-                {row.original.user.id}
+                {row.original.user.firstName} {row.original.user.lastName}
             </div>
         ),
     },
@@ -130,7 +130,9 @@ export function CoachsTable() {
     useEffect(() => {
         getAllCoachs(userToken).then((data) => {
             if (data) {
-                setCoachs(data);
+                setCoachs(data.sort((a, b) => {
+                    return a.user.firstName.localeCompare(b.user.firstName) || a.user.lastName.localeCompare(b.user.lastName);
+                }));
             }
         })
     }, [])
