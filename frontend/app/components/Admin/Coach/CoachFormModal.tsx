@@ -1,4 +1,4 @@
-import { Button } from "~/components/ui/button";
+import {Button} from "~/components/ui/button";
 import {
     Dialog,
     DialogClose,
@@ -24,24 +24,24 @@ import {
     SelectTrigger,
     SelectValue,
 } from "~/components/ui/select";
-import { Input } from "~/components/ui/input";
-import { Checkbox } from "~/components/ui/checkbox";
-import { EditIcon, PlusCircleIcon } from "lucide-react";
+import {Input} from "~/components/ui/input";
+import {Checkbox} from "~/components/ui/checkbox";
+import {EditIcon, PlusCircleIcon} from "lucide-react";
 import {Controller, useForm} from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import type { Coach, User, Level, Gender } from "~/types";
-import { useState, useEffect } from "react";
-import { useUser } from "~/hooks/useUser";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {z} from "zod";
+import type {Coach, User, Level, Gender} from "~/types";
+import {useState, useEffect} from "react";
+import {useUser} from "~/hooks/useUser";
 import {createCoach, updateCoach} from "~/actions/coach.action";
 import {levels} from "~/constants/levels";
-import {sports} from "~/constants/sports";
+import {SPORTS as SPORTS_CONSTANT} from "~/constants";
 import type {Sport} from "~/constants/sports";
 import {getAllUsers} from "~/actions/user.action";
 import {MultiSelect} from "~/components/Forms/FormFields/form-fields/Sports";
 import {LevelField} from "~/components/Forms/FormFields/form-fields/Levels";
 
-const SPORTS = sports.map((sport: Sport) => ({
+const SPORTS = SPORTS_CONSTANT.SPORTS.map((sport: Sport) => ({
     key: sport.key,
     name: sport.name,
 }));
@@ -49,8 +49,8 @@ const SPORTS = sports.map((sport: Sport) => ({
 const LEVELS: { key: Level; name: string }[] = levels;
 
 const GENDERS: { key: Gender; name: string }[] = [
-    { key: "MALE", name: "Homme" },
-    { key: "FEMALE", name: "Femme" },
+    {key: "MALE", name: "Homme"},
+    {key: "FEMALE", name: "Femme"},
 ];
 
 const coachFormSchema = z.object({
@@ -58,7 +58,7 @@ const coachFormSchema = z.object({
     birthdate: z.string().min(1, "La date de naissance est requise"),
     profilePictureUrl: z.string().optional(),
     hourlyRate: z
-        .number({ required_error: "Le tarif horaire est requis" })
+        .number({required_error: "Le tarif horaire est requis"})
         .min(0, "Le tarif horaire doit être positif")
         .max(1000, "Le tarif horaire ne peut pas dépasser 1000€"),
     sports: z
@@ -79,12 +79,12 @@ type Props = {
     coach?: Coach;
 }
 
-export function CoachFormModal({ mode, coach }: Props) {
+export function CoachFormModal({mode, coach}: Props) {
     const [open, setOpen] = useState(false);
     const [users, setUsers] = useState<User[]>([]);
     const [loadingUsers, setLoadingUsers] = useState(false);
 
-    const { userToken } = useUser();
+    const {userToken} = useUser();
 
     if (mode !== "create" && !coach) {
         throw new Error("Coach is required for edit mode");
@@ -157,12 +157,12 @@ export function CoachFormModal({ mode, coach }: Props) {
             <DialogTrigger asChild>
                 {mode === "create" ? (
                     <Button>
-                        <PlusCircleIcon className="w-4 h-4 mr-2" />
+                        <PlusCircleIcon className="w-4 h-4 mr-2"/>
                         Créer un coach
                     </Button>
                 ) : (
                     <Button variant="secondary" size="icon">
-                        <EditIcon className="w-4 h-4" />
+                        <EditIcon className="w-4 h-4"/>
                     </Button>
                 )}
             </DialogTrigger>
@@ -188,7 +188,7 @@ export function CoachFormModal({ mode, coach }: Props) {
                             <FormField
                                 control={form.control}
                                 name="userId"
-                                render={({ field }) => (
+                                render={({field}) => (
                                     <FormItem>
                                         <FormLabel>Utilisateur</FormLabel>
                                         <Select
@@ -215,7 +215,7 @@ export function CoachFormModal({ mode, coach }: Props) {
                                                 ))}
                                             </SelectContent>
                                         </Select>
-                                        <FormMessage />
+                                        <FormMessage/>
                                     </FormItem>
                                 )}
                             />
@@ -225,20 +225,20 @@ export function CoachFormModal({ mode, coach }: Props) {
                             <FormField
                                 control={form.control}
                                 name="birthdate"
-                                render={({ field }) => (
+                                render={({field}) => (
                                     <FormItem>
                                         <FormLabel>Date de naissance</FormLabel>
                                         <FormControl>
                                             <Input type="date" {...field} />
                                         </FormControl>
-                                        <FormMessage />
+                                        <FormMessage/>
                                     </FormItem>
                                 )}
                             />
                             <FormField
                                 control={form.control}
                                 name="gender"
-                                render={({ field }) => (
+                                render={({field}) => (
                                     <FormItem>
                                         <FormLabel>Genre</FormLabel>
                                         <Select
@@ -247,7 +247,7 @@ export function CoachFormModal({ mode, coach }: Props) {
                                         >
                                             <FormControl>
                                                 <SelectTrigger>
-                                                    <SelectValue placeholder="Sélectionner un genre" />
+                                                    <SelectValue placeholder="Sélectionner un genre"/>
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
@@ -258,7 +258,7 @@ export function CoachFormModal({ mode, coach }: Props) {
                                                 ))}
                                             </SelectContent>
                                         </Select>
-                                        <FormMessage />
+                                        <FormMessage/>
                                     </FormItem>
                                 )}
                             />
@@ -268,7 +268,7 @@ export function CoachFormModal({ mode, coach }: Props) {
                             <FormField
                                 control={form.control}
                                 name="hourlyRate"
-                                render={({ field }) => (
+                                render={({field}) => (
                                     <FormItem>
                                         <FormLabel>Taux horaire (€)</FormLabel>
                                         <FormControl>
@@ -282,14 +282,14 @@ export function CoachFormModal({ mode, coach }: Props) {
                                                 onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                                             />
                                         </FormControl>
-                                        <FormMessage />
+                                        <FormMessage/>
                                     </FormItem>
                                 )}
                             />
                             <FormField
                                 control={form.control}
                                 name="profilePictureUrl"
-                                render={({ field }) => (
+                                render={({field}) => (
                                     <FormItem>
                                         <FormLabel>URL Photo de profil (optionnel)</FormLabel>
                                         <FormControl>
@@ -299,7 +299,7 @@ export function CoachFormModal({ mode, coach }: Props) {
                                                 {...field}
                                             />
                                         </FormControl>
-                                        <FormMessage />
+                                        <FormMessage/>
                                     </FormItem>
                                 )}
                             />
@@ -308,9 +308,9 @@ export function CoachFormModal({ mode, coach }: Props) {
                         <Controller
                             control={form.control}
                             name="sports"
-                            render={({ field }) => (
+                            render={({field}) => (
                                 <MultiSelect
-                                    options={sports.map(sport => ({
+                                    options={SPORTS.map(sport => ({
                                         label: sport.name,
                                         value: sport.key
                                     }))}
@@ -326,7 +326,7 @@ export function CoachFormModal({ mode, coach }: Props) {
                         <Controller
                             control={form.control}
                             name="levels"
-                            render={({ field }) => (
+                            render={({field}) => (
                                 <MultiSelect
                                     options={levels.map(level => ({
                                         label: level.name,

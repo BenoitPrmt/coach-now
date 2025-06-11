@@ -20,7 +20,7 @@ type Footer = {
     }[]
 }
 
-const footer: Footer = {
+const FOOTER: Footer = {
     companyName: "CoachNow",
     title: "CoachNow",
     description: "Réservez votre coach sportif en ligne et atteignez vos objectifs de fitness !",
@@ -38,5 +38,5 @@ const footer: Footer = {
 }
 
 export {
-    footer
+    FOOTER
 }

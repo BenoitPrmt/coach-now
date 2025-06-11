@@ -10,7 +10,7 @@ import { Card, CardContent } from "~/components/ui/card";
 import { Checkbox } from "~/components/ui/checkbox";
 import { Link, useNavigate } from "react-router";
 import { type ComponentProps, useEffect, useMemo, useState } from "react";
-import { animations } from "~/constants";
+import { ANIMATIONS } from "~/constants";
 import { login, register, registerCoach } from "~/actions/auth.action";
 import { useLocalStorage } from "~/hooks/useLocalStorage";
 import { userStore } from "~/store/userStore";
@@ -35,7 +35,7 @@ import { PasswordField } from "~/components/Forms/FormFields/form-fields/Passwor
 import { ConfirmPasswordField } from "~/components/Forms/FormFields/form-fields/ConfirmPassword";
 import { MultiSelect } from "~/components/Forms/FormFields/form-fields/Sports";
 import { toast } from "sonner";
-import {sports} from "~/constants/sports";
+import {SPORTS} from "~/constants";
 import {levels} from "~/constants/levels";
 
 type AuthFormProps = ComponentProps<"div"> & {
@@ -48,12 +48,12 @@ const AuthForm = ({
   ...props
 }: AuthFormProps) => {
   const {
-    authFormVariants,
-    authContainerVariants,
-    authItemVariants,
-    authImageVariants,
-    authImageContainerVariants
-  } = animations;
+    AUTH_FORM_VARIANTS,
+    AUTH_CONTAINER_VARIANTS,
+    AUTH_ITEM_VARIANTS,
+    AUTH_IMAGE_VARIANTS,
+    AUTH_IMAGE_CONTAINER_VARIANTS
+  } = ANIMATIONS;
 
   const setUserFromToken = userStore((state) => state.setUserFromToken);
   const isLogin = useMemo(() => type === "login", [type]);
@@ -190,7 +190,7 @@ const AuthForm = ({
           <CardContent className="grid p-0 md:grid-cols-2 h-full flex-1 relative">
             <motion.div
               key={`form-${type}`}
-              variants={authFormVariants}
+              variants={AUTH_FORM_VARIANTS}
               initial="hidden"
               animate={type}
               className={cn(
@@ -203,12 +203,12 @@ const AuthForm = ({
                 <motion.form
                   onSubmit={form.handleSubmit(onSubmit)}
                   className="flex flex-col p-6 md:p-10 w-full m-auto h-full justify-center"
-                  variants={authContainerVariants}
+                  variants={AUTH_CONTAINER_VARIANTS}
                   initial="hidden"
                   animate="visible"
                   key={type}
                 >
-                  <motion.div className="flex flex-col gap-6" variants={authItemVariants}>
+                  <motion.div className="flex flex-col gap-6" variants={AUTH_ITEM_VARIANTS}>
                     <AnimatePresence mode="wait">
                       <motion.div
                         key={`header-${type}`}
@@ -255,11 +255,11 @@ const AuthForm = ({
                       )}
                     </AnimatePresence>
 
-                    <motion.div variants={authItemVariants}>
+                    <motion.div variants={AUTH_ITEM_VARIANTS}>
                       <EmailField control={form.control} />
                     </motion.div>
 
-                    <motion.div variants={authItemVariants}>
+                    <motion.div variants={AUTH_ITEM_VARIANTS}>
                       <PasswordField control={form.control} />
                     </motion.div>
 
@@ -331,8 +331,8 @@ const AuthForm = ({
                       )}
                     </AnimatePresence>
 
-                    <motion.div variants={authItemVariants}>
-                      <motion.div variants={authItemVariants}>
+                    <motion.div variants={AUTH_ITEM_VARIANTS}>
+                      <motion.div variants={AUTH_ITEM_VARIANTS}>
                         <Button type="submit">
                           {isLogin ? "Se connecter" : "Créer un compte"}
                         </Button>
@@ -356,7 +356,7 @@ const AuthForm = ({
                       </div>
                     </motion.div>
 
-                    <motion.div variants={authItemVariants} className="text-center text-sm">
+                    <motion.div variants={AUTH_ITEM_VARIANTS} className="text-center text-sm">
                       <AnimatePresence mode="wait">
                         <motion.span
                           key={`link-${type}`}
@@ -390,7 +390,7 @@ const AuthForm = ({
 
             <motion.div
               className="bg-muted relative hidden md:block overflow-hidden h-full"
-              variants={authImageContainerVariants}
+              variants={AUTH_IMAGE_CONTAINER_VARIANTS}
               initial="login"
               animate={type}
               layout
@@ -416,7 +416,7 @@ const AuthForm = ({
                   src={currentImage}
                   alt="Image d'illustration"
                   className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
-                  variants={authImageVariants}
+                  variants={AUTH_IMAGE_VARIANTS}
                   initial="initial"
                   animate={imageLoaded ? "loaded" : "initial"}
                   exit="exit"
@@ -462,7 +462,7 @@ const AuthForm = ({
                 name="sports"
                 render={({ field }) => (
                   <MultiSelect
-                    options={sports.map(sport => ({
+                    options={SPORTS.SPORTS.map(sport => ({
                         label: sport.name,
                         value: sport.key
                     }))}

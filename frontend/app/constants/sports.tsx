@@ -14,7 +14,7 @@ type Sport = {
     icon: LucideIcon | IconType;
 }
 
-const sports: Sport[] = [
+const SPORTS: Sport[] = [
     {
         name: "Fitness",
         key: "FITNESS",
@@ -52,5 +52,5 @@ const sports: Sport[] = [
     }
 ]
 
-export {sports};
+export {SPORTS};
 export type { Sport };
