@@ -1,7 +1,7 @@
 "use server";
 
 import {getPublicEnv} from "env.common";
-import type {Booking, Coach, PaginatedResponse} from "~/types";
+import type {Booking, Coach, ExportFormat, PaginatedResponse} from "~/types";
 
 type BookingData = {
     startDate: string;
@@ -141,6 +141,30 @@ export async function deleteBooking(bearerToken: any, bookingId: string): Promis
         }
     } catch (err) {
         console.error("Delete booking action failed:", err);
+        throw err;
+    }
+}
+
+export async function exportBookings(bearerToken: any, format: ExportFormat, coachId?: string): Promise<any> {
+    try {
+        const url = getPublicEnv(import.meta.env).VITE_API_URL + `/bookings/export/${format}` + (coachId ? `/${coachId}` : '');
+
+        const res = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${bearerToken}`,
+            },
+        });
+
+        if (!res.ok) {
+            const error = await res.text();
+            throw new Error(`Export failed: ${error}`);
+        }
+
+        return await res.blob();
+    } catch (err) {
+        console.error("Export bookings action failed:", err);
         throw err;
     }
 }

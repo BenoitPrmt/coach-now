@@ -53,3 +53,5 @@ export type Coach = {
     user: User;
     ratings: Rating[];
 }
+
+export type ExportFormat = 'csv' | 'pdf';
