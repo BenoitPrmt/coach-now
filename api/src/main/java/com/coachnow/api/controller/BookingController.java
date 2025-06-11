@@ -202,4 +202,17 @@ public class BookingController {
 
         return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
     }
+
+    @GetMapping("/bookings/export/pdf/{coachId}")
+    public ResponseEntity<byte[]> generatePdfFileByCoach(@PathVariable String coachId) throws DocumentException, IOException {
+        List<Booking> bookings = bookingService.selectAllByCoachId(coachId);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", "bookings_" + coachId + ".pdf");
+
+        byte[] pdfBytes = pdfGeneratorUtil.generatePdf(bookings, "Réservations du coach " + coachId);
+
+        return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+    }
 }
