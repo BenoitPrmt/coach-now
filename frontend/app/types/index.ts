@@ -55,6 +55,8 @@ export type Coach = {
     bookings: Booking[];
 }
 
+export type ExportFormat = 'csv' | 'pdf';
+
 export type CoachDashboard = {
     todayBookings: number;
     activeBookings: number;
