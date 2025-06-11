@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import {
+    type ColumnDef,
     type ColumnFiltersState,
     type SortingState,
     type VisibilityState,
@@ -96,7 +97,6 @@ export function BookingsTable() {
                         {table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => (
                                 <TableRow
-
                                     key={row.id}
                                     data-state={row.getIsSelected() && "selected"}
                                 >
