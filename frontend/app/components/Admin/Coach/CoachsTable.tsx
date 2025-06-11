@@ -31,6 +31,8 @@ import {CoachDeleteModal} from "~/components/Admin/Coach/CoachDeleteModal";
 import CoachBadge from "~/components/Coach/CoachCard/CoachBadge";
 import {cn} from "~/lib/utils";
 import CoachImage from "~/components/Coach/CoachImage";
+import {calculateAverageRating} from "~/lib/calculations";
+import CoachGender from "~/components/Coach/CoachGender";
 
 export const columns: ColumnDef<Coach>[] = [
     {
@@ -67,7 +69,7 @@ export const columns: ColumnDef<Coach>[] = [
     {
         accessorKey: "gender",
         header: "Sexe",
-        cell: ({ row }) => <div className="uppercase">{row.original.gender}</div>,
+        cell: ({ row }) => <CoachGender gender={row.original.gender} />,
     },
     {
         accessorKey: "sports",
@@ -98,7 +100,7 @@ export const columns: ColumnDef<Coach>[] = [
         accessorKey: "ratings",
         header: "Note moyenne",
         cell: ({ row }) => (
-            <div>{row.original.ratings?.length}</div>
+            <div>{calculateAverageRating(row.original.ratings)}</div>
         ),
     },
     {
