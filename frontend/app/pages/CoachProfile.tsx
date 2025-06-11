@@ -16,6 +16,7 @@ import RatingCards from "~/components/Rating/RatingCards";
 import {Booking} from "~/components/Booking/booking";
 import { calculateAverageRating } from '~/lib/calculations';
 import CoachGender from "~/components/Coach/CoachGender";
+import {API_URL} from "~/constants/api";
 
 type Props = {
     coachId: string;
@@ -85,7 +86,7 @@ const CoachProfile = ({coachId}: Props) => {
         const fetchCoachProfile = async () => {
             setIsLoading(true);
             try {
-                const response = await fetch(`${getPublicEnv(import.meta.env).VITE_API_URL}/coach/${coachId}`, {
+                const response = await fetch(`${API_URL}/coach/${coachId}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',

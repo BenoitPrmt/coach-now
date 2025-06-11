@@ -13,6 +13,7 @@ import pkg from 'lodash';
 import {SEARCH as SEARCH_OPTIONS} from "~/constants";
 import {cn} from "~/lib/utils";
 import {useSearchParams} from "react-router";
+import {API_URL} from "~/constants/api";
 
 const {debounce} = pkg;
 
@@ -104,7 +105,7 @@ const CoachesPage = () => {
                     params.append('filterBy', filterByValue.trim());
                 }
 
-                const response = await fetch(`${getPublicEnv(import.meta.env).VITE_API_URL}/coachs?${params.toString()}`, {
+                const response = await fetch(`${API_URL}/coachs?${params.toString()}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
