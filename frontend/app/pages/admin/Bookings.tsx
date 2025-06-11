@@ -1,5 +1,5 @@
 import {BookingFormModal} from "~/components/Admin/Booking/BookingFormModal";
-import {BookingsTable} from "~/components/Admin/Booking/BookingsTable";
+import {BookingsTable} from "~/components/Admin/Booking/Table/BookingsTable";
 
 const BookingsPage = () => {
     return (

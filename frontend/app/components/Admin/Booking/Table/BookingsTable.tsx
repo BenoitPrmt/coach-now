@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import {
-    type ColumnDef,
     type ColumnFiltersState,
     type SortingState,
     type VisibilityState,
@@ -23,99 +22,12 @@ import {
     TableRow,
 } from "~/components/ui/table"
 import {useEffect, useState} from "react";
-import type {Coach} from "~/types";
-import {getAllCoachs} from "~/actions/coach.action";
+import type {Booking} from "~/types";
+import {getAllBookings} from "~/actions/booking.action";
 import {useUser} from "~/hooks/useUser";
-import {CoachFormModal} from "~/components/Admin/Coach/CoachFormModal";
-import {CoachDeleteModal} from "~/components/Admin/Coach/CoachDeleteModal";
-import CoachBadge from "~/components/Coach/CoachCard/CoachBadge";
-import {cn} from "~/lib/utils";
-import CoachImage from "~/components/Coach/CoachImage";
+import {columns} from "~/components/Admin/Booking/Table/columns";
 
-export const columns: ColumnDef<Coach>[] = [
-    {
-        accessorKey: "profilePictureUrl",
-        header: "",
-        cell: ({ row }) => (
-            <CoachImage
-                src={row.original.profilePictureUrl}
-                alt={`${row.original.user.firstName} ${row.original.user.lastName}`}
-                className={cn(
-                    "w-10 h-10 rounded-full object-cover shadow-sm",
-                )}
-            />
-        ),
-    },
-    {
-        accessorKey: "uuid",
-        header: "UUID",
-        cell: ({ row }) => (
-            <div className="text-sm truncate w-32">
-                {row.original.id}
-            </div>
-        ),
-    },
-    {
-        accessorKey: "user.firstName",
-        header: "User",
-        cell: ({ row }) => (
-            <div className="text-sm truncate w-32">
-                {row.original.user.firstName} {row.original.user.lastName}
-            </div>
-        ),
-    },
-    {
-        accessorKey: "gender",
-        header: "Sexe",
-        cell: ({ row }) => <div className="uppercase">{row.original.gender}</div>,
-    },
-    {
-        accessorKey: "sports",
-        header: "Sports",
-        cell: ({ row }) => (
-            row.original.sports.map((sport, index) => (
-                <CoachBadge value={sport} className="mr-1 my-0.5" key={index}/>
-            ))
-        ),
-    },
-    {
-        accessorKey: "levels",
-        header: "Niveaux",
-        cell: ({ row }) => (
-            row.original.levels.map((level, index) => (
-                <CoachBadge value={level} className="mr-1 my-0.5" key={index}/>
-            ))
-        ),
-    },
-    {
-        accessorKey: "hourlyRate",
-        header: "Taux Horaire",
-        cell: ({ row }) => (
-            <div>{row.original.hourlyRate}€ / h</div>
-        ),
-    },
-    {
-        accessorKey: "ratings",
-        header: "Note moyenne",
-        cell: ({ row }) => (
-            <div>{row.original.ratings?.length}</div>
-        ),
-    },
-    {
-        id: "actions",
-        enableHiding: false,
-        cell: ({ row }) => {
-            return (
-                <div className="flex items-center gap-2">
-                    <CoachFormModal mode="edit" coach={row.original} />
-                    <CoachDeleteModal coachId={row.original.id} />
-                </div>
-            )
-        },
-    },
-]
-
-export function CoachsTable() {
+export function BookingsTable() {
     const [sorting, setSorting] = useState<SortingState>([])
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
         []
@@ -123,22 +35,24 @@ export function CoachsTable() {
     const [columnVisibility, setColumnVisibility] =
         useState<VisibilityState>({})
     const [rowSelection, setRowSelection] = useState({})
-    const [coachs, setCoachs] = useState<Coach[]>([]);
+    const [bookings, setBookings] = useState<Booking[]>([]);
 
-    const { userToken } = useUser();
+    const {userToken} = useUser();
 
     useEffect(() => {
-        getAllCoachs(userToken).then((data) => {
+        getAllBookings(userToken).then((data) => {
             if (data) {
-                setCoachs(data.sort((a, b) => {
-                    return a.user.firstName.localeCompare(b.user.firstName) || a.user.lastName.localeCompare(b.user.lastName);
+                setBookings(data.sort((a, b) => {
+                    const dateA = new Date(a.startDate);
+                    const dateB = new Date(b.startDate);
+                    return dateB.getTime() - dateA.getTime();
                 }));
             }
         })
     }, [])
 
     const table = useReactTable({
-        data: coachs,
+        data: bookings,
         columns,
         onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,
@@ -156,20 +70,16 @@ export function CoachsTable() {
         },
     })
 
-    table.getRowModel().rows.forEach((row) => {
-        console.log(row)
-    });
-
     return (
         <div className="w-full">
             <div className="rounded-md border">
                 <Table>
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={headerGroup.id}>
+                            <TableRow key={headerGroup.id}  className="border-b border-dark-400 text-light-200 bg-black/5 hover:bg-black/5 rounded-t-md">
                                 {headerGroup.headers.map((header) => {
                                     return (
-                                        <TableHead key={header.id}>
+                                        <TableHead key={header.id} className="text-center">
                                             {header.isPlaceholder
                                                 ? null
                                                 : flexRender(
@@ -186,11 +96,12 @@ export function CoachsTable() {
                         {table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => (
                                 <TableRow
+
                                     key={row.id}
                                     data-state={row.getIsSelected() && "selected"}
                                 >
                                     {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>
+                                        <TableCell key={cell.id} className="text-center">
                                             {flexRender(
                                                 cell.column.columnDef.cell,
                                                 cell.getContext()

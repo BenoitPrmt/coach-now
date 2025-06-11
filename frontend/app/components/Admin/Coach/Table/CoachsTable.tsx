@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import {
-    type ColumnDef,
     type ColumnFiltersState,
     type SortingState,
     type VisibilityState,
@@ -13,9 +12,7 @@ import {
     getSortedRowModel,
     useReactTable,
 } from "@tanstack/react-table"
-import {EditIcon, TrashIcon} from "lucide-react"
 
-import { Button } from "~/components/ui/button"
 import {
     Table,
     TableBody,
@@ -25,69 +22,12 @@ import {
     TableRow,
 } from "~/components/ui/table"
 import {useEffect, useState} from "react";
-import type {User} from "~/types";
-import {getAllUsers} from "~/actions/user.action";
+import type {Coach} from "~/types";
+import {getAllCoachs} from "~/actions/coach.action";
 import {useUser} from "~/hooks/useUser";
-import {UserFormModal} from "~/components/Admin/User/UserFormModal";
-import UserRoleBadge from "~/components/Account/user/UserRoleBadge";
-import {UserDeleteModal} from "~/components/Admin/User/UserDeleteModal";
+import {columns} from "~/components/Admin/Coach/Table/columns";
 
-export const columns: ColumnDef<User>[] = [
-    {
-        accessorKey: "uuid",
-        header: "UUID",
-        cell: ({ row }) => (
-            <div className="text-sm truncate w-32">{row.original.id}</div>
-        ),
-    },
-    {
-        accessorKey: "name",
-        header: "Nom",
-        cell: ({ row }) => (
-            <div>{row.original.firstName} {row.original.lastName}</div>
-        ),
-    },
-    {
-        accessorKey: "email",
-        header: "Email",
-        cell: ({ row }) => <div className="lowercase">{row.original.email}</div>,
-    },
-    {
-        accessorKey: "role",
-        header: "Role",
-        cell: ({ row }) => (
-            <div><UserRoleBadge userRole={row.original.role} /></div>
-        ),
-    },
-    {
-        accessorKey: "bookings",
-        header: "Réservations",
-        cell: ({ row }) => (
-            <div>{row.original.bookings?.length}</div>
-        ),
-    },
-    {
-        accessorKey: "ratings",
-        header: "Notes",
-        cell: ({ row }) => (
-            <div>{row.original.ratings?.length}</div>
-        ),
-    },
-    {
-        id: "actions",
-        enableHiding: false,
-        cell: ({ row }) => {
-            return (
-                <div className="flex items-center gap-2">
-                    <UserFormModal mode="edit" user={row.original} />
-                    <UserDeleteModal userId={row.original.id} />
-                </div>
-            )
-        },
-    },
-]
-
-export function UsersTable() {
+export function CoachsTable() {
     const [sorting, setSorting] = useState<SortingState>([])
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
         []
@@ -95,22 +35,22 @@ export function UsersTable() {
     const [columnVisibility, setColumnVisibility] =
         useState<VisibilityState>({})
     const [rowSelection, setRowSelection] = useState({})
-    const [users, setUsers] = useState<User[]>([]);
+    const [coachs, setCoachs] = useState<Coach[]>([]);
 
-    const { userToken } = useUser();
+    const {userToken} = useUser();
 
     useEffect(() => {
-        getAllUsers(userToken).then((data) => {
+        getAllCoachs(userToken).then((data) => {
             if (data) {
-                setUsers(data.sort((a, b) => {
-                    return a.firstName.localeCompare(b.firstName) || a.lastName.localeCompare(b.lastName);
+                setCoachs(data.sort((a, b) => {
+                    return a.user.firstName.localeCompare(b.user.firstName) || a.user.lastName.localeCompare(b.user.lastName);
                 }));
             }
         })
     }, [])
 
     const table = useReactTable({
-        data: users,
+        data: coachs,
         columns,
         onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,
@@ -128,16 +68,21 @@ export function UsersTable() {
         },
     })
 
+    table.getRowModel().rows.forEach((row) => {
+        console.log(row)
+    });
+
     return (
         <div className="w-full">
             <div className="rounded-md border">
                 <Table>
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={headerGroup.id}>
+                            <TableRow key={headerGroup.id}
+                                      className="border-b border-dark-400 text-light-200 bg-black/5 hover:bg-black/5 rounded-t-md">
                                 {headerGroup.headers.map((header) => {
                                     return (
-                                        <TableHead key={header.id}>
+                                        <TableHead key={header.id} className="text-center">
                                             {header.isPlaceholder
                                                 ? null
                                                 : flexRender(
