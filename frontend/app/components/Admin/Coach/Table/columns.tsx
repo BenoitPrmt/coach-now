@@ -7,6 +7,8 @@ import {cn} from "~/lib/utils";
 import CoachBadge from "~/components/Coach/CoachCard/CoachBadge";
 import {CoachFormModal} from "~/components/Admin/Coach/CoachFormModal";
 import {CoachDeleteModal} from "~/components/Admin/Coach/CoachDeleteModal";
+import CoachGender from "~/components/Coach/CoachGender";
+import {HoverCard, HoverCardContent, HoverCardTrigger} from "~/components/ui/hover-card";
 
 export const columns: ColumnDef<Coach>[] = [
     {
@@ -35,15 +37,32 @@ export const columns: ColumnDef<Coach>[] = [
         accessorKey: "user.firstName",
         header: "User",
         cell: ({row}) => (
-            <div className="text-sm truncate w-32">
-                {row.original.user.firstName} {row.original.user.lastName}
-            </div>
+            <HoverCard>
+                <HoverCardTrigger asChild>
+                    <div
+                        className="text-sm hover:underline truncate w-32 text-left text-primary cursor-pointer font-medium">
+                        {row.original.user.firstName} {row.original.user.lastName}
+                    </div>
+                </HoverCardTrigger>
+                <HoverCardContent className="w-80">
+                    <div className="flex justify-between gap-4">
+                        <div className="space-y-1">
+                            <h4 className="text-sm font-semibold">{row.original.user.firstName} {row.original.user.lastName}</h4>
+                            <p className="text-sm">
+                                {row.original.user.email}
+                            </p>
+                        </div>
+                    </div>
+                </HoverCardContent>
+            </HoverCard>
         ),
     },
     {
         accessorKey: "gender",
         header: "Sexe",
-        cell: ({row}) => <div className="uppercase text-center">{row.original.gender}</div>,
+        cell: ({row}) => <div className="flex justify-center items-center">
+            <CoachGender gender={row.original.gender}/>
+        </div>,
     },
     {
         accessorKey: "sports",

@@ -1,9 +1,7 @@
-import {ArrowRight, CalendarSyncIcon, CircleUserIcon, MedalIcon} from "lucide-react";
+import {CalendarSyncIcon, CircleUserIcon, MedalIcon} from "lucide-react";
 import {Link} from "react-router";
 import React from "react";
 import {Button} from "~/components/ui/button";
-import {CoachFormModal} from "~/components/Admin/Coach/CoachFormModal";
-import {CoachsTable} from "~/components/Admin/Coach/CoachsTable";
 
 export default function Dashboard() {
     return (
