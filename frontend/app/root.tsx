@@ -45,6 +45,7 @@ export function Layout({children}: { children: ReactNode }) {
                 {children}
                 <ScrollRestoration/>
                 <Scripts/>
+                <Toaster/>
             </BaseLayout>
         </main>
         <Footer/>

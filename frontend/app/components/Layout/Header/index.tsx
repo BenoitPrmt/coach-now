@@ -2,7 +2,7 @@
 
 import {AnimatePresence, motion} from "motion/react";
 import {useState, useEffect, Fragment} from "react";
-import {navigation} from "~/constants";
+import {NAVIGATION} from "~/constants";
 import {Menu, X} from "lucide-react";
 import {cn} from "~/lib/utils";
 import {Link, useNavigate, useLocation} from "react-router";
@@ -68,7 +68,7 @@ export default function Header() {
     //     );
     // }
 
-    const {navigation: headerElements} = navigation;
+    const {NAVIGATION: headerElements} = NAVIGATION;
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
     const handleNavigation = (link: string) => {

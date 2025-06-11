@@ -26,6 +26,7 @@ import {Button} from "~/components/ui/button";
 import type {Booking, Rating} from "~/types";
 import {getPublicEnv} from "../../../../../env.common";
 import {useUser} from "~/hooks/useUser";
+import {API_URL} from "~/constants/api";
 
 const CoachRatingModal = (
     {
@@ -74,7 +75,7 @@ const CoachRatingModal = (
         setIsSubmitting(true);
 
         try {
-            const response = await fetch(`${getPublicEnv(import.meta.env).VITE_API_URL}/rating`, {
+            const response = await fetch(`${API_URL}/rating`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json',

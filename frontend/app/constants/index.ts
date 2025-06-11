@@ -1,16 +1,18 @@
 // 👇Add new constants here
-import * as navigation from "./navigation";
-import * as footer from "./footer";
-import * as animations from "./animations";
-import * as translations from "./translations";
-import * as sports from "./sports";
-import * as search from "./search";
+import * as NAVIGATION from "./navigation";
+import * as FOOTER from "./footer";
+import * as ANIMATIONS from "./animations";
+import * as TRANSLATIONS from "./translations";
+import * as SPORTS from "./sports";
+import * as SEARCH from "./search";
+import * as API from "./api";
 
 export {
-    navigation,
-    footer,
-    animations,
-    translations,
-    sports,
-    search
+    NAVIGATION,
+    FOOTER,
+    ANIMATIONS,
+    TRANSLATIONS,
+    SPORTS,
+    SEARCH,
+    API
 }

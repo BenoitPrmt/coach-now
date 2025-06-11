@@ -12,6 +12,7 @@ import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "~/
 import {Input} from "~/components/ui/input";
 import {Button} from "~/components/ui/button";
 import {z} from "zod";
+import {API_URL} from "~/constants/api";
 
 type ProfileFormValues = z.infer<typeof profileSchema>;
 
@@ -39,7 +40,7 @@ const ProfileEditModal = ({isOpen, onClose, user, userRole, onProfileUpdate}: {
 
         setIsSubmitting(true);
         try {
-            const endpoint = `${getPublicEnv(import.meta.env).VITE_API_URL}/${userRole?.toLowerCase()}/${isOfTypeCoach(user) ? user.user.id : user.id}`;
+            const endpoint = `${API_URL}/${userRole?.toLowerCase()}/${isOfTypeCoach(user) ? user.user.id : user.id}`;
 
             const response = await fetch(endpoint, {
                 method: 'PUT',

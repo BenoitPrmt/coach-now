@@ -1,11 +1,11 @@
 "use server";
 
-import {getPublicEnv} from "env.common";
 import type {User} from "~/types";
+import {API_URL} from "~/constants/api";
 
 async function getAllUsers(bearerToken: any): Promise<User[]> {
     try {
-        const url = getPublicEnv(import.meta.env).VITE_API_URL + `/users`;
+        const url = API_URL + `/users`;
 
         const res = await fetch(url, {
             method: 'GET',
@@ -34,7 +34,7 @@ async function updateUser(
 ): Promise<User> {
     console.log("Updating user with ID:", userId, "and data:", data);
     try {
-        const url = getPublicEnv(import.meta.env).VITE_API_URL + `/user/${userId}`;
+        const url = API_URL + `/user/${userId}`;
 
         const res = await fetch(url, {
             method: 'PUT',
@@ -59,7 +59,7 @@ async function updateUser(
 
 async function deleteUser(bearerToken: any, userId: string): Promise<void> {
     try {
-        const url = getPublicEnv(import.meta.env).VITE_API_URL + `/user/${userId}`;
+        const url = API_URL + `/user/${userId}`;
 
         const res = await fetch(url, {
             method: 'DELETE',

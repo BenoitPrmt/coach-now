@@ -16,6 +16,7 @@ import {Badge} from "~/components/ui/badge";
 import {cn} from "~/lib/utils";
 import {useRating} from "~/store/ratingStore";
 import CoachRatingModal from "~/components/Coach/CoachModal/CoachRatingModal";
+import {API_URL} from "~/constants/api";
 
 const AccountComponent = () => {
     const {user, userToken, isLoading} = useUser();
@@ -57,7 +58,7 @@ const AccountComponent = () => {
 
         try {
             const res = await fetch(
-                `${getPublicEnv(import.meta.env).VITE_API_URL}/user/${user!.id}`,
+                `${API_URL}/user/${user!.id}`,
                 {
                     method: 'GET',
                     headers: {
