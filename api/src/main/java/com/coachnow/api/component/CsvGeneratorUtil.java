@@ -1,7 +1,6 @@
 package com.coachnow.api.component;
 
 import com.coachnow.api.model.entity.Booking;
-import com.coachnow.api.model.entity.Coach;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

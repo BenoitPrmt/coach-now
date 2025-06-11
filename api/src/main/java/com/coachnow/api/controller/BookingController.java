@@ -1,6 +1,7 @@
 package com.coachnow.api.controller;
 
 import com.coachnow.api.component.CsvGeneratorUtil;
+import com.coachnow.api.component.PdfGeneratorUtil;
 import com.coachnow.api.model.entity.Booking;
 import com.coachnow.api.model.entity.Coach;
 import com.coachnow.api.model.entity.User;
@@ -11,6 +12,7 @@ import com.coachnow.api.model.service.UserService;
 import com.coachnow.api.types.Roles;
 import com.coachnow.api.web.request.booking.BookingCreation;
 import com.coachnow.api.web.request.booking.BookingUpdate;
+import com.itextpdf.text.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -29,16 +32,19 @@ import java.util.List;
 public class BookingController {
 
     @Autowired
-    BookingService bookingService;
+    private BookingService bookingService;
 
     @Autowired
-    CoachService coachService;
+    private CoachService coachService;
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Autowired
     private CsvGeneratorUtil csvGeneratorUtil;
+
+    @Autowired
+    private PdfGeneratorUtil pdfGeneratorUtil;
 
     @GetMapping("/bookings")
     public List<BookingDTO> all() {
@@ -182,5 +188,18 @@ public class BookingController {
         byte[] csvBytes = csvGeneratorUtil.generateCsv(bookings);
 
         return new ResponseEntity<>(csvBytes, headers, HttpStatus.OK);
+    }
+
+    @GetMapping("/bookings/export/pdf")
+    public ResponseEntity<byte[]> generatePdfFile() throws DocumentException, IOException {
+        List<Booking> bookings = bookingService.selectAll();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", "bookings.pdf");
+
+        byte[] pdfBytes = pdfGeneratorUtil.generatePdf(bookings, "Toutes les réservations");
+
+        return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
     }
 }
