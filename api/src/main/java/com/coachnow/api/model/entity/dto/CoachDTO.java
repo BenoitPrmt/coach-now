@@ -5,12 +5,10 @@ import com.coachnow.api.types.Gender;
 import com.coachnow.api.types.Level;
 import com.coachnow.api.types.Sports;
 import lombok.Data;
-import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Data
@@ -27,6 +25,7 @@ public class CoachDTO {
 
     private UserDTO user;
     private List<RatingDTO> ratings;
+    private List<BookingDTO> bookings;
 
     public CoachDTO(Coach coach) {
         this.id = coach.getId();
@@ -37,6 +36,10 @@ public class CoachDTO {
         this.levels = coach.getLevels();
         this.gender = coach.getGender();
         this.user = coach.getUser() != null ? new UserDTO(coach.getUser()) : null;
+
+        this.bookings = coach.getBookings() != null ? coach.getBookings().stream()
+                .map(BookingDTO::new)
+                .collect(Collectors.toList()) : new ArrayList<>();
 
         if (coach.getRatings() != null) {
             this.ratings = coach.getRatings().stream()

@@ -52,4 +52,19 @@ export type Coach = {
     gender: Gender;
     user: User;
     ratings: Rating[];
+    bookings: Booking[];
+}
+
+export type CoachDashboard = {
+    todayBookings: number;
+    activeBookings: number;
+    totalBookings: number;
+    pendingEarnings: number;
+    totalEarnings: number;
+    totalRatings: number;
+    averageRating: number;
+    bookings: Booking[];
+    nextBookings: Booking[];
+    totalHours:number;
+    monthlyEarnings:number;
 }
