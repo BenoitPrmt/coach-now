@@ -11,6 +11,7 @@ export const useUser = () => {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
+        console.log("User:", user);
         setIsLoading(true);
 
         if (userToken && typeof userToken === "string" && (userToken as string).trim() !== "") {
@@ -20,7 +21,7 @@ export const useUser = () => {
         }
 
         setIsLoading(false);
-    }, [userToken, setUserFromToken, clearUser]);
+    }, [userToken, clearUser]);
 
     const signOut = () => {
         clearUser();

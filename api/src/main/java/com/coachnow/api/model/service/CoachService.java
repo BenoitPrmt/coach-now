@@ -192,6 +192,10 @@ public class CoachService {
         return optionalPlayer.orElse(null);
     }
 
+    public Coach selectByUserId(String userId) {
+        return coachRepository.findByUser_Id(userId);
+    }
+
     public Coach save(Coach coach) {
         return coachRepository.save(coach);
     }
