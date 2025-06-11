@@ -8,14 +8,14 @@ import java.util.Date;
 @Data
 public class SimpleRatingDTO {
     private String id;
-    private String coachId;
+    private SimpleCoachDTO coach;
     private Date date;
     private Float rating;
     private String comment;
 
     public SimpleRatingDTO(Rating rating) {
         this.id = rating.getId();
-        this.coachId = rating.getCoach().getId();
+        this.coach = new SimpleCoachDTO(rating.getCoach());
         this.date = rating.getDate();
         this.rating = rating.getRating();
         this.comment = rating.getComment();
@@ -25,8 +25,8 @@ public class SimpleRatingDTO {
         return id;
     }
 
-    public String getCoachId() {
-        return coachId;
+    public SimpleCoachDTO getCoach() {
+        return coach;
     }
 
     public Date getDate() {

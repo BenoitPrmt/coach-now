@@ -1,4 +1,4 @@
-import type {Booking} from "~/types";
+import type {Booking, Rating} from "~/types";
 import React, {useCallback, useMemo} from "react";
 import {motion} from "motion/react";
 import {cn} from "~/lib/utils";
@@ -13,7 +13,7 @@ import {Button} from "~/components/ui/button";
 
 const BookingCard = ({userProfile, booking, index, onRate}: {
     userProfile?: {
-        ratings?: { coachId: string }[];
+        ratings?: Rating[];
     },
     booking: Booking;
     index: number,
@@ -25,8 +25,8 @@ const BookingCard = ({userProfile, booking, index, onRate}: {
 
     const userCanRate = useMemo(() => {
         if (!userProfile) return false;
-        console.log(`Checking if user can rate coach: ${booking?.coach.id}`, userProfile.ratings?.some(rating => rating.coachId === booking?.coach.id));
-        return userProfile.ratings?.some(rating => rating.coachId === booking?.coach.id);
+        console.log(`Checking if user can rate coach: ${booking?.coach.id}`, userProfile.ratings?.some(rating => rating.coach.id === booking?.coach.id));
+        return userProfile.ratings?.some(rating => rating.coach.id === booking?.coach.id);
     }, [booking.coach.id, userProfile]);
 
     const handleRateClick = useCallback(() => {

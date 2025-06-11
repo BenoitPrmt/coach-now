@@ -7,9 +7,10 @@ import RatingStar from "~/components/Rating/RatingCards/RatingCard/RatingStar";
 
 type Props = {
     rating: Rating
+    coachPage?: boolean;
 }
 
-const RatingCard = ({rating}: Props) => {
+const RatingCard = ({rating, coachPage}: Props) => {
     return (
         <div
             className="bg-white dark:bg-neutral-700 p-4 rounded-lg shadow-sm max-h-1/2 overflow-y-auto"
@@ -41,10 +42,22 @@ const RatingCard = ({rating}: Props) => {
                     )
                 }
                 <div className="flex items-center justify-between pt-1">
-                                        <span className="flex items-center gap-2">
+                    <div className="flex items-center gap-2">
+                        {
+                            rating.coach && !coachPage && (
+                                <Link
+                                    to={`/coach/${rating.coach.id}`}
+                                    className="text-blue-500 hover:underline"
+                                >
+                                    Coach {rating.coach.user.firstName} {rating.coach.user.lastName}
+                                </Link>
+                            )
+                        }
+                        <span className="flex items-center gap-2">
                                         <FaClock/>
-                                            {timeAgo(rating.date)}
+                            {timeAgo(rating.date)}
                                         </span>
+                    </div>
                     <RatingStar
                         value={rating.rating}
                         className="text-lg"
