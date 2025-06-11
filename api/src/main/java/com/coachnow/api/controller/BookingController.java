@@ -198,7 +198,7 @@ public class BookingController {
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         headers.setContentDispositionFormData("attachment", "bookings.pdf");
 
-        byte[] pdfBytes = pdfGeneratorUtil.generatePdf(bookings, "Toutes les réservations");
+        byte[] pdfBytes = pdfGeneratorUtil.generateBookingsPdf(bookings, "Toutes les réservations");
 
         return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
     }
@@ -211,7 +211,7 @@ public class BookingController {
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         headers.setContentDispositionFormData("attachment", "bookings_" + coachId + ".pdf");
 
-        byte[] pdfBytes = pdfGeneratorUtil.generatePdf(bookings, "Réservations du coach " + coachId);
+        byte[] pdfBytes = pdfGeneratorUtil.generateBookingsPdf(bookings, "Réservations du coach " + coachId);
 
         return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
     }

@@ -11,7 +11,6 @@ export const useUser = () => {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        console.log("User:", user);
         setIsLoading(true);
 
         if (userToken && typeof userToken === "string" && (userToken as string).trim() !== "") {
