@@ -1,5 +1,6 @@
 package com.coachnow.api.controller;
 
+import com.coachnow.api.component.CsvGeneratorUtil;
 import com.coachnow.api.model.entity.Booking;
 import com.coachnow.api.model.entity.Coach;
 import com.coachnow.api.model.entity.User;
@@ -11,7 +12,9 @@ import com.coachnow.api.types.Roles;
 import com.coachnow.api.web.request.booking.BookingCreation;
 import com.coachnow.api.web.request.booking.BookingUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +36,9 @@ public class BookingController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    private CsvGeneratorUtil csvGeneratorUtil;
 
     @GetMapping("/bookings")
     public List<BookingDTO> all() {
@@ -150,5 +156,31 @@ public class BookingController {
 
     @DeleteMapping("/booking/{id}")
     public void deletePlayer(@PathVariable String id) {bookingService.delete(id);
+    }
+
+    @GetMapping("/bookings/export/csv")
+    public ResponseEntity<byte[]> generateCsvFile() {
+        List<Booking> bookings = bookingService.selectAll();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", "bookings.csv");
+
+        byte[] csvBytes = csvGeneratorUtil.generateCsv(bookings);
+
+        return new ResponseEntity<>(csvBytes, headers, HttpStatus.OK);
+    }
+
+    @GetMapping("/bookings/export/csv/{coachId}")
+    public ResponseEntity<byte[]> generateCsvFileByCoach(@PathVariable String coachId) {
+        List<Booking> bookings = bookingService.selectAllByCoachId(coachId);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", "bookings_" + coachId + ".csv");
+
+        byte[] csvBytes = csvGeneratorUtil.generateCsv(bookings);
+
+        return new ResponseEntity<>(csvBytes, headers, HttpStatus.OK);
     }
 }
