@@ -33,7 +33,16 @@ import CoachImage from "~/components/Coach/CoachImage";
 import {Badge} from "~/components/ui/badge";
 import {displayDuration, formatDateWithTime, getDurationFromDate} from "~/lib/time";
 import type {TimeDuration} from "~/types/Time";
-import {BadgeCheckIcon, BadgeXIcon} from "lucide-react";
+import {BadgeCheckIcon, BadgeXIcon, UserCircleIcon} from "lucide-react";
+
+import {
+    HoverCard,
+    HoverCardContent,
+    HoverCardTrigger,
+} from "~/components/ui/hover-card"
+import UserRoleBadge from "~/components/Account/user/UserRoleBadge";
+import {Button} from "~/components/ui/button";
+import {Link} from "react-router";
 
 export const columns: ColumnDef<Booking>[] = [
     {
@@ -58,23 +67,61 @@ export const columns: ColumnDef<Booking>[] = [
         accessorKey: "coach.profilePictureUrl",
         header: "Coach",
         cell: ({ row }) => (
-            <CoachImage
-                src={row.original.coach.profilePictureUrl}
-                alt={`${row.original.coach.user.firstName} ${row.original.coach.user.lastName}`}
-                className={cn(
-                    "w-8 h-8 rounded-full object-cover shadow-sm",
-                )}
-            />
+            <HoverCard>
+                <HoverCardTrigger asChild>
+                    <div className="cursor-pointer font-medium">
+                        <CoachImage
+                            src={row.original.coach.profilePictureUrl}
+                            alt={`${row.original.coach.user.firstName} ${row.original.coach.user.lastName}`}
+                            className={cn(
+                                "w-8 h-8 rounded-full object-cover shadow-sm",
+                            )}
+                        />
+                    </div>
+                </HoverCardTrigger>
+                <HoverCardContent className="w-80">
+                    <div className="flex justify-between gap-4">
+                        <div className="space-y-1">
+                            <h4 className="text-sm font-semibold">{row.original.coach.user.firstName} {row.original.coach.user.lastName}</h4>
+                            <p className="text-sm">
+                                {row.original.coach.user.email}
+                            </p>
+                            <Button variant="outline" className="mt-4">
+                                <UserCircleIcon />
+                                <Link to={`/coach/${row.original.coach.id}`}>
+                                    Voir le profil
+                                </Link>
+                            </Button>
+                        </div>
+                    </div>
+                </HoverCardContent>
+            </HoverCard>
         ),
     },
     {
         accessorKey: "userId",
         header: "User ID",
-        cell: ({ row }) => (
-            <div className="text-sm truncate w-32">
-                {row.original.user.id}
-            </div>
-        ),
+        cell: ({ row }) => {
+            return (
+                <HoverCard>
+                    <HoverCardTrigger asChild>
+                        <div className="text-sm hover:underline truncate w-32 text-left text-primary cursor-pointer font-medium">
+                            {row.original.user.id}
+                        </div>
+                    </HoverCardTrigger>
+                    <HoverCardContent className="w-80">
+                        <div className="flex justify-between gap-4">
+                            <div className="space-y-1">
+                                <h4 className="text-sm font-semibold">{row.original.user.firstName} {row.original.user.lastName}</h4>
+                                <p className="text-sm">
+                                    {row.original.user.email}
+                                </p>
+                            </div>
+                        </div>
+                    </HoverCardContent>
+                </HoverCard>
+            )
+        },
     },
     {
         accessorKey: "startDate",
