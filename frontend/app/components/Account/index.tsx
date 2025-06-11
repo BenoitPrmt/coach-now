@@ -1,7 +1,7 @@
 import React, {useEffect, useMemo, useState, useCallback, useRef} from 'react';
 import {useUser} from "~/hooks/useUser";
 import Loader from "~/components/Loader";
-import type {User, Booking, Coach} from "~/types";
+import type {User, Booking, Coach, Rating} from "~/types";
 import {motion, AnimatePresence} from "motion/react";
 import {Info, Calendar, Star, ArrowRight} from "lucide-react";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "~/components/ui/tabs"
@@ -137,6 +137,19 @@ const AccountComponent = () => {
             setUserProfile(updatedUser);
         }
         console.log(`Profile updated:`, updatedUser);
+    }, []);
+
+    const handleRatingSubmit = useCallback((newRating: Rating) => {
+        setUserProfile((prevProfile) => {
+            if (!prevProfile) return null;
+
+            const updatedRatings = [...(prevProfile.ratings || []), newRating];
+
+            return {
+                ...prevProfile,
+                ratings: updatedRatings
+            };
+        });
     }, []);
 
     if (isLoading) return <Loader/>;
@@ -369,6 +382,7 @@ const AccountComponent = () => {
                                                                             <BookingCard key={booking.id}
                                                                                          booking={booking}
                                                                                          index={index}
+                                                                                         userProfile={userProfile}
                                                                                          onRate={handleOpenRatingModal}
                                                                             />
                                                                         ))}
@@ -455,6 +469,7 @@ const AccountComponent = () => {
                     isModalOpen={isModalOpen}
                     closeRatingModal={closeRatingModal}
                     selectedBooking={selectedBooking}
+                    onRatingSubmitted={handleRatingSubmit}
                 />
             </motion.div>
         </div>

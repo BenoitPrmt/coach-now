@@ -23,7 +23,7 @@ import {useForm} from "react-hook-form";
 import {Star} from "lucide-react";
 import {Textarea} from "~/components/ui/textarea";
 import {Button} from "~/components/ui/button";
-import type {Booking} from "~/types";
+import type {Booking, Rating} from "~/types";
 import {getPublicEnv} from "../../../../../env.common";
 import {useUser} from "~/hooks/useUser";
 
@@ -31,14 +31,18 @@ const CoachRatingModal = (
     {
         isModalOpen,
         closeRatingModal,
-        selectedBooking
+        selectedBooking,
+        onRatingSubmitted
     }: {
         isModalOpen: boolean,
         closeRatingModal: () => void,
         selectedBooking: Booking | null;
+        onRatingSubmitted?: (newRating: Rating) => void;
+
+
     }
 ) => {
-    const {user, userToken}= useUser();
+    const {user, userToken} = useUser();
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
     const [hoverRating, setHoverRating] = useState<number | null>(null);
 
@@ -66,9 +70,6 @@ const CoachRatingModal = (
         if (!values || !coach?.id || !user?.id) {
             return;
         }
-        console.log("values",values)
-        console.log("coachId", coach?.id)
-        console.log("coachId", coach?.id)
 
         setIsSubmitting(true);
 
@@ -91,12 +92,16 @@ const CoachRatingModal = (
                 throw new Error('Failed to submit review');
             }
 
-            console.log("response", response);
+            const newRating = await response.json();
+
             toast.success("Succès", {
                 description: "Votre avis a été enregistré avec succès",
             });
 
-            // Fermer le modal après succès
+            if (onRatingSubmitted) {
+                onRatingSubmitted(newRating);
+            }
+
             setTimeout(() => {
                 closeRatingModal();
                 setIsSubmitting(false);
