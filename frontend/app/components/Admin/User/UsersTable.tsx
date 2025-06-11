@@ -126,10 +126,6 @@ export function UsersTable() {
         },
     })
 
-    table.getRowModel().rows.forEach((row) => {
-        console.log(row)
-    });
-
     return (
         <div className="w-full">
             <div className="rounded-md border">
