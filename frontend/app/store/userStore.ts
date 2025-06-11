@@ -4,6 +4,7 @@ import type {UserRole} from "~/types";
 
 export type SessionUser = {
     id: string;
+    coachId: string;
     name: string;
     email: string;
     role: UserRole;
@@ -11,6 +12,7 @@ export type SessionUser = {
 
 type DecodedUser = {
     id?: string;
+    coachId?: string;
     name?: string;
     email?: string;
     role?: string;
@@ -51,6 +53,7 @@ export const userStore = create<UserStore>((set) => ({
                     id: decodedUser.id || 'unknown-id', // Assuming name is used as a placeholder for ID
                     name: decodedUser.name || 'Guest',
                     email: decodedUser.email || '',
+                    coachId: decodedUser.coachId || '',
                     role: isOfTypeUserRole(decodedUser.role) ? decodedUser.role : 'USER',
                 }
             });

@@ -3,10 +3,11 @@
 import {getPublicEnv} from "env.common";
 import type {Coach, PaginatedResponse} from "~/types";
 import type {CoachFormData} from "~/components/Admin/Coach/CoachFormModal";
+import {API_URL} from "~/constants/api";
 
 async function getAvailabilities(bearerToken: any, coachId: string, startDate: string, endDate: string) {
     try {
-        const url = getPublicEnv(import.meta.env).VITE_API_URL + `/coach/${coachId}/availabilities?startDate=${startDate}&endDate=${endDate}`;
+        const url = API_URL + `/coach/${coachId}/availabilities?startDate=${startDate}&endDate=${endDate}`;
 
         const res = await fetch(url, {
             method: 'GET',
@@ -30,7 +31,7 @@ async function getAvailabilities(bearerToken: any, coachId: string, startDate: s
 
 async function getAllCoachs(bearerToken: any): Promise<Coach[]> {
     try {
-        const url = getPublicEnv(import.meta.env).VITE_API_URL + `/coachs`;
+        const url = API_URL + `/coachs`;
 
         const res = await fetch(url, {
             method: 'GET',
@@ -58,7 +59,7 @@ async function createCoach(
     data: CoachFormData
 ): Promise<Coach> {
     try {
-        const url = getPublicEnv(import.meta.env).VITE_API_URL + `/coach`;
+        const url = API_URL + `/coach`;
         console.log("Call", url, "with data:", data);
 
         const res = await fetch(url, {
@@ -89,7 +90,7 @@ async function updateCoach(
 ): Promise<Coach> {
     console.log("Updating coach with ID:", coachId, "and data:", data);
     try {
-        const url = getPublicEnv(import.meta.env).VITE_API_URL + `/coach/${coachId}`;
+        const url = API_URL + `/coach/${coachId}`;
 
         const res = await fetch(url, {
             method: 'PUT',
@@ -114,7 +115,7 @@ async function updateCoach(
 
 async function deleteCoach(bearerToken: any, coachId: string): Promise<void> {
     try {
-        const url = getPublicEnv(import.meta.env).VITE_API_URL + `/coach/${coachId}`;
+        const url = API_URL + `/coach/${coachId}`;
 
         const res = await fetch(url, {
             method: 'DELETE',
