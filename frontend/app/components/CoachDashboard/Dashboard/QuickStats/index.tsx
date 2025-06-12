@@ -1,3 +1,5 @@
+import {cn} from "~/lib/utils";
+
 type Props = {
     quickStatsData: {
         monthlyEarnings: number;
@@ -5,11 +7,12 @@ type Props = {
         pendingEarnings: number;
         activeBookings: number;
     };
+    className?: string;
 }
 
-const QuickStats = ({quickStatsData}: Props) => {
+const QuickStats = ({quickStatsData, className}: Props) => {
     return (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <div className={cn("bg-white rounded-xl shadow-sm border border-gray-100 p-6", className)}>
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
                 Aperçu rapide
             </h3>

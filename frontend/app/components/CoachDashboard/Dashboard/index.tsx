@@ -7,12 +7,21 @@ import Loader from "~/components/Loader";
 import StatCard from "./StatCard";
 import {Calendar, DollarSign, Star, Users} from "lucide-react";
 import QuickStats from "~/components/CoachDashboard/Dashboard/QuickStats";
+import {motion, type Variants} from "motion/react";
+import {ANIMATIONS} from "~/constants";
+
+const CHILD_VARIANTS: Variants = {
+    hidden: {opacity: 0, y: 20},
+    visible: {opacity: 1, y: 0},
+};
+
 
 const CoachDashboardComponent = () => {
     const {user, userToken} = useUser();
     const [coachData, setCoachData] = useState<Coach | null>(null);
     const [dashboardData, setDashboardData] = useState<CoachDashboard | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+
 
     useEffect(() => {
         if (user && user.coachId && userToken) {
@@ -64,50 +73,139 @@ const CoachDashboardComponent = () => {
                 {dashboardData ? (
                     <div className="space-y-6">
                         {/* Métriques principales */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                            <StatCard
-                                title="Réservations aujourd'hui"
-                                value={dashboardData.todayBookings}
-                                icon={Calendar}
-                            />
+                        <motion.div
+                            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+                            initial="hidden"
+                            animate="visible"
+                            variants={ANIMATIONS.COACH_DASHBOARD_FIRST_GRID_VARIANTS}
+                        >
+                            <motion.div
+                                className="flex flex-col items-center justify-center"
+                                variants={CHILD_VARIANTS}
+                                whileHover={{
+                                    y: -5,
+                                    transition: {duration: 0.2, ease: "easeInOut"}
+                                }}
+                                whileTap={{
+                                    y: 0,
+                                    transition: {duration: 0.1, ease: "easeInOut"}
+                                }}
+                            >
+                                <StatCard
+                                    title="Réservations aujourd'hui"
+                                    value={dashboardData.todayBookings}
+                                    icon={Calendar}
+                                    className="h-full w-full"
+                                />
+                            </motion.div>
+                            <motion.div
+                                className="flex flex-col items-center justify-center"
+                                variants={CHILD_VARIANTS}
+                                whileHover={{
+                                    y: -5,
+                                    transition: {duration: 0.2, ease: "easeInOut"}
+                                }}
+                                whileTap={{
+                                    y: 0,
+                                    transition: {duration: 0.1, ease: "easeInOut"}
+                                }}
+                            >
+                                <StatCard
+                                    title="Réservations totales"
+                                    value={dashboardData.totalBookings}
+                                    icon={Users}
+                                    className="h-full w-full"
+                                />
+                            </motion.div>
+                            <motion.div
+                                className="flex flex-col items-center justify-center"
+                                variants={CHILD_VARIANTS}
+                                whileHover={{
+                                    y: -5,
+                                    transition: {duration: 0.2, ease: "easeInOut"}
+                                }}
+                                whileTap={{
+                                    y: 0,
+                                    transition: {duration: 0.1, ease: "easeInOut"}
+                                }}
+                            >
+                                < StatCard
+                                    title="Revenus générés"
+                                    value={`${dashboardData.totalEarnings.toLocaleString('fr-FR')}€`}
+                                    subtitle={dashboardData.pendingEarnings > 0 ? `(+${dashboardData.pendingEarnings}€ à venir)` : undefined}
+                                    icon={DollarSign}
+                                    className="h-full w-full"
+                                />
+                            </motion.div>
+                            <motion.div
+                                className="flex flex-col items-center justify-center"
+                                variants={CHILD_VARIANTS}
+                                whileHover={{
+                                    y: -5,
+                                    transition: {duration: 0.2, ease: "easeInOut"}
+                                }}
+                                whileTap={{
+                                    y: 0,
+                                    transition: {duration: 0.1, ease: "easeInOut"}
+                                }}
+                            >
 
-                            <StatCard
-                                title="Réservations totales"
-                                value={dashboardData.totalBookings}
-                                icon={Users}
-                            />
-
-                            <StatCard
-                                title="Revenus générés"
-                                value={`${dashboardData.totalEarnings.toLocaleString('fr-FR')}€`}
-                                subtitle={dashboardData.pendingEarnings > 0 ? `(+${dashboardData.pendingEarnings}€ à venir)` : undefined}
-                                icon={DollarSign}
-                            />
-
-                            <StatCard
-                                title="Note moyenne"
-                                value={dashboardData.averageRating > 0 ? `${dashboardData.averageRating}/5` : 'Aucun avis'}
-                                subtitle={dashboardData.totalRatings > 0 ? `Basé sur ${dashboardData.totalRatings} avis` : undefined}
-                                icon={Star}
-                            />
-                        </div>
+                                <StatCard
+                                    title="Note moyenne"
+                                    value={dashboardData.averageRating > 0 ? `${dashboardData.averageRating}/5` : 'Aucun avis'}
+                                    subtitle={dashboardData.totalRatings > 0 ? `Basé sur ${dashboardData.totalRatings} avis` : undefined}
+                                    icon={Star}
+                                    className="h-full w-full"
+                                />
+                            </motion.div>
+                        </motion.div>
 
                         {/* Statistiques détaillées */}
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <motion.div className="grid grid-cols-1 lg:grid-cols-2 gap-6"
+                                    initial="hidden"
+                                    animate="visible"
+                                    variants={ANIMATIONS.COACH_DASHBOARD_SECOND_GRID_VARIANTS}
+                        >
                             {/* Statistiques rapides */}
-                            <QuickStats
-                                quickStatsData={
-                                    {
-                                        monthlyEarnings: dashboardData.monthlyEarnings,
-                                        totalHours: dashboardData.totalHours,
-                                        pendingEarnings: dashboardData.pendingEarnings,
-                                        activeBookings: dashboardData.activeBookings
+                            <motion.div
+                                className="flex flex-col items-center justify-center"
+                                variants={CHILD_VARIANTS}
+                                whileHover={{
+                                    y: -5,
+                                    transition: {duration: 0.2, ease: "easeInOut"}
+                                }}
+                                whileTap={{
+                                    y: 0,
+                                    transition: {duration: 0.1, ease: "easeInOut"}
+                                }}
+                            >
+                                <QuickStats
+                                    quickStatsData={
+                                        {
+                                            monthlyEarnings: dashboardData.monthlyEarnings,
+                                            totalHours: dashboardData.totalHours,
+                                            pendingEarnings: dashboardData.pendingEarnings,
+                                            activeBookings: dashboardData.activeBookings
+                                        }
                                     }
-                                }
-                            />
+                                    className="h-full w-full"
+                                />
+                            </motion.div>
 
                             {/* Prochaines réservations */}
-                            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                            <motion.div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6"
+                                        initial="hidden"
+                                        animate="visible"
+                                        variants={CHILD_VARIANTS}
+                                        whileHover={{
+                                            y: -5,
+                                            transition: {duration: 0.2, ease: "easeInOut"}
+                                        }}
+                                        whileTap={{
+                                            y: 0,
+                                            transition: {duration: 0.1, ease: "easeInOut"}
+                                        }}
+                            >
                                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
                                     Prochaines réservations
                                 </h3>
@@ -143,8 +241,8 @@ const CoachDashboardComponent = () => {
                                         <p className="text-gray-500 text-center py-4">Aucune réservation à venir</p>
                                     )}
                                 </div>
-                            </div>
-                        </div>
+                            </motion.div>
+                        </motion.div>
                         {/*  TODO: Ajouter graphs  */}
                     </div>
                 ) : (
