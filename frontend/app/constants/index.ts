@@ -6,6 +6,7 @@ import * as TRANSLATIONS from "./translations";
 import * as SPORTS from "./sports";
 import * as SEARCH from "./search";
 import * as API from "./api";
+import * as COACH_CALENDAR from "./coachCalendar";
 
 export {
     NAVIGATION,
@@ -14,5 +15,6 @@ export {
     TRANSLATIONS,
     SPORTS,
     SEARCH,
-    API
+    API,
+    COACH_CALENDAR
 }

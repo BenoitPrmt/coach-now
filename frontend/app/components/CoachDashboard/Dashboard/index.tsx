@@ -58,7 +58,7 @@ const CoachDashboardComponent = () => {
         <div className="min-h-screen p-6">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
-                <div className="flex justify-between items-center mb-6">
+                <div className="flex max-md:flex-col justify-between items-center mb-6">
                     <div className="mb-8">
                         <h1 className="text-3xl font-bold text-gray-900 mb-2">
                             Dashboard Coach
