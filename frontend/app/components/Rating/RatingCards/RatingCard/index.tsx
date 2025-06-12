@@ -42,32 +42,32 @@ const RatingCard = ({rating, coachPage}: Props) => {
                         </Link>
                     )
                 }
-            <div className="flex items-center justify-between pt-1">
-            <div className="flex items-center gap-2">
-            {
-                rating.coach && !coachPage && (
-                    <Link
-                        to={`/coach/${rating.coach.id}`}
-                        className="text-blue-500 hover:underline"
-                    >
-                        Coach {rating.coach.user.firstName} {rating.coach.user.lastName}
-                    </Link>
-                )
-            }
-            <span className="flex items-center gap-2">
-            <FaClock/>
-            {timeAgo(rating.date)}
-        </span>
-</div>
-    <RatingStar
-        value={rating.rating}
-        className="text-lg"
-    />
-</div>
-</div>
-</div>
-)
-    ;
+                <div className="flex items-center justify-between pt-1">
+                    <div className="flex items-center gap-2">
+                        {
+                            rating.coach && !coachPage && (
+                                <Link
+                                    to={`/coach/${rating.coach.id}`}
+                                    className="text-blue-500 hover:underline"
+                                >
+                                    Coach {rating.coach.user.firstName} {rating.coach.user.lastName}
+                                </Link>
+                            )
+                        }
+                        <span className="flex items-center gap-2">
+                            <FaClock/>
+                            {timeAgo(rating.date)}
+                        </span>
+                    </div>
+                    <RatingStar
+                        value={rating.rating}
+                        className="text-lg"
+                    />
+                </div>
+            </div>
+        </div>
+    )
+        ;
 };
 
 export default RatingCard;
