@@ -71,9 +71,22 @@ export type CoachDashboard = {
     monthlyEarnings:number;
 }
 
+
 export type CoachUnavailability = {
     id: string;
     coachId: string;
     startDate: string;
     endDate: string;
+}
+
+
+export type CoachCalendarDataType = {
+    label: string;
+    value: Date
+}
+
+export type TimelineDayType = {
+    date: string;
+    bookings: Booking[];
+    count: number;
 }
