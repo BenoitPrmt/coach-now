@@ -33,6 +33,7 @@ const ProfileEditModal = ({isOpen, onClose, user, userRole, onProfileUpdate}: {
     const {user: currentUser, userToken} = useUser();
 
     const coachId: string|null = currentUser && 'coachId' in currentUser ? currentUser.coachId : null;
+    const userId: string|null = currentUser && 'id' in currentUser ? currentUser.id : null;
 
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -69,6 +70,7 @@ const ProfileEditModal = ({isOpen, onClose, user, userRole, onProfileUpdate}: {
             ...rest,
             ...(coachId && { coachId }),
             ...(formattedBirthDate && { birthDate: formattedBirthDate }),
+            ...(userId && { userId }),
         };
 
         console.log("Donnée envoyé", dataToSend)

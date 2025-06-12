@@ -122,14 +122,29 @@ public class CoachController {
     @PutMapping("/coach/{id}")
     public CoachDTO update(@RequestBody CoachUpdate coachUpdate, @PathVariable String id) throws ParseException {
         Coach existingCoach = coachService.select(id);
-
         if (existingCoach == null) {
             throw new IllegalArgumentException("Coach with id " + id + " does not exist.");
         }
 
-        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        User existingUser = userService.select(coachUpdate.getUserId());
+        if (existingUser == null) {
+            throw new IllegalArgumentException("User with id " + coachUpdate.getUserId() + " does not exist.");
+        }
+
+        if (coachUpdate.getFirstName() != null) {
+            existingUser.setFirstName(coachUpdate.getFirstName());
+        }
+        if (coachUpdate.getLastName() != null) {
+            existingUser.setLastName(coachUpdate.getLastName());
+        }
+        if (coachUpdate.getEmail() != null) {
+            existingUser.setEmail(coachUpdate.getEmail());
+        }
+
+        userService.save(existingUser);
 
         if (coachUpdate.getBirthDate() != null) {
+            DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             existingCoach.setBirthdate(new java.sql.Date(formatter.parse(coachUpdate.getBirthDate()).getTime()));
         }
         if (coachUpdate.getProfilePictureUrl() != null) {
@@ -147,16 +162,12 @@ public class CoachController {
         if (coachUpdate.getGender() != null) {
             existingCoach.setGender(coachUpdate.getGender());
         }
-        if (coachUpdate.getUserId() != null) {
-            User user = userService.select(coachUpdate.getUserId());
-            if (user == null) {
-                throw new IllegalArgumentException("User with id " + coachUpdate.getUserId() + " does not exist.");
-            }
-            existingCoach.setUser(user);
-        }
+
+        existingCoach.setUser(existingUser);
 
         return new CoachDTO(coachService.save(existingCoach));
     }
+
 
     @DeleteMapping("/coach/{id}")
     public void deleteCoach(@PathVariable String id) {
