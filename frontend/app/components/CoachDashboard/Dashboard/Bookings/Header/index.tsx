@@ -43,7 +43,7 @@ const BookingsHeader = ({
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button
-                            className="relative overflow-hidden hover:bg-secondary/90"
+                            className="relative overflow-hidden hover:bg-secondary/90 dark:hover:bg-secondary/80"
                             variant="secondary"
                         >
                             <motion.span
@@ -51,14 +51,14 @@ const BookingsHeader = ({
                                 animate={{opacity: 1}}
                             >
                                         <span className="flex items-center gap-2">
-                                            <Rocket/>
+                                            <Rocket className="text-current"/>
                                             {startDate ? startDate.label : "Date de début"}
                                         </span>
                             </motion.span>
                         </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className="border-0 shadow-xl bg-white/95 backdrop-blur-sm">
-                        <DropdownMenuLabel className="text-gray-700 font-medium">
+                    <DropdownMenuContent className="border-0 shadow-xl bg-white/95 dark:bg-neutral-800/95 backdrop-blur-sm">
+                        <DropdownMenuLabel className="text-gray-700 dark:text-neutral-300 font-medium">
                             Sélection de la date de début
                         </DropdownMenuLabel>
                         {
@@ -89,7 +89,7 @@ const BookingsHeader = ({
                                             label: option.label,
                                             value: option.value
                                         })}
-                                        className="hover:bg-primary/5 transition-colors duration-200"
+                                        className="hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors duration-200"
                                     >
                                         {option.label}
                                     </DropdownMenuItem>
@@ -107,21 +107,21 @@ const BookingsHeader = ({
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button
-                            className="relative overflow-hidden hover:bg-secondary/90"
+                            className="relative overflow-hidden hover:bg-secondary/90 dark:hover:bg-secondary/80"
                             variant="secondary">
                             <motion.span
                                 initial={{opacity: 0}}
                                 animate={{opacity: 1}}
                             >
                                         <span className="flex items-center gap-2">
-                                            <Goal/>
+                                            <Goal className="text-current"/>
                                             {endDate ? endDate.label : "Date de fin"}
                                         </span>
                             </motion.span>
                         </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className="border-0 shadow-xl bg-white/95 backdrop-blur-sm">
-                        <DropdownMenuLabel className="text-gray-700 font-medium">
+                    <DropdownMenuContent className="border-0 shadow-xl bg-white/95 dark:bg-neutral-800/95 backdrop-blur-sm">
+                        <DropdownMenuLabel className="text-gray-700 dark:text-neutral-300 font-medium">
                             Sélection d'une date de fin
                         </DropdownMenuLabel>
                         {
@@ -150,7 +150,7 @@ const BookingsHeader = ({
                                             label: option.label,
                                             value: option.value
                                         })}
-                                        className="hover:bg-purple-50 transition-colors duration-200"
+                                        className="hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors duration-200"
                                     >
                                         {option.label}
                                     </DropdownMenuItem>
@@ -164,8 +164,10 @@ const BookingsHeader = ({
             <motion.div
                 className={cn(buttonVariants({
                         variant: "default"
-                    }), "flex items-center space-x-2 relative overflow-hidden hover:bg-primary/90 cursor-pointer",
-                    view === "timeline" ? "bg-primary text-white" : "bg-gray-200 text-gray-800"
+                    }), "flex items-center space-x-2 relative overflow-hidden hover:bg-primary/90 dark:hover:bg-primary/80 cursor-pointer",
+                    view === "timeline"
+                        ? "bg-primary text-white dark:bg-primary dark:text-white"
+                        : "bg-gray-200 text-gray-800 dark:bg-neutral-700 dark:text-neutral-200"
                 )}
                 onClick={() => setView(view === "default" ? "timeline" : "default")}
                 whileHover={{scale: 1.05}}

@@ -1,10 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {getPublicEnv} from "../../env.common";
 import Loader from "~/components/Loader";
 import type {Coach, Gender} from "~/types";
 import {motion} from "motion/react";
-import {MarsIcon, VenusIcon, XIcon} from "lucide-react";
-import {formatGender} from "~/lib/formatting";
 import {useMemo} from "react";
 import {Description} from "app/components/Coach/CoachCard";
 import {useUser} from "~/hooks/useUser";
@@ -62,7 +59,7 @@ const UserInfo = ({
             />
             <div className="flex flex-col items-center">
                 <motion.h2
-                    className="font-semibold text-neutral-900 dark:text-neutral-200 text-2xl pt-2"
+                    className="font-semibold text-neutral-900 dark:text-neutral-100 text-2xl pt-2"
                 >
                     {`${firstName} ${lastName}`}
                 </motion.h2>
@@ -119,15 +116,15 @@ const CoachProfile = ({coachId}: Props) => {
     }
 
     if (!isLoading && !coach) {
-        return <div className="text-center text-red-500">Coach not found</div>;
+        return <div className="text-center text-red-500 dark:text-red-400">Coach not found</div>;
     }
 
     return (
-        <div className="bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4 sm:px-6 lg:px-8 rounded-2xl">
+        <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 py-12 px-4 sm:px-6 lg:px-8 rounded-2xl">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Left Side - Profile Card */}
                 <motion.div
-                    className="bg-neutral-100 dark:bg-neutral-800 rounded-2xl p-6"
+                    className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-sm dark:shadow-neutral-700/20"
                     initial={{opacity: 0, y: 20}}
                     animate={{opacity: 1, y: 0}}
                     transition={{duration: 0.5}}
@@ -147,7 +144,7 @@ const CoachProfile = ({coachId}: Props) => {
                                     {
                                         (coach.levels.length > 0 || coach.sports.length > 0) && (
                                             <motion.div
-                                                className="mt-6 w-full bg-neutral-50 dark:bg-neutral-700 border border-neutral-400/20 border-dashed rounded-md shadow-2xs flex flex-col gap-2 p-6"
+                                                className="mt-6 w-full bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 border-dashed rounded-md shadow-sm dark:shadow-neutral-700/20 flex flex-col gap-2 p-6"
                                                 initial={{opacity: 0, y: 20}}
                                                 animate={{opacity: 1, y: 0}}
                                                 transition={{duration: 0.5, delay: 0.1}}
@@ -166,13 +163,13 @@ const CoachProfile = ({coachId}: Props) => {
                                         animate={{opacity: 1, y: 0}}
                                         transition={{duration: 0.5, delay: 0.2}}
                                     >
-                                        <h3 className="text-xl font-semibold text-neutral-900 dark:text-neutral-200">
+                                        <h3 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100">
                                             Note moyenne
                                         </h3>
                                         {averageRating !== null ? (
                                             <RatingStar value={averageRating} className="text-3xl"/>
                                         ) : (
-                                            <p className="text-neutral-500">Aucune note disponible</p>
+                                            <p className="text-neutral-500 dark:text-neutral-400">Aucune note disponible</p>
                                         )}
                                         <p className="text-sm text-neutral-500 dark:text-neutral-400">
                                             {coach.ratings.length} avis
@@ -194,15 +191,15 @@ const CoachProfile = ({coachId}: Props) => {
 
                 {/* Right Side - Additional Information */}
                 <motion.div
-                    className="bg-neutral-100 dark:bg-neutral-800 rounded-2xl h-[65vh] overflow-y-auto"
+                    className="bg-white dark:bg-neutral-800 rounded-2xl h-[65vh] overflow-y-auto shadow-sm dark:shadow-neutral-700/20"
                     initial={{opacity: 0, y: 20}}
                     animate={{opacity: 1, y: 0}}
                     transition={{duration: 0.5, delay: 0.2}}
                 >
                     <div
-                        className="sticky top-0 right-0 left-0 bg-neutral-100 dark:bg-neutral-800 z-10 py-10 px-8 mb-4 w-full">
-                        <h3 className="flex items-center text-xl font-semibold mb-4 gap-2">
-                            <Speech/>
+                        className="sticky top-0 right-0 left-0 bg-white dark:bg-neutral-800 z-10 py-10 px-8 mb-4 w-full border-b border-neutral-100 dark:border-neutral-700">
+                        <h3 className="flex items-center text-xl font-semibold mb-4 gap-2 text-neutral-900 dark:text-neutral-100">
+                            <Speech className="text-neutral-700 dark:text-neutral-300"/>
                             Avis
                         </h3>
                         <p className="text-sm text-neutral-600 dark:text-neutral-300">
