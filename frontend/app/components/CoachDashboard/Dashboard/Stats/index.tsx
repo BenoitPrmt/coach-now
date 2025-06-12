@@ -15,7 +15,7 @@ const CoachDashboardStats = ({dashboardData}: { dashboardData: CoachDashboard })
     return (
         <div className="space-y-6">
             {/* Métriques principales */}
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
                 Vue Dashboard
             </h2>
             <motion.div
@@ -138,7 +138,7 @@ const CoachDashboardStats = ({dashboardData}: { dashboardData: CoachDashboard })
                 </motion.div>
 
                 {/* Prochaines réservations */}
-                <motion.div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6"
+                <motion.div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6"
                             initial="hidden"
                             animate="visible"
                             variants={CHILD_VARIANTS}
@@ -151,7 +151,7 @@ const CoachDashboardStats = ({dashboardData}: { dashboardData: CoachDashboard })
                                 transition: {duration: 0.1, ease: "easeInOut"}
                             }}
                 >
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
                         Prochaines réservations
                     </h3>
                     <div className="space-y-3">
@@ -161,12 +161,12 @@ const CoachDashboardStats = ({dashboardData}: { dashboardData: CoachDashboard })
                                 const startDate = new Date(booking.startDate);
                                 return (
                                     <div key={booking.id}
-                                         className="flex items-center justify-between py-2 border-b border-gray-100 last:border-b-0">
+                                         className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-600 last:border-b-0">
                                         <div>
-                                            <p className="font-medium text-gray-900">
+                                            <p className="font-medium text-gray-900 dark:text-gray-100">
                                                 {booking.user.firstName} {booking.user.lastName}
                                             </p>
-                                            <p className="text-sm text-gray-600">
+                                            <p className="text-sm text-gray-600 dark:text-gray-400">
                                                 {startDate.toLocaleDateString('fr-FR')} à {startDate.toLocaleTimeString('fr-FR', {
                                                 hour: '2-digit',
                                                 minute: '2-digit'
@@ -174,7 +174,7 @@ const CoachDashboardStats = ({dashboardData}: { dashboardData: CoachDashboard })
                                             </p>
                                         </div>
                                         <div className="text-right">
-                                            <p className="font-semibold text-green-600">{booking.totalPrice}€</p>
+                                            <p className="font-semibold text-green-600 dark:text-green-400">{booking.totalPrice}€</p>
                                         </div>
                                     </div>
                                 );
@@ -183,7 +183,7 @@ const CoachDashboardStats = ({dashboardData}: { dashboardData: CoachDashboard })
                             const bookingDate = new Date(booking.startDate);
                             return bookingDate > new Date() && booking.isActive;
                         }).length === 0 && (
-                            <p className="text-gray-500 text-center py-4">Aucune réservation à
+                            <p className="text-gray-500 dark:text-gray-400 text-center py-4">Aucune réservation à
                                 venir</p>
                         )}
                     </div>

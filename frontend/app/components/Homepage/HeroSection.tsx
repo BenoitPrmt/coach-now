@@ -28,7 +28,7 @@ const HeroSection = () => {
                     className="mb-6"
                 >
                     <Badge variant="outline"
-                           className="border-primary/50 text-primary/90 bg-white/80 backdrop-blur-sm shadow-sm">
+                           className="border-primary/50 text-primary/90 bg-white/80 dark:bg-slate-800/80 dark:text-primary-foreground dark:border-primary/60 backdrop-blur-sm shadow-sm">
                         <Sparkles className="w-4 h-4 mr-2"/>
                         Plateforme de coaching nouvelle génération
                     </Badge>
@@ -60,7 +60,7 @@ const HeroSection = () => {
                     initial={{opacity: 0, y: 30}}
                     animate={{opacity: 1, y: 0}}
                     transition={{duration: 0.8, delay: 0.6}}
-                    className="text-xl md:text-2xl text-slate-600 mb-8 max-w-3xl mx-auto leading-relaxed"
+                    className="text-xl md:text-2xl text-slate-600 dark:text-slate-300 mb-8 max-w-3xl mx-auto leading-relaxed"
                 >
                     Connectez-vous avec des coachs d'élite et atteignez vos objectifs grâce à
                     une technologie de pointe et un accompagnement personnalisé.
@@ -74,7 +74,7 @@ const HeroSection = () => {
                 >
                     <Button
                         size="lg"
-                        className="bg-primary text-white px-8 py-6 text-lg font-semibold rounded-xl shadow-xl shadow-indigo-200 border border-indigo-200 backdrop-blur-sm group"
+                        className="bg-primary text-white dark:bg-primary dark:text-primary-foreground px-8 py-6 text-lg font-semibold rounded-xl shadow-xl shadow-indigo-200 dark:shadow-indigo-900/50 border border-indigo-200 dark:border-indigo-700 backdrop-blur-sm group hover:bg-primary/90 dark:hover:bg-primary/90"
                         asChild
                     >
                         <Link to="/coachs">
@@ -92,7 +92,7 @@ const HeroSection = () => {
                     <Button
                         variant="outline"
                         size="lg"
-                        className="bg-white text-slate-800 hover:text-slate-900 px-8 py-6 text-lg font-semibold rounded-xl shadow-lg shadow-slate-200 border border-slate-300 hover:bg-slate-50 transition-colors duration-300"
+                        className="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white px-8 py-6 text-lg font-semibold rounded-xl shadow-lg shadow-slate-200 dark:shadow-slate-900/50 border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-300"
                     >
                         Commencer gratuitement
                     </Button>
@@ -102,18 +102,18 @@ const HeroSection = () => {
                     initial={{opacity: 0}}
                     animate={{opacity: 1}}
                     transition={{duration: 1, delay: 1.2}}
-                    className="mt-16 flex justify-center items-center gap-8 text-slate-500"
+                    className="mt-16 flex justify-center items-center gap-8 text-slate-500 dark:text-slate-400"
                 >
                     <div className="flex items-center gap-2">
                         <Star className="w-5 h-5 text-yellow-500 fill-current"/>
                         <span>4.9/5 étoiles</span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <Users className="w-5 h-5 text-indigo-500"/>
+                        <Users className="w-5 h-5 text-indigo-500 dark:text-indigo-400"/>
                         <span>+10k utilisateurs</span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <Trophy className="w-5 h-5 text-blue-500"/>
+                        <Trophy className="w-5 h-5 text-blue-500 dark:text-blue-400"/>
                         <span>Certifié qualité</span>
                     </div>
                 </motion.div>

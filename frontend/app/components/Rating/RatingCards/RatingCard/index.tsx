@@ -4,6 +4,7 @@ import {Link} from "react-router";
 import {FaClock} from "react-icons/fa";
 import {timeAgo} from "~/lib/time";
 import RatingStar from "~/components/Rating/RatingCards/RatingCard/RatingStar";
+import {cn} from "~/lib/utils";
 
 type Props = {
     rating: Rating
@@ -30,7 +31,7 @@ const RatingCard = ({rating, coachPage}: Props) => {
                 )
             }
             <div
-                className="flex flex-col text-sm text-neutral-500 dark:text-neutral-400 mt-2">
+                className={cn("flex flex-col text-sm text-neutral-500 dark:text-neutral-400", (rating.comment && rating.comment.length > 0) && "pt-2")}>
                 {
                     rating.user && (
                         <Link
@@ -54,9 +55,9 @@ const RatingCard = ({rating, coachPage}: Props) => {
                             )
                         }
                         <span className="flex items-center gap-2">
-                                        <FaClock/>
+                            <FaClock/>
                             {timeAgo(rating.date)}
-                                        </span>
+                        </span>
                     </div>
                     <RatingStar
                         value={rating.rating}
@@ -65,7 +66,8 @@ const RatingCard = ({rating, coachPage}: Props) => {
                 </div>
             </div>
         </div>
-    );
+    )
+        ;
 };
 
 export default RatingCard;

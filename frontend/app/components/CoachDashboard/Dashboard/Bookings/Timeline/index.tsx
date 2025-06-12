@@ -16,7 +16,7 @@ const Timeline = ({
     return (
         <div className="relative">
             <div
-                className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary/30 via-primary/50 to-primary/30"></div>
+                className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary/30 via-primary/50 to-primary/30 dark:from-primary/40 dark:via-primary/60 dark:to-primary/40"></div>
 
             {timelineData.map((day) => (
                     <TimelineDay

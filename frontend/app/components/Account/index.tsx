@@ -8,7 +8,6 @@ import {Tabs, TabsContent, TabsList, TabsTrigger} from "~/components/ui/tabs"
 import {Link} from "react-router";
 import RatingCards from "~/components/Rating/RatingCards";
 import {isOfTypeCoach} from "~/validation/typesValidations";
-import {getPublicEnv} from 'env.common';
 import ProfileEditModal from "~/components/Account/profile/EditModal";
 import BookingCard from "~/components/Booking/card";
 import UserInfo from "~/components/Account/user/UserInfo";
@@ -162,10 +161,10 @@ const AccountComponent = () => {
             <motion.div
                 initial={{opacity: 0, y: 20}}
                 animate={{opacity: 1, y: 0}}
-                className="max-w-md mx-auto mt-8 p-6 bg-white rounded-xl shadow-lg"
+                className="max-w-md mx-auto mt-8 p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg"
             >
-                <h1 className="text-2xl font-bold mb-4 text-gray-900">Mon compte</h1>
-                <div className="flex items-center space-x-2 text-red-600">
+                <h1 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Mon compte</h1>
+                <div className="flex items-center space-x-2 text-red-600 dark:text-red-400">
                     <Info className="w-5 h-5"/>
                     <p>Votre profil n'est pas disponible.</p>
                 </div>
@@ -183,10 +182,10 @@ const AccountComponent = () => {
             <motion.div
                 initial={{opacity: 0, y: 20}}
                 animate={{opacity: 1, y: 0}}
-                className="max-w-md mx-auto mt-8 p-6 bg-white rounded-xl shadow-lg"
+                className="max-w-md mx-auto mt-8 p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg"
             >
-                <h1 className="text-2xl font-bold mb-4 text-gray-900">Mon compte</h1>
-                <div className="flex items-center space-x-2 text-red-600">
+                <h1 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Mon compte</h1>
+                <div className="flex items-center space-x-2 text-red-600 dark:text-red-400">
                     <Info className="w-5 h-5"/>
                     <p>Votre profil n'est pas disponible.</p>
                 </div>
@@ -195,7 +194,7 @@ const AccountComponent = () => {
     }
 
     return (
-        <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-900 rounded-xl">
             <motion.div
                 className="max-w-7xl mx-auto"
                 initial={{opacity: 0}}
@@ -212,7 +211,7 @@ const AccountComponent = () => {
                     <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-secondary via-accent bg-clip-text text-transparent mb-2">
                         Mon compte
                     </h1>
-                    <p className="text-gray-600">Gérez votre profil et consultez votre activité</p>
+                    <p className="text-gray-600 dark:text-gray-300">Gérez votre profil et consultez votre activité</p>
                 </motion.div>
 
                 <div className="flex flex-col w-full gap-8">
@@ -223,7 +222,7 @@ const AccountComponent = () => {
                         transition={{duration: 0.6, delay: 0.3}}
                     >
                         <div
-                            className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-white/20 sticky top-8">
+                            className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-white/20 dark:border-gray-700/20 sticky top-8">
                             {userProfile && (
                                 <UserInfo
                                     user={userProfile}
@@ -240,14 +239,14 @@ const AccountComponent = () => {
                         transition={{duration: 0.6, delay: 0.4}}
                     >
                         <div
-                            className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-white/20 overflow-hidden">
+                            className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-3xl shadow-xl border border-white/20 dark:border-gray-700/20 overflow-hidden">
                             <div className="p-8">
                                 <div className="flex items-center space-x-3 mb-6">
                                     <div
-                                        className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
+                                        className="w-10 h-10 bg-primary dark:bg-primary/80 rounded-xl flex items-center justify-center">
                                         <Info className="w-5 h-5 text-white"/>
                                     </div>
-                                    <h3 className="text-2xl font-bold text-gray-900">
+                                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
                                         Informations supplémentaires
                                     </h3>
                                 </div>
@@ -255,15 +254,17 @@ const AccountComponent = () => {
                                     user?.role === 'USER' ? (
                                         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                                             <TabsList
-                                                className="grid w-full grid-cols-2 mb-8 p-1">
+                                                className="grid w-full grid-cols-2 mb-8 p-1 bg-gray-100 dark:bg-gray-700">
                                                 <TabsTrigger
                                                     value="bookings"
+                                                    className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-600 data-[state=active]:text-gray-900 dark:data-[state=active]:text-white text-gray-600 dark:text-gray-300"
                                                 >
                                                     <Calendar className="w-4 h-4 mr-2"/>
                                                     Réservations
                                                 </TabsTrigger>
                                                 <TabsTrigger
                                                     value="ratings"
+                                                    className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-600 data-[state=active]:text-gray-900 dark:data-[state=active]:text-white text-gray-600 dark:text-gray-300"
                                                 >
                                                     <Star className="w-4 h-4 mr-2"/>
                                                     Avis
@@ -273,61 +274,73 @@ const AccountComponent = () => {
                                             <AnimatePresence>
                                                 <TabsContent value="bookings">
                                                     <Tabs defaultValue="future">
-                                                        <TabsList className="grid grid-cols-4 mb-8 p-1">
-                                                            <TabsTrigger value="future">
+                                                        <TabsList className="grid grid-cols-4 mb-8 p-1 bg-gray-100 dark:bg-gray-700">
+                                                            <TabsTrigger
+                                                                value="future"
+                                                                className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-600 data-[state=active]:text-gray-900 dark:data-[state=active]:text-white text-gray-600 dark:text-gray-300"
+                                                            >
                                                                 <span className={cn(
                                                                     "flex items-center gap-1",
-                                                                    futureBookings.length > 0 ? "text-slate-800" : "text-gray-500"
+                                                                    futureBookings.length > 0 ? "text-slate-800 dark:text-slate-200" : "text-gray-500 dark:text-gray-400"
                                                                 )}>
                                                                     <span>À venir</span>
                                                                     {futureBookings.length > 0 && (
                                                                         <Badge
-                                                                            className="h-4 min-w-4 rounded-full px-1 tabular-nums"
+                                                                            className="h-4 min-w-4 rounded-full px-1 tabular-nums bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200"
                                                                             variant="light">
                                                                             {futureBookings.length}
                                                                         </Badge>
                                                                     )}
                                                                 </span>
                                                             </TabsTrigger>
-                                                            <TabsTrigger value="ongoing">
+                                                            <TabsTrigger
+                                                                value="ongoing"
+                                                                className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-600 data-[state=active]:text-gray-900 dark:data-[state=active]:text-white text-gray-600 dark:text-gray-300"
+                                                            >
                                                                 <span className={cn(
                                                                     "flex items-center gap-1",
-                                                                    ongoingBookings.length > 0 ? "text-slate-800" : "text-gray-500"
+                                                                    ongoingBookings.length > 0 ? "text-slate-800 dark:text-slate-200" : "text-gray-500 dark:text-gray-400"
                                                                 )}>
                                                                     <span>En cours</span>
                                                                     {ongoingBookings.length > 0 && (
                                                                         <Badge
-                                                                            className="h-4 min-w-4 rounded-full px-1 tabular-nums"
+                                                                            className="h-4 min-w-4 rounded-full px-1 tabular-nums bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200"
                                                                             variant="light">
                                                                             {ongoingBookings.length}
                                                                         </Badge>
                                                                     )}
                                                                 </span>
                                                             </TabsTrigger>
-                                                            <TabsTrigger value="past">
+                                                            <TabsTrigger
+                                                                value="past"
+                                                                className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-600 data-[state=active]:text-gray-900 dark:data-[state=active]:text-white text-gray-600 dark:text-gray-300"
+                                                            >
                                                                 <span className={cn(
                                                                     "flex items-center gap-1",
-                                                                    pastBookings.length > 0 ? "text-slate-800" : "text-gray-500"
+                                                                    pastBookings.length > 0 ? "text-slate-800 dark:text-slate-200" : "text-gray-500 dark:text-gray-400"
                                                                 )}>
                                                                     <span>Terminées</span>
                                                                     {pastBookings.length > 0 && (
                                                                         <Badge
-                                                                            className="h-4 min-w-4 rounded-full px-1 tabular-nums"
+                                                                            className="h-4 min-w-4 rounded-full px-1 tabular-nums bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200"
                                                                             variant="light">
                                                                             {pastBookings.length}
                                                                         </Badge>
                                                                     )}
                                                                 </span>
                                                             </TabsTrigger>
-                                                            <TabsTrigger value="cancelled">
+                                                            <TabsTrigger
+                                                                value="cancelled"
+                                                                className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-600 data-[state=active]:text-gray-900 dark:data-[state=active]:text-white text-gray-600 dark:text-gray-300"
+                                                            >
                                                             <span className={cn(
                                                                 "flex items-center gap-1",
-                                                                cancelledBookings.length > 0 ? "text-slate-800" : "text-gray-500"
+                                                                cancelledBookings.length > 0 ? "text-slate-800 dark:text-slate-200" : "text-gray-500 dark:text-gray-400"
                                                             )}>
                                                                 <span>Annulées</span>
                                                                 {cancelledBookings.length > 0 && (
                                                                     <Badge
-                                                                        className="h-4 min-w-4 rounded-full px-1 tabular-nums"
+                                                                        className="h-4 min-w-4 rounded-full px-1 tabular-nums bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200"
                                                                         variant="light">
                                                                         {cancelledBookings.length}
                                                                     </Badge>
@@ -338,7 +351,7 @@ const AccountComponent = () => {
                                                         <TabsContent value="future">
                                                             {futureBookings && futureBookings.length > 0 && (
                                                                 <div>
-                                                                    <h4 className="text-lg font-semibold mb-2">
+                                                                    <h4 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">
                                                                         À venir
                                                                     </h4>
                                                                     <div className="space-y-4">
@@ -351,14 +364,14 @@ const AccountComponent = () => {
                                                                 </div>
                                                             )}
                                                             {!futureBookings || futureBookings.length === 0 && (
-                                                                <p className="text-gray-500 mt-4">Aucune réservation à
+                                                                <p className="text-gray-500 dark:text-gray-400 mt-4">Aucune réservation à
                                                                     venir.</p>
                                                             )}
                                                         </TabsContent>
                                                         <TabsContent value="ongoing">
                                                             {ongoingBookings && ongoingBookings.length > 0 && (
                                                                 <div>
-                                                                    <h4 className="text-lg font-semibold mt-6 mb-2">En
+                                                                    <h4 className="text-lg font-semibold mt-6 mb-2 text-gray-900 dark:text-white">En
                                                                         cours</h4>
                                                                     <div className="space-y-4">
                                                                         {ongoingBookings.map((booking, index) => (
@@ -370,14 +383,14 @@ const AccountComponent = () => {
                                                                 </div>
                                                             )}
                                                             {!ongoingBookings || ongoingBookings.length === 0 && (
-                                                                <p className="text-gray-500 mt-4">Aucune réservation en
+                                                                <p className="text-gray-500 dark:text-gray-400 mt-4">Aucune réservation en
                                                                     cours.</p>
                                                             )}
                                                         </TabsContent>
                                                         <TabsContent value="past">
                                                             {pastBookings && pastBookings.length > 0 && (
                                                                 <div>
-                                                                    <h4 className="text-lg font-semibold mt-6 mb-2">Terminées</h4>
+                                                                    <h4 className="text-lg font-semibold mt-6 mb-2 text-gray-900 dark:text-white">Terminées</h4>
                                                                     <div className="space-y-4">
                                                                         {pastBookings.map((booking, index) => (
                                                                             <BookingCard key={booking.id}
@@ -391,14 +404,14 @@ const AccountComponent = () => {
                                                                 </div>
                                                             )}
                                                             {!pastBookings || pastBookings.length === 0 && (
-                                                                <p className="text-gray-500 mt-4">Aucune réservation
+                                                                <p className="text-gray-500 dark:text-gray-400 mt-4">Aucune réservation
                                                                     terminée.</p>
                                                             )}
                                                         </TabsContent>
                                                         <TabsContent value="cancelled">
                                                             {cancelledBookings && cancelledBookings.length > 0 && (
                                                                 <div>
-                                                                    <h4 className="text-lg font-semibold mt-6 mb-2 text-red-600">Annulées</h4>
+                                                                    <h4 className="text-lg font-semibold mt-6 mb-2 text-red-600 dark:text-red-400">Annulées</h4>
                                                                     <div className="space-y-4">
                                                                         {cancelledBookings.map((booking, index) => (
                                                                             <BookingCard key={booking.id}
@@ -409,7 +422,7 @@ const AccountComponent = () => {
                                                                 </div>
                                                             )}
                                                             {!cancelledBookings || cancelledBookings.length === 0 && (
-                                                                <p className="text-gray-500 mt-4">Aucune réservation
+                                                                <p className="text-gray-500 dark:text-gray-400 mt-4">Aucune réservation
                                                                     annulée.</p>
                                                             )}
                                                         </TabsContent>
@@ -434,14 +447,14 @@ const AccountComponent = () => {
                                             </AnimatePresence>
                                         </Tabs>
                                     ) : (
-                                        <div className="flex flex-col justify-center text-gray-500 gap-2">
+                                        <div className="flex flex-col justify-center text-gray-500 dark:text-gray-400 gap-2">
                                             <p>
                                                 Pour accéder à vos réservations et avis reçus, veuillez aller sur le
                                                 dashboard dédié.
                                             </p>
                                             <Link
                                                 to="/dashboard"
-                                                className="text-blue-600 hover:underline group flex items-center justify-center text-sm font-medium transition-colors duration-200 rounded-lg px-4 py-2 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900 dark:hover:bg-blue-800"
+                                                className="text-blue-600 dark:text-blue-400 hover:underline group flex items-center justify-center text-sm font-medium transition-colors duration-200 rounded-lg px-4 py-2 bg-blue-50 dark:bg-blue-900/50 hover:bg-blue-100 dark:hover:bg-blue-800/50"
                                             >
                                                 Accéder au dashboard
                                                 <ArrowRight
