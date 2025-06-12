@@ -59,28 +59,28 @@ export function CalendarCell({
 				<div
 					className={cn(
 						"size-full rounded-md flex items-center justify-center",
-						"text-gray-950 text-sm font-semibold",
+						"text-gray-950 dark:text-gray-50 text-sm font-semibold",
 						isInactive
 							? isDateToday
 								? "cursor-default"
-								: "text-gray-400 cursor-default"
-							: "cursor-pointer bg-gray-200",
+								: "text-gray-400 dark:text-gray-500 cursor-default"
+							: "cursor-pointer bg-gray-200 dark:bg-gray-700",
 						isFocusVisible &&
-							"ring-1 group-focus:z-2 ring-gray-950 ring-offset-1",
-						isSelected && "bg-gray-950 text-gray-100",
-						!isSelected && (!isInactive) && "hover:ring-2 hover:ring-gray-950",
+							"ring-1 group-focus:z-2 ring-gray-950 dark:ring-gray-100 ring-offset-1 dark:ring-offset-gray-800",
+						isSelected && "bg-gray-950 dark:bg-gray-100 text-gray-100 dark:text-gray-950",
+						!isSelected && (!isInactive) && "hover:ring-2 hover:ring-gray-950 dark:hover:ring-gray-100",
 					)}
 				>
 					{isLoading ? (
-						<div className="w-6 h-4 rounded bg-gray-200 animate-pulse" />
+						<div className="w-6 h-4 rounded bg-gray-200 dark:bg-gray-600 animate-pulse" />
 					) : (
 						<>
 							{formattedDate}
 							{isDateToday && (
 								<div
 									className={cn(
-										"absolute bottom-4 left-1/2 transform -translate-x-1/2 translate-y-1/2 size-1.5 bg-gray-950 rounded-full",
-										isSelected && "bg-gray-100",
+										"absolute bottom-4 left-1/2 transform -translate-x-1/2 translate-y-1/2 size-1.5 bg-gray-950 dark:bg-gray-100 rounded-full",
+										isSelected && "bg-gray-100 dark:bg-gray-950",
 									)}
 								/>
 							)}

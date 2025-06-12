@@ -18,11 +18,12 @@ export function Button(
         <button
             {...mergeProps(buttonProps, focusProps)}
             ref={ref}
-            // TODO: Add dark mode support
             className={cn(
-                "p-2 rounded-lg outline-none text-gray-950 cursor-pointer",
-                props.isDisabled ? "text-gray-700" : "hover:bg-gray-400 active:bg-gray-500",
-                isFocusVisible && "ring-2 ring-offset-2 ring-gray-900",
+                "p-2 rounded-lg outline-none text-gray-950 dark:text-gray-50 cursor-pointer",
+                props.isDisabled
+                    ? "text-gray-700 dark:text-gray-400"
+                    : "hover:bg-gray-400 dark:hover:bg-gray-600 active:bg-gray-500 dark:active:bg-gray-700",
+                isFocusVisible && "ring-2 ring-offset-2 ring-gray-900 dark:ring-gray-100 dark:ring-offset-gray-800",
             )}
         >
             {props.children}

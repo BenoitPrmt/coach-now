@@ -5,12 +5,11 @@ import {
 	endOfMonth,
 	getWeeksInMonth, getLocalTimeZone,
 } from "@internationalized/date";
-import {useCalendarCell, useCalendarGrid} from "@react-aria/calendar";
+import {useCalendarGrid} from "@react-aria/calendar";
 import { useLocale } from "@react-aria/i18n";
 import type { CalendarState } from "@react-stately/calendar";
 import { CalendarCell } from "./calendar-cell";
 import {useBooking} from "~/hooks/useBooking";
-import {useRef} from "react";
 
 export function CalendarGrid({
 	state,
@@ -52,7 +51,7 @@ export function CalendarGrid({
 			<thead {...headerProps}>
 				<tr>
 					{weekDays.map((day, index) => (
-						<th key={index} className="uppercase text-xs text-gray-11 pb-4">
+						<th key={index} className="uppercase text-xs text-gray-11 dark:text-gray-400 pb-4">
 							{day}
 						</th>
 					))}
