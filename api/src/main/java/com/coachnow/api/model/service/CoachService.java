@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import com.coachnow.api.model.repository.BookingRepository;
+import com.coachnow.api.web.response.coach.IsCoachAvailable;
 import com.coachnow.api.web.response.coach.unavailability.Unavailability;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -276,6 +277,11 @@ public class CoachService {
                         }
                     }
                     dayAvailability.getHours().add(hourAvailability);
+                    boolean hasAvailability = dayAvailability.getHours().stream()
+                            .anyMatch(HourAvailability::isAvailable);
+                    if (!hasAvailability) {
+                        dayAvailability.setIsWorkingDay(false);
+                    }
                 }
             }
             availabilities.add(dayAvailability);
@@ -300,20 +306,35 @@ public class CoachService {
         return datesBetween;
     }
 
-    public Boolean isCoachAvailable(String coachId, Date startDate, Date endDate) throws ParseException {
+    public IsCoachAvailable isCoachAvailable(String coachId, Date startDate, Date endDate) throws ParseException {
         List<DayAvailability> availabilities = getAvailabilities(coachId, startDate, endDate);
 
         String hourStart = new SimpleDateFormat("HH:mm").format(startDate);
         String hourEnd = new SimpleDateFormat("HH:mm").format(endDate);
 
+        int countEvents = 0;
+
         for (DayAvailability dayAvailability : availabilities) {
             for (HourAvailability hourAvailability : dayAvailability.getHours()) {
-                if (hourAvailability.getStart().equals(hourStart) && hourAvailability.getEnd().equals(hourEnd)) {
-                    return hourAvailability.isAvailable();
+                if (hourAvailability.isAvailable()) {
+                    continue;
+                }
+                boolean isSameHour = hourAvailability.getStart().equals(hourStart) && hourAvailability.getEnd().equals(hourEnd);
+                if (isSameHour) {
+                    countEvents++;
+                } else if (isDateBetween(convertHourAvailabilityToDate(dayAvailability.getDate(), hourAvailability.getStart()), startDate, endDate)) {
+                    countEvents++;
                 }
             }
         }
-        return false;
+
+        return new IsCoachAvailable(countEvents == 0, countEvents);
+    }
+
+    public Date convertHourAvailabilityToDate(Date date, String hour) throws ParseException {
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String dateString = new SimpleDateFormat("yyyy-MM-dd").format(date) + " " + hour + ":00";
+        return formatter.parse(dateString);
     }
 
     public List<Unavailability> getUnavailabilities(String coachId) {
@@ -338,5 +359,9 @@ public class CoachService {
             unavailabilities.add(unavailability);
         }
         return unavailabilities;
+    }
+
+    public Boolean isDateBetween(Date date, Date startDate, Date endDate) {
+        return (date.equals(startDate) || date.equals(endDate) || (date.after(startDate) && date.before(endDate)));
     }
 }

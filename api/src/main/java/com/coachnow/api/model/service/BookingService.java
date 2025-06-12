@@ -56,4 +56,12 @@ public class BookingService {
         });
         return bookings;
     }
+
+    public void cancelBookingsBetweenDates(String coachId, Date startDate, Date endDate) {
+        List<Booking> bookings = bookingRepository.findByCoachIdAndStartDateBetween(coachId, startDate, endDate);
+        for (Booking booking : bookings) {
+            booking.setIsActive(false);
+            bookingRepository.save(booking);
+        }
+    }
 }

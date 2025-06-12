@@ -20,4 +20,6 @@ public interface BookingRepository extends CrudRepository<Booking, String> {
     List<Booking> findBookingsByUser(User user);
 
     List<Booking> findBookingByCoachIdAndUserIdAndEndDateAfter(String coachId, String userId, Date endDateAfter);
+
+    List<Booking> findByCoachIdAndStartDateBetween(String coachId, Date startDate, Date endDate);
 }

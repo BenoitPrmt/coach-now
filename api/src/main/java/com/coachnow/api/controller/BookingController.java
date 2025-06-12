@@ -12,6 +12,7 @@ import com.coachnow.api.model.service.UserService;
 import com.coachnow.api.types.Roles;
 import com.coachnow.api.web.request.booking.BookingCreation;
 import com.coachnow.api.web.request.booking.BookingUpdate;
+import com.coachnow.api.web.response.coach.IsCoachAvailable;
 import com.itextpdf.text.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -83,13 +84,21 @@ public class BookingController {
 
             DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-            Boolean isCoachAvailable = coachService.isCoachAvailable(
+            IsCoachAvailable isCoachAvailable = coachService.isCoachAvailable(
                     bookingData.getCoachId(),
                     formatter.parse(bookingData.getStartDate()),
                     formatter.parse(bookingData.getEndDate())
             );
-            if (!isCoachAvailable) {
-                throw new IllegalArgumentException("Coach is not available for the selected time.");
+            if (!isCoachAvailable.isAvailable()) {
+                if (user.getRole().equals(Roles.COACH) && user.getId().equals(coach.getUser().getId())) {
+                    bookingService.cancelBookingsBetweenDates(
+                            bookingData.getCoachId(),
+                            formatter.parse(bookingData.getStartDate()),
+                            formatter.parse(bookingData.getEndDate())
+                    );
+                } else {
+                    throw new IllegalArgumentException("Coach is not available for the selected time.");
+                }
             }
 
             Booking booking = getBooking(bookingData, coach, user);
