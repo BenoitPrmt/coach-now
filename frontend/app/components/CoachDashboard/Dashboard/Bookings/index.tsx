@@ -385,7 +385,8 @@ const CoachDashboardBookings = ({user, userToken}: { user: SessionUser | null, u
                                                                     ? "bg-primary/10 border border-primary/20"
                                                                     : "bg-gray-50 hover:bg-primary/5"
                                                             )}
-                                                            whileHover={{scale: 1.02}}
+                                                            whileHover={{scale: 1.01}}
+                                                            whileTap={{scale: 1}}
                                                             onClick={() => setSelectedBooking(booking)}
                                                         >
                                                             <div
