@@ -34,21 +34,21 @@ const UserInfo = ({user, userRole = "USER", onEditClick}: {
                         <img
                             src={user.profilePictureUrl}
                             alt={`${user.user.firstName} ${user.user.lastName}`}
-                            className="w-24 h-24 bg-primary rounded-full object-cover shadow-lg"
+                            className="w-24 h-24 bg-primary rounded-full object-cover shadow-lg dark:shadow-gray-700"
                         />
                     ) : (
-                        <div className="w-24 h-24 bg-primary rounded-full flex items-center justify-center shadow-lg">
+                        <div className="w-24 h-24 bg-primary rounded-full flex items-center justify-center shadow-lg dark:shadow-gray-700">
                             <UserIcon className="w-10 h-10 text-white"/>
                         </div>
                     )
                 }
                 <div
-                    className="absolute -bottom-2 -right-2 w-6 h-6 bg-green-500 rounded-full border-2 border-white"></div>
+                    className="absolute -bottom-2 -right-2 w-6 h-6 bg-green-500 rounded-full border-2 border-white dark:border-gray-800"></div>
             </motion.div>
 
             <div className="text-center space-y-2">
                 <motion.h2
-                    className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent"
+                    className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-gray-100 dark:to-gray-300 bg-clip-text text-transparent"
                     initial={{y: 20, opacity: 0}}
                     animate={{y: 0, opacity: 1}}
                     transition={{delay: 0.2}}
@@ -58,7 +58,7 @@ const UserInfo = ({user, userRole = "USER", onEditClick}: {
                         : `${user.firstName} ${user.lastName}`}
                 </motion.h2>
                 <motion.div
-                    className="flex items-center justify-center space-x-2 text-gray-600"
+                    className="flex items-center justify-center space-x-2 text-gray-600 dark:text-gray-300"
                     initial={{y: 20, opacity: 0}}
                     animate={{y: 0, opacity: 1}}
                     transition={{delay: 0.3}}
@@ -80,7 +80,7 @@ const UserInfo = ({user, userRole = "USER", onEditClick}: {
                     onClick={onEditClick}
                     variant="outline"
                     size="sm"
-                    className="bg-white/80 backdrop-blur-sm border-primary/20 hover:bg-primary hover:text-white transition-all duration-300 shadow-sm"
+                    className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-primary/20 dark:border-primary/30 hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-all duration-300 shadow-sm dark:shadow-gray-700 text-gray-900 dark:text-gray-100"
                 >
                     <Edit className="w-4 h-4 mr-2"/>
                     Modifier le profil
@@ -96,12 +96,12 @@ const UserInfo = ({user, userRole = "USER", onEditClick}: {
                         transition={{delay: 0.5}}
                     >
                         <div className="text-center">
-                            <div className="text-2xl font-bold text-ring">{totalBookings}</div>
-                            <div className="text-xs text-ring">Réservations</div>
+                            <div className="text-2xl font-bold text-ring dark:text-ring">{totalBookings}</div>
+                            <div className="text-xs text-ring dark:text-ring">Réservations</div>
                         </div>
                         <div className="text-center">
-                            <div className="text-2xl font-bold text-yellow-600">{totalRatings}</div>
-                            <div className="text-xs text-yellow-600">Avis</div>
+                            <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{totalRatings}</div>
+                            <div className="text-xs text-yellow-600 dark:text-yellow-400">Avis</div>
                         </div>
                     </motion.div>
                 )

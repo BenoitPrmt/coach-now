@@ -84,7 +84,7 @@ const CoachDashboardBookings = ({user, userToken}: { user: SessionUser | null, u
     return (
         <div className="space-y-6">
             <div className="flex max-md:flex-col justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
                     Vue Réservations
                 </h2>
 

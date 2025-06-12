@@ -4,7 +4,7 @@ import React from "react";
 
 function UserRoleBadge(props: { userRole: UserRole }) {
     return <div
-        className="inline-flex px-3 py-1 bg-primary text-white rounded-full text-xs font-medium"
+        className="inline-flex px-3 py-1 bg-primary text-white dark:bg-primary dark:text-white rounded-full text-xs font-medium"
     >
         {
             props.userRole === "COACH" ? (

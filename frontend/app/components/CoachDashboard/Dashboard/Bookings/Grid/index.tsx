@@ -37,6 +37,7 @@ const BookingsGrid = ({
                             (a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
                         ).map((booking) => (
                             <GridElement
+                                key={booking.id}
                                 booking={booking}
                                 selectedBooking={selectedBooking}
                                 setSelectedBooking={setSelectedBooking}

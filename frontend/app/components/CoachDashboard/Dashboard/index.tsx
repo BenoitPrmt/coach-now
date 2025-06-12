@@ -56,16 +56,16 @@ const CoachDashboardComponent = () => {
     if (isLoading) return <Loader/>;
 
     return (
-        <div className="min-h-screen p-6">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6 rounded-xl">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="flex max-md:flex-col justify-between items-center mb-6">
                     <div className="mb-8">
-                        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
                             Dashboard Coach
                         </h1>
                         {coachData && (
-                            <p className="text-gray-600">
+                            <p className="text-gray-600 dark:text-gray-400">
                                 Bienvenue, {coachData.user.firstName} {coachData.user.lastName}!
                             </p>
                         )}
@@ -74,16 +74,16 @@ const CoachDashboardComponent = () => {
                     {coachData?.id && user?.id && (
                         <CoachHolidaysModal coachId={coachData?.id} userId={user?.id} userToken={userToken} />
                     )}
-        
+
                     <div className="isolate flex -space-x-px">
                         <Button variant="outline"
-                                className={cn("rounded-r-none focus:z-10", view === 'dashboard' ? 'bg-gray-200 text-primary' : '')}
+                                className={cn("rounded-r-none focus:z-10", view === 'dashboard' ? 'bg-gray-200 dark:bg-gray-700 text-primary dark:text-primary-foreground' : 'dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700')}
                                 onClick={() => setView('dashboard')}>
                             <ChartAreaIcon/>
                             Dashboard
                         </Button>
                         <Button variant="outline"
-                                className={cn("rounded-l-none focus:z-10", view === 'calendar' ? 'bg-gray-200 text-primary' : '')}
+                                className={cn("rounded-l-none focus:z-10", view === 'calendar' ? 'bg-gray-200 dark:bg-gray-700 text-primary dark:text-primary-foreground' : 'dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700')}
                                 onClick={() => setView('calendar')}>
                             <Calendar/>
                             Réservations
@@ -92,7 +92,7 @@ const CoachDashboardComponent = () => {
                 </div>
 
                 {dashboardData ? (
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
                         {
                             view === 'dashboard' ? (
                                 <CoachDashboardStats dashboardData={dashboardData}/>
@@ -103,7 +103,7 @@ const CoachDashboardComponent = () => {
                     </div>
                 ) : (
                     <div className="text-center py-12">
-                        <p className="text-gray-500">Chargement des données du coach...</p>
+                        <p className="text-gray-500 dark:text-gray-400">Chargement des données du coach...</p>
                     </div>
                 )}
             </div>
