@@ -6,6 +6,7 @@ import {getDashboardDataFromCoach} from "~/lib/getDashboardDataFromCoach";
 import Loader from "~/components/Loader";
 import StatCard from "./StatCard";
 import {Calendar, DollarSign, Star, Users} from "lucide-react";
+import {CoachHolidaysModal} from "~/components/Coach/CoachHolidays/CoachHolidaysModal";
 
 const CoachDashboardComponent = () => {
     const {user, userToken} = useUser();
@@ -48,15 +49,19 @@ const CoachDashboardComponent = () => {
     return (
         <div className="min-h-screen p-6">
             <div className="max-w-7xl mx-auto">
-                {/* Header */}
-                <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                        Dashboard Coach
-                    </h1>
-                    {coachData && (
-                        <p className="text-gray-600">
-                            Bienvenue, {coachData.user.firstName} {coachData.user.lastName}!
-                        </p>
+                <div className="flex justify-between items-center mb-6">
+                    <div className="mb-8">
+                        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                            Dashboard Coach
+                        </h1>
+                        {coachData && (
+                            <p className="text-gray-600">
+                                Bienvenue, {coachData.user.firstName} {coachData.user.lastName}!
+                            </p>
+                        )}
+                    </div>
+                    {coachData?.id && user?.id && (
+                        <CoachHolidaysModal coachId={coachData?.id} userId={user?.id} userToken={userToken} />
                     )}
                 </div>
 

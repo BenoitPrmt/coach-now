@@ -1,4 +1,3 @@
-import {useCallback} from "react";
 import type {TimeDuration} from "~/types/Time";
 
 const timeAgo = (dateString: string): string => {
@@ -38,6 +37,10 @@ const formatDateWithTime = (date: Date) =>
         minute: '2-digit'
     });
 
+const formatDateTimeForAPI = (date: Date): string => {
+    return date.toISOString().split("T")[0] + " " + date.toTimeString().split(" ")[0]
+}
+
 const displayDuration = (hours: number, minutes: number) => {
     if (hours === 0 && minutes === 0) return "0min";
 
@@ -59,4 +62,4 @@ const getDurationFromDate = (startDate: Date, endDate: Date): TimeDuration => {
     };
 }
 
-export {timeAgo, formatDate, formatDateWithTime, displayDuration, getDurationFromDate};
+export {timeAgo, formatDate, formatDateWithTime, formatDateTimeForAPI, displayDuration, getDurationFromDate};

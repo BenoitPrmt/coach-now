@@ -1,6 +1,5 @@
 "use server";
 
-import {getPublicEnv} from "env.common";
 import type {Coach, PaginatedResponse} from "~/types";
 import type {CoachFormData} from "~/components/Admin/Coach/CoachFormModal";
 import {API_URL} from "~/constants/api";
@@ -60,8 +59,6 @@ async function createCoach(
 ): Promise<Coach> {
     try {
         const url = API_URL + `/coach`;
-        console.log("Call", url, "with data:", data);
-
         const res = await fetch(url, {
             method: 'POST',
             headers: {
@@ -135,10 +132,60 @@ async function deleteCoach(bearerToken: any, coachId: string): Promise<void> {
     }
 }
 
+async function getUnavailabilites(bearerToken: any, coachId: string) {
+    try {
+        const url = API_URL + `/coach/${coachId}/unavailabilities`;
+
+        const res = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${bearerToken}`,
+            },
+        });
+
+        if (!res.ok) {
+            const error = await res.text();
+            throw new Error(`Unavailabilities failed: ${error}`);
+        }
+
+        return await res.json();
+    } catch (err) {
+        console.error("Unavailabilities action failed:", err);
+        throw err;
+    }
+}
+
+async function isCoachAvailable(bearerToken: any, coachId: string, startDate: string, endDate: string) {
+    try {
+        const url = API_URL + `/coach/${coachId}/isAvailable?startDate=${startDate}&endDate=${endDate}`;
+
+        const res = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${bearerToken}`,
+            },
+        });
+
+        if (!res.ok) {
+            const error = await res.text();
+            throw new Error(`isAvailable failed: ${error}`);
+        }
+
+        return await res.json();
+    } catch (err) {
+        console.error("isAvailable action failed:", err);
+        throw err;
+    }
+}
+
 export {
     getAvailabilities,
     getAllCoachs,
     createCoach,
     updateCoach,
-    deleteCoach
+    deleteCoach,
+    getUnavailabilites,
+    isCoachAvailable
 }

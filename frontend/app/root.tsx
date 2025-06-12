@@ -45,7 +45,7 @@ export function Layout({children}: { children: ReactNode }) {
                 {children}
                 <ScrollRestoration/>
                 <Scripts/>
-                <Toaster/>
+                <Toaster richColors position="top-right" />
             </BaseLayout>
         </main>
         <Footer/>
