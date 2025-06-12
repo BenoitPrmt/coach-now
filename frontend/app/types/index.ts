@@ -73,12 +73,12 @@ export type CoachDashboard = {
 
 
 
-export type CoachCalendarData = {
+export type CoachCalendarDataType = {
     label: string;
     value: Date
 }
 
-export type TimelineDay = {
+export type TimelineDayType = {
     date: string;
     bookings: Booking[];
     count: number;
