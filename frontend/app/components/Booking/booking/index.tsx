@@ -28,6 +28,7 @@ import {useUser} from "~/hooks/useUser";
 import {createBooking} from "~/actions/booking.action";
 import {toast} from "sonner";
 import {VisuallyHidden} from "@react-aria/visually-hidden";
+import {formatDateTimeForAPI} from "~/lib/time";
 
 type Props = {
 	coach: Coach;
@@ -102,12 +103,9 @@ export function Booking({ coach, buttonClassName }: Props) {
 		startDate.setHours(startDate.getHours());
 		endDate.setHours(endDate.getHours() + 1);
 
-		const formattedStartDate = startDate.toISOString().split("T")[0] + " " + startDate.toTimeString().split(" ")[0];
-		const formattedEndDate = endDate.toISOString().split("T")[0] + " " + endDate.toTimeString().split(" ")[0];
-
 		createBooking(userToken, {
-			startDate: formattedStartDate,
-			endDate: formattedEndDate,
+			startDate: formatDateTimeForAPI(startDate),
+			endDate: formatDateTimeForAPI(endDate),
 			isActive: true,
 			totalPrice: coach.hourlyRate,
 			coachId: coach.id,

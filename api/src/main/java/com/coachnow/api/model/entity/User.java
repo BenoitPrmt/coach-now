@@ -48,8 +48,8 @@ public class User {
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", role=" + role +
-                ", bookings=" + (bookings != null ? bookings : "[]") +
-                ", ratings=" + (ratings != null ? ratings : "[]") +
+//                ", bookings=" + (bookings != null ? bookings : "[]") +
+//                ", ratings=" + (ratings != null ? ratings : "[]") +
                 '}';
     }
 
