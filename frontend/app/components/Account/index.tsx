@@ -194,7 +194,7 @@ const AccountComponent = () => {
     }
 
     return (
-        <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-900">
+        <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-900 rounded-xl">
             <motion.div
                 className="max-w-7xl mx-auto"
                 initial={{opacity: 0}}

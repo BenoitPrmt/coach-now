@@ -4,6 +4,7 @@ import {Link} from "react-router";
 import {FaClock} from "react-icons/fa";
 import {timeAgo} from "~/lib/time";
 import RatingStar from "~/components/Rating/RatingCards/RatingCard/RatingStar";
+import {cn} from "~/lib/utils";
 
 type Props = {
     rating: Rating
@@ -30,7 +31,7 @@ const RatingCard = ({rating, coachPage}: Props) => {
                 )
             }
             <div
-                className="flex flex-col text-sm text-neutral-500 dark:text-neutral-400 mt-2">
+                className={cn("flex flex-col text-sm text-neutral-500 dark:text-neutral-400", (rating.comment && rating.comment.length > 0) && "pt-2")}>
                 {
                     rating.user && (
                         <Link
@@ -41,31 +42,32 @@ const RatingCard = ({rating, coachPage}: Props) => {
                         </Link>
                     )
                 }
-                <div className="flex items-center justify-between pt-1">
-                    <div className="flex items-center gap-2">
-                        {
-                            rating.coach && !coachPage && (
-                                <Link
-                                    to={`/coach/${rating.coach.id}`}
-                                    className="text-blue-500 hover:underline"
-                                >
-                                    Coach {rating.coach.user.firstName} {rating.coach.user.lastName}
-                                </Link>
-                            )
-                        }
-                        <span className="flex items-center gap-2">
-                                        <FaClock/>
-                            {timeAgo(rating.date)}
-                                        </span>
-                    </div>
-                    <RatingStar
-                        value={rating.rating}
-                        className="text-lg"
-                    />
-                </div>
-            </div>
-        </div>
-    );
+            <div className="flex items-center justify-between pt-1">
+            <div className="flex items-center gap-2">
+            {
+                rating.coach && !coachPage && (
+                    <Link
+                        to={`/coach/${rating.coach.id}`}
+                        className="text-blue-500 hover:underline"
+                    >
+                        Coach {rating.coach.user.firstName} {rating.coach.user.lastName}
+                    </Link>
+                )
+            }
+            <span className="flex items-center gap-2">
+            <FaClock/>
+            {timeAgo(rating.date)}
+        </span>
+</div>
+    <RatingStar
+        value={rating.rating}
+        className="text-lg"
+    />
+</div>
+</div>
+</div>
+)
+    ;
 };
 
 export default RatingCard;
