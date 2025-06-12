@@ -1,4 +1,3 @@
-import {useCallback} from "react";
 import type {TimeDuration} from "~/types/Time";
 
 const timeAgo = (dateString: string): string => {
@@ -20,12 +19,20 @@ const timeAgo = (dateString: string): string => {
 }
 
 const formatDate = (date: Date) =>
-  date.toLocaleDateString("fr-FR", {
-    weekday: "short",
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  });
+    date.toLocaleDateString("fr-FR", {
+        weekday: "short",
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+    });
+
+const formatDateForBackend = (date: Date): string => {
+    const pad = (n: number) => n.toString().padStart(2, '0');
+
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ` +
+        `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+}
+
 
 const formatDateWithTime = (date: Date) =>
     date.toLocaleDateString("fr-FR", {
@@ -59,4 +66,32 @@ const getDurationFromDate = (startDate: Date, endDate: Date): TimeDuration => {
     };
 }
 
-export {timeAgo, formatDate, formatDateWithTime, displayDuration, getDurationFromDate};
+const formatBookingDisplayDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    if (date.toDateString() === today.toDateString()) {
+        return "Aujourd'hui";
+    } else if (date.toDateString() === tomorrow.toDateString()) {
+        return "Demain";
+    } else {
+        return date.toLocaleDateString('fr-FR', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    }
+};
+
+export {
+    timeAgo,
+    formatDate,
+    formatDateWithTime,
+    formatDateForBackend,
+    displayDuration,
+    getDurationFromDate,
+    formatBookingDisplayDate
+};
