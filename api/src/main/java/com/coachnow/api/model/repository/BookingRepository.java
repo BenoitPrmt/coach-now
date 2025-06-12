@@ -5,6 +5,7 @@ import com.coachnow.api.model.entity.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,4 +18,6 @@ public interface BookingRepository extends CrudRepository<Booking, String> {
     List<Booking> findByCoachId(String coachId);
 
     List<Booking> findBookingsByUser(User user);
+
+    List<Booking> findBookingByCoachIdAndUserIdAndEndDateAfter(String coachId, String userId, Date endDateAfter);
 }

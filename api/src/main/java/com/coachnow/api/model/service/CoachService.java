@@ -13,6 +13,8 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import com.coachnow.api.model.repository.BookingRepository;
+import com.coachnow.api.web.response.coach.unavailability.Unavailability;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +29,9 @@ public class CoachService {
 
     @Autowired
     private CoachRepository coachRepository;
+
+    @Autowired
+    private BookingRepository bookingRepository;
 
     public List<Coach> selectAll() {
         return (List<Coach>) coachRepository.findAll();
@@ -309,5 +314,29 @@ public class CoachService {
             }
         }
         return false;
+    }
+
+    public List<Unavailability> getUnavailabilities(String coachId) {
+        Coach coach = select(coachId);
+        if (coach == null) {
+            throw new IllegalArgumentException("Coach with id " + coachId + " does not exist.");
+        }
+
+        List<Booking> bookings = bookingRepository.findBookingByCoachIdAndUserIdAndEndDateAfter(coach.getId(), coach.getUser().getId(), new Date());
+
+        List<Unavailability> unavailabilities = new ArrayList<>();
+        for (Booking booking : bookings) {
+            if (!booking.getIsActive()) {
+                continue;
+            }
+            Unavailability unavailability = new Unavailability(
+                    booking.getId(),
+                    coachId,
+                    booking.getStartDate().toString(),
+                    booking.getEndDate().toString()
+            );
+            unavailabilities.add(unavailability);
+        }
+        return unavailabilities;
     }
 }

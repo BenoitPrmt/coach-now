@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import com.coachnow.api.model.entity.dto.UserDTO;
 import com.coachnow.api.web.request.coach.CoachUpdate;
+import com.coachnow.api.web.response.coach.unavailability.Unavailability;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -171,6 +172,17 @@ public class CoachController {
     ) throws ParseException {
         try {
             return new ResponseEntity<>(coachService.getAvailabilities(coachId, startDate, endDate), HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/coach/{coachId}/unavailabilities")
+    public ResponseEntity<List<Unavailability>> getUnavailabilities(
+            @PathVariable String coachId
+    ) throws ParseException {
+        try {
+            return new ResponseEntity<List<Unavailability>>(coachService.getUnavailabilities(coachId), HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
