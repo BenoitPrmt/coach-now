@@ -50,7 +50,7 @@ public class BookingController {
     public List<BookingDTO> all() {
         List<Booking> bookings = bookingService.selectAll();
         List<BookingDTO> listDTO = new ArrayList<>();
-        for(Booking booking : bookings) {
+        for (Booking booking : bookings) {
             listDTO.add(new BookingDTO(booking));
         }
         return listDTO;
@@ -61,6 +61,23 @@ public class BookingController {
             @PathVariable String id
     ) {
         return new BookingDTO(bookingService.select(id));
+    }
+
+    @GetMapping("/bookings/coach/{coachId}")
+    public List<BookingDTO> getByCoach(
+            @PathVariable String coachId,
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate
+    ) throws ParseException {
+        List<Booking> bookings = (List<Booking>) bookingService.getBookingsByCoach(coachId, startDate, endDate);
+        if (bookings == null || bookings.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<BookingDTO> listDTO = new ArrayList<>();
+        for (Booking booking : bookings) {
+            listDTO.add(new BookingDTO(booking));
+        }
+        return listDTO;
     }
 
     @PostMapping("/booking")
@@ -161,7 +178,8 @@ public class BookingController {
     }
 
     @DeleteMapping("/booking/{id}")
-    public void deletePlayer(@PathVariable String id) {bookingService.delete(id);
+    public void deletePlayer(@PathVariable String id) {
+        bookingService.delete(id);
     }
 
     @GetMapping("/bookings/export/csv")

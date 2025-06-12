@@ -5,9 +5,9 @@ import com.coachnow.api.model.repository.BookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.text.ParseException;
+import java.util.*;
+import java.text.DateFormat;
 
 @Service
 public class BookingService {
@@ -46,5 +46,34 @@ public class BookingService {
     public Booking getBookingByCoachAndUser(String coachId, String userId) {
         return bookingRepository.findByCoachIdAndUserId(coachId, userId)
                 .orElse(null);
+    }
+
+    public SequencedCollection<Booking> getBookingsByCoach(String coachId, String startDate, String endDate) throws ParseException {
+        DateFormat df = DateFormat.getDateInstance(DateFormat.LONG, Locale.FRANCE);
+
+        Date startDateFormatted = null;
+        Date endDateFormatted = null;
+
+        if (startDate != null) {
+            startDateFormatted = df.parse(startDate);
+        }
+
+        if (endDate != null) {
+            endDateFormatted = df.parse(endDate);
+        }
+
+        if (startDateFormatted == null && endDateFormatted == null) {
+            return bookingRepository.findByCoachId(coachId);
+        } else if (startDateFormatted != null && endDateFormatted != null) {
+            return bookingRepository.findByCoachIdAndStartDateAfterAndEndDateBefore(
+                    coachId,
+                    startDateFormatted,
+                    endDateFormatted
+            );
+        } else if (startDateFormatted != null) {
+            return bookingRepository.findByCoachIdAndStartDateAfter(coachId, startDateFormatted);
+        } else {
+            return bookingRepository.findByCoachIdAndEndDateBefore(coachId, endDateFormatted);
+        }
     }
 }
