@@ -14,5 +14,7 @@ public interface BookingRepository extends CrudRepository<Booking, String> {
 
     Optional<Booking> findByCoachIdAndUserId(String coachId, String userId);
 
+    List<Booking> findByCoachId(String coachId);
+
     List<Booking> findBookingsByUser(User user);
 }
