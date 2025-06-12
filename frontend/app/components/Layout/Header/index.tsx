@@ -111,7 +111,7 @@ export default function Header() {
                     );
                 })}
                 {isAuthenticated && (
-                    <>
+                    <div className="flex items-center gap-4 mx-auto">
 
                         <motion.button
                             onClick={signOut}
@@ -121,9 +121,17 @@ export default function Header() {
                             animate={{opacity: 1, x: 0}}
                             transition={{...transitionBase, delay: headerElements.length * 0.1}}
                         >
-                            <LogOutIcon className="size-4" />
+                            <LogOutIcon className="size-4"/>
                         </motion.button>
-                    </>
+                        <motion.div
+                            whileHover={{scale: 1.05}}
+                            initial={{opacity: 0, x: -20}}
+                            animate={{opacity: 1, x: 0}}
+                            transition={{...transitionBase, delay: (headerElements.length + 1) * 0.1}}
+                        >
+                            <ModeToggle/>
+                        </motion.div>
+                    </div>
                 )}
                 {/*  Light / Dark Mode Toggle  */}
                 <motion.div
@@ -131,6 +139,7 @@ export default function Header() {
                     initial={{opacity: 0, x: -20}}
                     animate={{opacity: 1, x: 0}}
                     transition={{...transitionBase, delay: (headerElements.length + 1) * 0.1}}
+                    className={cn(isAuthenticated && "hidden")}
                 >
                     <ModeToggle/>
                 </motion.div>
