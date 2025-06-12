@@ -13,9 +13,7 @@ import BookingsError from "~/components/CoachDashboard/Dashboard/Bookings/Error"
 import SelectedBooking from "~/components/CoachDashboard/Dashboard/Bookings/SelectedBooking";
 import BookingsGrid from "~/components/CoachDashboard/Dashboard/Bookings/Grid";
 
-const {
-    TIMELINE_VARIANTS
-} = ANIMATIONS;
+const {TIMELINE_VARIANTS} = ANIMATIONS;
 
 const CoachDashboardBookings = ({user, userToken}: { user: SessionUser | null, userToken: string | null }) => {
     const [bookingData, setBookingData] = useState<Booking[]>([]);
