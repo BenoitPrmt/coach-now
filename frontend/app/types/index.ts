@@ -70,3 +70,16 @@ export type CoachDashboard = {
     totalHours:number;
     monthlyEarnings:number;
 }
+
+
+
+export type CoachCalendarData = {
+    label: string;
+    value: Date
+}
+
+export type TimelineDay = {
+    date: string;
+    bookings: Booking[];
+    count: number;
+}
