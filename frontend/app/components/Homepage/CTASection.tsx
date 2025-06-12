@@ -17,10 +17,10 @@ const CTASection = () => {
                     animate={isInView ? {opacity: 1, y: 0} : {}}
                     transition={{duration: 0.8}}
                 >
-                    <h2 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">
+                    <h2 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-slate-800 to-slate-600 dark:from-slate-200 dark:to-slate-400 bg-clip-text text-transparent">
                         Votre transformation commence maintenant
                     </h2>
-                    <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto text-slate-600">
+                    <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto text-slate-600 dark:text-slate-300">
                         Rejoignez des milliers d'utilisateurs qui ont déjà transformé leur vie avec CoachNow
                     </p>
 
@@ -36,7 +36,7 @@ const CTASection = () => {
                         >
                             <Button
                                 size="lg"
-                                className="px-12 py-6 text-xl font-bold rounded-2xl shadow-2xl"
+                                className="bg-primary text-white dark:bg-primary dark:text-primary-foreground hover:bg-primary/90 dark:hover:bg-primary/90 px-12 py-6 text-xl font-bold rounded-2xl shadow-2xl dark:shadow-slate-900/50"
                                 asChild
                             >
                                 <Link to="/register">
@@ -49,7 +49,7 @@ const CTASection = () => {
                         <Button
                             variant="outline"
                             size="lg"
-                            className="px-12 py-6 text-xl font-bold rounded-2xl shadow-2xl border-slate-300 text-slate-700 hover:bg-slate-50 hover:shadow-lg transition-colors duration-300 hover:text-slate-800"
+                            className="bg-white dark:bg-slate-800 px-12 py-6 text-xl font-bold rounded-2xl shadow-2xl dark:shadow-slate-900/50 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 hover:shadow-lg transition-colors duration-300 hover:text-slate-800 dark:hover:text-white"
                             asChild
                         >
                             <Link to="/coachs">
