@@ -94,9 +94,7 @@ const CoachDashboardComponent = () => {
                             view === 'dashboard' ? (
                                 <CoachDashboardStats dashboardData={dashboardData}/>
                             ) : (
-                                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                                    <CoachDashboardCalendar user={user} userToken={userToken}/>
-                                </div>
+                                <CoachDashboardCalendar user={user} userToken={userToken}/>
                             )
                         }
                     </div>

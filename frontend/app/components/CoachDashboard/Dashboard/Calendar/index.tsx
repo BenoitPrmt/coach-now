@@ -52,22 +52,17 @@ const CoachDashboardCalendar = ({user, userToken}: { user: SessionUser | null, u
     if (isLoading) return <Loader/>;
 
     return (
-        <div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                Calendrier des Réservations
-            </h2>
-            <div className="bg-white rounded-lg shadow-sm p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {bookingData.map((booking) => (
-                        <div
-                            key={booking.id}
-                            className="p-4 border rounded-lg hover:bg-gray-50 cursor-pointer"
-                            onClick={() => setSelectedBooking(booking)}
-                        >
-                            <p className="text-gray-600">{new Date(booking.startDate).toLocaleString()}</p>
-                        </div>
-                    ))}
-                </div>
+        <div className="bg-white rounded-lg shadow-sm p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {bookingData.map((booking) => (
+                    <div
+                        key={booking.id}
+                        className="p-4 border rounded-lg hover:bg-gray-50 cursor-pointer"
+                        onClick={() => setSelectedBooking(booking)}
+                    >
+                        <p className="text-gray-600">{new Date(booking.startDate).toLocaleString()}</p>
+                    </div>
+                ))}
             </div>
         </div>
     );
