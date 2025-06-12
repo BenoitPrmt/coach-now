@@ -10,8 +10,8 @@ import {
 } from "lucide-react";
 import {Button} from "~/components/ui/button";
 import CoachDashboardStats from "~/components/CoachDashboard/Dashboard/Stats";
-import CoachDashboardCalendar from "~/components/CoachDashboard/Dashboard/Calendar";
 import {cn} from "~/lib/utils";
+import CoachDashboardBookings from "~/components/CoachDashboard/Dashboard/Bookings";
 
 
 const CoachDashboardComponent = () => {
@@ -80,7 +80,7 @@ const CoachDashboardComponent = () => {
                                 className={cn("rounded-l-none focus:z-10", view === 'calendar' ? 'bg-gray-200 text-primary' : '')}
                                 onClick={() => setView('calendar')}>
                             <Calendar/>
-                            Calendrier
+                            Réservations
                         </Button>
                     </div>
                 </div>
@@ -91,7 +91,7 @@ const CoachDashboardComponent = () => {
                             view === 'dashboard' ? (
                                 <CoachDashboardStats dashboardData={dashboardData}/>
                             ) : (
-                                <CoachDashboardCalendar user={user} userToken={userToken}/>
+                                <CoachDashboardBookings user={user} userToken={userToken}/>
                             )
                         }
                     </div>

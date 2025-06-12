@@ -11,7 +11,7 @@ import {
     DropdownMenuLabel,
     DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu"
-import {Button} from "~/components/ui/button";
+import {Button, buttonVariants} from "~/components/ui/button";
 import {formatDateForBackend, formatDateWithTime} from "~/lib/time";
 import {BanIcon, CalendarIcon, CircleUser, Goal, Rocket, TrashIcon, XIcon} from "lucide-react";
 import {cn} from "~/lib/utils";
@@ -24,11 +24,12 @@ type CoachCalendarData = {
     value: Date
 }
 
-const CoachDashboardCalendar = ({user, userToken}: { user: SessionUser | null, userToken: string | null }) => {
+const CoachDashboardBookings = ({user, userToken}: { user: SessionUser | null, userToken: string | null }) => {
     const [bookingData, setBookingData] = useState<Booking[]>([]);
     const [startDate, setStartDate] = useState<CoachCalendarData | null>(null);
     const [endDate, setEndDate] = useState<CoachCalendarData | null>(null);
     const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+    const [view, setView] = useState<"default" | "timeline">("default");
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -153,7 +154,7 @@ const CoachDashboardCalendar = ({user, userToken}: { user: SessionUser | null, u
                 className="flex max-md:flex-col justify-between items-center mb-4"
             >
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                    Vue Calendrier des Réservations
+                    Vue Réservations
                 </h2>
 
                 {/* Dropdowns for start and end dates */}
@@ -167,7 +168,9 @@ const CoachDashboardCalendar = ({user, userToken}: { user: SessionUser | null, u
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button
-                                    className="relative overflow-hidden hover:bg-primary/90">
+                                    className="relative overflow-hidden hover:bg-secondary/90"
+                                    variant="secondary"
+                                >
                                     <motion.span
                                         initial={{opacity: 0}}
                                         animate={{opacity: 1}}
@@ -229,7 +232,8 @@ const CoachDashboardCalendar = ({user, userToken}: { user: SessionUser | null, u
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button
-                                    className="relative overflow-hidden hover:bg-primary/90">
+                                    className="relative overflow-hidden hover:bg-secondary/90"
+                                    variant="secondary">
                                     <motion.span
                                         initial={{opacity: 0}}
                                         animate={{opacity: 1}}
@@ -280,6 +284,22 @@ const CoachDashboardCalendar = ({user, userToken}: { user: SessionUser | null, u
                                 }
                             </DropdownMenuContent>
                         </DropdownMenu>
+                    </motion.div>
+                    {/* TODO: Ajouter bouton pour afficher en mode timeline (réservations par jour)  */}
+                    <motion.div
+                        className={cn(buttonVariants({
+                                variant: "default"
+                            }), "flex items-center space-x-2 relative overflow-hidden hover:bg-primary/90",
+                            view === "timeline" ? "bg-primary text-white" : "bg-gray-200 text-gray-800"
+                        )}
+                        onClick={() => setView(view === "default" ? "timeline" : "default")}
+                        whileHover={{scale: 1.05}}
+                        whileTap={{scale: 1}}
+                    >
+                        <span className="flex items-center gap-2">
+                            <CalendarIcon className="w-4 h-4" aria-hidden="true"/>
+                            Vue Timeline
+                        </span>
                     </motion.div>
                 </div>
             </div>
@@ -413,4 +433,4 @@ const CoachDashboardCalendar = ({user, userToken}: { user: SessionUser | null, u
     );
 };
 
-export default CoachDashboardCalendar;
+export default CoachDashboardBookings;
