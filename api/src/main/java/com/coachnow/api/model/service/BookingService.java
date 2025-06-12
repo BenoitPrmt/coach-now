@@ -47,4 +47,13 @@ public class BookingService {
         return bookingRepository.findByCoachIdAndUserId(coachId, userId)
                 .orElse(null);
     }
+
+    public List<Booking> sortBookingsByStartDate(List<Booking> bookings) {
+        bookings.sort((b1, b2) -> {
+            Date startDate1 = b1.getStartDate();
+            Date startDate2 = b2.getStartDate();
+            return startDate2.compareTo(startDate1);
+        });
+        return bookings;
+    }
 }
