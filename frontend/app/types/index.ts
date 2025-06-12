@@ -72,6 +72,13 @@ export type CoachDashboard = {
 }
 
 
+export type CoachUnavailability = {
+    id: string;
+    coachId: string;
+    startDate: string;
+    endDate: string;
+}
+
 
 export type CoachCalendarDataType = {
     label: string;

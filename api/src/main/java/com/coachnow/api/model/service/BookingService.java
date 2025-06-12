@@ -51,6 +51,24 @@ public class BookingService {
                 .orElse(null);
     }
 
+    public List<Booking> sortBookingsByStartDate(List<Booking> bookings) {
+        bookings.sort((b1, b2) -> {
+            Date startDate1 = b1.getStartDate();
+            Date startDate2 = b2.getStartDate();
+            return startDate2.compareTo(startDate1);
+        });
+        return bookings;
+    }
+
+    public void cancelBookingsBetweenDates(String coachId, Date startDate, Date endDate) {
+        List<Booking> bookings = bookingRepository.findByCoachIdAndStartDateBetween(coachId, startDate, endDate);
+        for (Booking booking : bookings) {
+            booking.setIsActive(false);
+            bookingRepository.save(booking);
+        }
+    }
+  
+  
     public SequencedCollection<Booking> getBookingsByCoach(String coachId, String startDate, String endDate) {
         Date startDateFormatted = null;
         Date endDateFormatted = null;

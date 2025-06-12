@@ -45,6 +45,10 @@ const formatDateWithTime = (date: Date) =>
         minute: '2-digit'
     });
 
+const formatDateTimeForAPI = (date: Date): string => {
+    return date.toISOString().split("T")[0] + " " + date.toTimeString().split(" ")[0]
+}
+
 const displayDuration = (hours: number, minutes: number) => {
     if (hours === 0 && minutes === 0) return "0min";
 
@@ -65,6 +69,7 @@ const getDurationFromDate = (startDate: Date, endDate: Date): TimeDuration => {
         minutes
     };
 }
+
 
 const formatBookingDisplayDate = (dateString: string): string => {
     const date = new Date(dateString);
@@ -90,6 +95,7 @@ export {
     timeAgo,
     formatDate,
     formatDateWithTime,
+    formatDateTimeForAPI,
     formatDateForBackend,
     displayDuration,
     getDurationFromDate,

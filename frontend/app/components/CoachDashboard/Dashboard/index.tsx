@@ -4,6 +4,9 @@ import type {Coach, CoachDashboard} from "~/types";
 import {API_URL} from "~/constants/api";
 import {getDashboardDataFromCoach} from "~/lib/getDashboardDataFromCoach";
 import Loader from "~/components/Loader";
+import StatCard from "./StatCard";
+import {Calendar, DollarSign, Star, Users} from "lucide-react";
+import {CoachHolidaysModal} from "~/components/Coach/CoachHolidays/CoachHolidaysModal";
 import {
     Calendar,
     ChartAreaIcon
@@ -69,6 +72,11 @@ const CoachDashboardComponent = () => {
                             </p>
                         )}
                     </div>
+
+                    {coachData?.id && user?.id && (
+                        <CoachHolidaysModal coachId={coachData?.id} userId={user?.id} userToken={userToken} />
+                    )}
+        
                     <div className="isolate flex -space-x-px">
                         <Button variant="outline"
                                 className={cn("rounded-r-none focus:z-10", view === 'dashboard' ? 'bg-gray-200 text-primary' : '')}

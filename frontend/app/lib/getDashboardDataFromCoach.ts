@@ -19,9 +19,13 @@ export const getDashboardDataFromCoach = (coach: Coach | null): CoachDashboard =
 
     const today = new Date();
     const currentMonth = today.getMonth();
-    const currentYear = today.getFullYear();
+    const currentYear = today.getFullYear()
 
-    const activeBookings = coach.bookings?.filter(booking => booking.isActive) || [];
+    const bookings = coach.bookings.filter((booking) => {
+        return booking.user.id != booking.coach.user.id
+    });
+
+    const activeBookings = bookings.filter(booking => booking.isActive) || [];
 
     return {
         todayBookings: activeBookings.filter(booking => {

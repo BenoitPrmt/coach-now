@@ -10,6 +10,8 @@ import java.util.Optional;
 
 import com.coachnow.api.model.entity.dto.UserDTO;
 import com.coachnow.api.web.request.coach.CoachUpdate;
+import com.coachnow.api.web.response.coach.IsCoachAvailable;
+import com.coachnow.api.web.response.coach.unavailability.Unavailability;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -163,6 +165,28 @@ public class CoachController {
         coachService.delete(id);
     }
 
+    @GetMapping("/coach/{coachId}/isAvailable")
+    public ResponseEntity<IsCoachAvailable> isAvailable(
+            @PathVariable String coachId,
+            @RequestParam(value = "startDate", defaultValue = "") String startDate,
+            @RequestParam(value = "endDate", defaultValue = "") String endDate
+    ) throws ParseException {
+
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        try {
+            IsCoachAvailable isAvailable = coachService.isCoachAvailable(
+                    coachId,
+                    startDate.isEmpty() ? null : formatter.parse(startDate),
+                    endDate.isEmpty() ? null : formatter.parse(endDate)
+            );
+
+            return new ResponseEntity<>(isAvailable, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @GetMapping("/coach/{coachId}/availabilities")
     public ResponseEntity<List<DayAvailability>> getAvailabilities(
             @PathVariable String coachId,
@@ -171,6 +195,17 @@ public class CoachController {
     ) throws ParseException {
         try {
             return new ResponseEntity<>(coachService.getAvailabilities(coachId, startDate, endDate), HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/coach/{coachId}/unavailabilities")
+    public ResponseEntity<List<Unavailability>> getUnavailabilities(
+            @PathVariable String coachId
+    ) throws ParseException {
+        try {
+            return new ResponseEntity<List<Unavailability>>(coachService.getUnavailabilities(coachId), HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
