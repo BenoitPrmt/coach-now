@@ -73,7 +73,7 @@ export type CoachDashboard = {
 
 
 
-export type CoachCalendarData = {
+export type CoachCalendarDataType = {
     label: string;
     value: Date
 }
