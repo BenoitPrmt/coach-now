@@ -13,7 +13,7 @@ import {
 } from "~/components/ui/dropdown-menu"
 import {Button} from "~/components/ui/button";
 import {formatDateForBackend} from "~/lib/time";
-import {BanIcon, CalendarIcon, CircleUser, Goal, Rocket, TrashIcon} from "lucide-react";
+import {BanIcon, CalendarIcon, CircleUser, Goal, Rocket, TrashIcon, XIcon} from "lucide-react";
 import {cn} from "~/lib/utils";
 import {COACH_CALENDAR as COACH_CALENDAR_CONSTANTS} from "~/constants";
 
@@ -293,12 +293,22 @@ const CoachDashboardCalendar = ({user, userToken}: { user: SessionUser | null, u
                 <AnimatePresence mode="wait">
                     {selectedBooking && (
                         <motion.div
-                            className="col-span-1 md:col-span-2 p-6 border border-primary-200 rounded-xl bg-gradient-to-br from-primary-50 to-primary-50 shadow-lg"
+                            className="relative col-span-1 md:col-span-2 p-6 border border-primary-200 rounded-xl bg-gradient-to-br from-primary-50 to-primary-50 shadow-lg"
                             variants={selectedBookingVariants}
                             initial="hidden"
                             animate="visible"
                             exit="exit"
                         >
+                            <Button
+                                variant="ghost"
+                                className="absolute top-2 right-2 p-0.5 rounded-full hover:bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                                onClick={() => setSelectedBooking(null)}
+                            >
+                                <XIcon
+                                    className="w-6 h-6 text-primary"
+                                    aria-hidden="true"
+                                />
+                            </Button>
                             <motion.h3
                                 className="text-lg font-semibold mb-4 text-primary"
                                 initial={{opacity: 0, x: -20}}
@@ -361,7 +371,9 @@ const CoachDashboardCalendar = ({user, userToken}: { user: SessionUser | null, u
                             </motion.div>
                         </motion.div>
                     ) : (
-                        bookingData.map((booking) => (
+                        bookingData.sort(
+                            (a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+                        ).map((booking) => (
                             <motion.div
                                 key={booking.id}
                                 className={cn("p-6 border rounded-xl cursor-pointer shadow-md transition-all duration-300",
