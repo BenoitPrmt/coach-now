@@ -127,7 +127,6 @@ export default function Header() {
                 )}
                 {/*  Light / Dark Mode Toggle  */}
                 <motion.div
-                    className="ml-4"
                     whileHover={{scale: 1.05}}
                     initial={{opacity: 0, x: -20}}
                     animate={{opacity: 1, x: 0}}
