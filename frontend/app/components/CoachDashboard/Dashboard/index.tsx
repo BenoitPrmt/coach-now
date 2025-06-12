@@ -4,8 +4,6 @@ import type {Coach, CoachDashboard} from "~/types";
 import {API_URL} from "~/constants/api";
 import {getDashboardDataFromCoach} from "~/lib/getDashboardDataFromCoach";
 import Loader from "~/components/Loader";
-import StatCard from "./StatCard";
-import {Calendar, DollarSign, Star, Users} from "lucide-react";
 import {CoachHolidaysModal} from "~/components/Coach/CoachHolidays/CoachHolidaysModal";
 import {
     Calendar,

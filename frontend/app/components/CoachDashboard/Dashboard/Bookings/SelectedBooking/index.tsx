@@ -2,7 +2,7 @@ import React, {useCallback, useMemo} from 'react';
 import type {Booking} from "~/types";
 import {Button} from "~/components/ui/button";
 import {CalendarCheck, CheckCircle, CircleUser, Clock, Goal, Rocket, XCircle, XIcon, AlertTriangle} from "lucide-react";
-import {motion} from "framer-motion";
+import {motion} from "motion/react";
 import {formatDateWithTime} from "~/lib/time";
 import {ANIMATIONS} from "~/constants";
 import {cn} from "~/lib/utils";

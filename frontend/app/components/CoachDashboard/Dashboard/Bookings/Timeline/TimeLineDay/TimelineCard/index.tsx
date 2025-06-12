@@ -1,5 +1,5 @@
 import type {Booking} from "~/types";
-import {motion} from "framer-motion";
+import {motion} from "motion/react";
 import {cn} from "~/lib/utils";
 import {CircleUser, Clock, XCircle, CheckCircle, CalendarCheck} from "lucide-react";
 import {useMemo} from "react";

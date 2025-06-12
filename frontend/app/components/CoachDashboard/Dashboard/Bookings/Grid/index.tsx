@@ -1,7 +1,7 @@
 import React from 'react';
 import type {Booking} from "~/types";
 import BookingsError from "~/components/CoachDashboard/Dashboard/Bookings/Error";
-import {AnimatePresence, motion} from "framer-motion";
+import {AnimatePresence, motion} from "motion/react";
 import {ANIMATIONS} from "~/constants";
 import GridElement from "~/components/CoachDashboard/Dashboard/Bookings/Grid/GridElement";
 

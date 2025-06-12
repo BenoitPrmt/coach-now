@@ -3,7 +3,7 @@ import React, {useEffect, useState} from "react";
 import type {Booking, CoachCalendarDataType} from "~/types";
 import {API_URL} from "~/constants/api";
 import Loader from "~/components/Loader";
-import {motion, AnimatePresence} from "framer-motion";
+import {motion, AnimatePresence} from "motion/react";
 import {formatDateForBackend} from "~/lib/time";
 import {ANIMATIONS} from "~/constants";
 import {groupBookingsByDay} from "~/lib/reorder";
