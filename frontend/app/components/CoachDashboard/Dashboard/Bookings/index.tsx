@@ -12,13 +12,22 @@ import {
     DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu"
 import {Button, buttonVariants} from "~/components/ui/button";
-import {formatDateForBackend, formatDateWithTime} from "~/lib/time";
+import {formatBookingDisplayDate, formatDateForBackend, formatDateWithTime} from "~/lib/time";
 import {BanIcon, CalendarIcon, CircleUser, Goal, Rocket, TrashIcon, XIcon, Clock, Users} from "lucide-react";
 import {cn} from "~/lib/utils";
 import {COACH_CALENDAR as COACH_CALENDAR_CONSTANTS} from "~/constants";
+import {ANIMATIONS} from "~/constants";
 import {groupBookingsByDay} from "~/lib/reorder";
 
 const {COACH_CALENDAR} = COACH_CALENDAR_CONSTANTS;
+const {
+    SELECTED_BOOKING_VARIANTS,
+    TIMELINE_VARIANTS,
+    TIMELINE_DAY_VARIANTS,
+    BOOKINGS_ITEMS_VARIANTS,
+    CONTAINER_BOOKINGS_VARIANTS,
+    BOOKING_CARD_VARIANTS
+} = ANIMATIONS;
 
 const CoachDashboardBookings = ({user, userToken}: { user: SessionUser | null, userToken: string | null }) => {
     const [bookingData, setBookingData] = useState<Booking[]>([]);
@@ -81,104 +90,6 @@ const CoachDashboardBookings = ({user, userToken}: { user: SessionUser | null, u
             setSelectedBooking(null);
         }
     }, [bookingData]);
-
-    const formatDisplayDate = (dateString: string): string => {
-        const date = new Date(dateString);
-        const today = new Date();
-        const tomorrow = new Date(today);
-        tomorrow.setDate(tomorrow.getDate() + 1);
-
-        if (date.toDateString() === today.toDateString()) {
-            return "Aujourd'hui";
-        } else if (date.toDateString() === tomorrow.toDateString()) {
-            return "Demain";
-        } else {
-            return date.toLocaleDateString('fr-FR', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
-        }
-    };
-
-    const containerVariants = {
-        hidden: {opacity: 0, y: 20},
-        visible: {
-            opacity: 1,
-            y: 0,
-            transition: {
-                duration: 0.6,
-                staggerChildren: 0.1
-            }
-        }
-    };
-
-    const itemVariants = {
-        hidden: {opacity: 0, y: 20},
-        visible: {
-            opacity: 1,
-            y: 0,
-            transition: {duration: 0.4}
-        }
-    };
-
-    const bookingCardVariants = {
-        hidden: {opacity: 0, scale: 0.95},
-        visible: {
-            opacity: 1,
-            scale: 1
-        },
-        hover: {
-            scale: 1.005
-        },
-        tap: {
-            scale: 1
-        }
-    };
-
-    const selectedBookingVariants = {
-        hidden: {opacity: 0, height: 0, y: -20},
-        visible: {
-            opacity: 1,
-            height: "auto",
-            y: 0,
-            transition: {
-                duration: 0.5,
-                ease: "easeOut"
-            }
-        },
-        exit: {
-            opacity: 0,
-            height: 0,
-            y: -20,
-            transition: {
-                duration: 0.3,
-                ease: "easeIn"
-            }
-        }
-    };
-
-    const timelineVariants = {
-        hidden: {opacity: 0, x: -50},
-        visible: {
-            opacity: 1,
-            x: 0,
-            transition: {
-                duration: 0.5,
-                staggerChildren: 0.1
-            }
-        }
-    };
-
-    const timelineDayVariants = {
-        hidden: {opacity: 0, x: -30},
-        visible: {
-            opacity: 1,
-            x: 0,
-            transition: {duration: 0.4}
-        }
-    };
 
     if (isLoading) return <Loader/>;
 
@@ -339,7 +250,7 @@ const CoachDashboardBookings = ({user, userToken}: { user: SessionUser | null, u
                 {selectedBooking && (
                     <motion.div
                         className="relative p-6 border border-primary-200 rounded-xl bg-gradient-to-br from-primary-50 to-primary-50 shadow-lg mb-6"
-                        variants={selectedBookingVariants}
+                        variants={SELECTED_BOOKING_VARIANTS}
                         initial="hidden"
                         animate="visible"
                         exit="exit"
@@ -397,7 +308,7 @@ const CoachDashboardBookings = ({user, userToken}: { user: SessionUser | null, u
                     // Vue Timeline
                     <motion.div
                         className="space-y-4"
-                        variants={timelineVariants}
+                        variants={TIMELINE_VARIANTS}
                         initial="hidden"
                         animate="visible"
                         key="timeline"
@@ -405,7 +316,7 @@ const CoachDashboardBookings = ({user, userToken}: { user: SessionUser | null, u
                         {timelineData.length === 0 ? (
                             <motion.div
                                 className="p-8 border border-gray-200 rounded-xl text-center bg-gradient-to-br from-gray-50 to-slate-50"
-                                variants={itemVariants}
+                                variants={BOOKINGS_ITEMS_VARIANTS}
                             >
                                 <motion.div
                                     initial={{scale: 0.8, opacity: 0}}
@@ -429,7 +340,7 @@ const CoachDashboardBookings = ({user, userToken}: { user: SessionUser | null, u
                                     <motion.div
                                         key={day.date}
                                         className="relative flex items-start space-x-6 pb-8"
-                                        variants={timelineDayVariants}
+                                        variants={TIMELINE_DAY_VARIANTS}
                                     >
                                         <div className="relative flex-shrink-0">
                                             <div
@@ -453,7 +364,7 @@ const CoachDashboardBookings = ({user, userToken}: { user: SessionUser | null, u
                                                     className="bg-gradient-to-r from-primary/5 to-primary/10 px-6 py-4 border-b border-gray-100">
                                                     <div className="flex max-md:flex-col items-center justify-between">
                                                         <h3 className="text-lg font-semibold text-gray-900 capitalize">
-                                                            {formatDisplayDate(day.date)}
+                                                            {formatBookingDisplayDate(day.date)}
                                                         </h3>
                                                         <div
                                                             className="flex items-center space-x-4 text-sm text-gray-600">
@@ -523,7 +434,7 @@ const CoachDashboardBookings = ({user, userToken}: { user: SessionUser | null, u
                     // Vue par défaut (grille)
                     <motion.div
                         className="grid grid-cols-1 md:grid-cols-2 gap-6"
-                        variants={containerVariants}
+                        variants={CONTAINER_BOOKINGS_VARIANTS}
                         initial="hidden"
                         animate="visible"
                         key="default"
@@ -532,7 +443,7 @@ const CoachDashboardBookings = ({user, userToken}: { user: SessionUser | null, u
                             {bookingData.length === 0 ? (
                                 <motion.div
                                     className="col-span-1 md:col-span-2 p-8 border border-gray-200 rounded-xl text-center bg-gradient-to-br from-gray-50 to-slate-50"
-                                    variants={itemVariants}
+                                    variants={BOOKINGS_ITEMS_VARIANTS}
                                     initial="hidden"
                                     animate="visible"
                                 >
@@ -562,7 +473,7 @@ const CoachDashboardBookings = ({user, userToken}: { user: SessionUser | null, u
                                             selectedBooking?.id === booking.id
                                                 ? 'border-primary/30 bg-gradient-to-br from-primary/5 to-primary-50 shadow-lg'
                                                 : 'border-gray-200 bg-white hover:border-primary/20 hover:shadow-lg')}
-                                        variants={bookingCardVariants}
+                                        variants={BOOKING_CARD_VARIANTS}
                                         initial="hidden"
                                         animate="visible"
                                         whileHover="hover"
