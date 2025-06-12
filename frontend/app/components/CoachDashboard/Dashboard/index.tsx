@@ -6,6 +6,7 @@ import {getDashboardDataFromCoach} from "~/lib/getDashboardDataFromCoach";
 import Loader from "~/components/Loader";
 import StatCard from "./StatCard";
 import {Calendar, DollarSign, Star, Users} from "lucide-react";
+import QuickStats from "~/components/CoachDashboard/Dashboard/QuickStats";
 
 const CoachDashboardComponent = () => {
     const {user, userToken} = useUser();
@@ -94,31 +95,16 @@ const CoachDashboardComponent = () => {
                         {/* Statistiques détaillées */}
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             {/* Statistiques rapides */}
-                            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                                <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                                    Aperçu rapide
-                                </h3>
-                                <div className="space-y-4">
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-gray-600">Revenus ce mois</span>
-                                        <span
-                                            className="font-semibold text-blue-600">{dashboardData.monthlyEarnings}€</span>
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-gray-600">Heures enseignées</span>
-                                        <span className="font-semibold">{dashboardData.totalHours}h</span>
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-gray-600">Revenus à venir</span>
-                                        <span
-                                            className="font-semibold text-green-600">{dashboardData.pendingEarnings}€</span>
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-gray-600">Réservations actives</span>
-                                        <span className="font-semibold">{dashboardData.activeBookings}</span>
-                                    </div>
-                                </div>
-                            </div>
+                            <QuickStats
+                                quickStatsData={
+                                    {
+                                        monthlyEarnings: dashboardData.monthlyEarnings,
+                                        totalHours: dashboardData.totalHours,
+                                        pendingEarnings: dashboardData.pendingEarnings,
+                                        activeBookings: dashboardData.activeBookings
+                                    }
+                                }
+                            />
 
                             {/* Prochaines réservations */}
                             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
