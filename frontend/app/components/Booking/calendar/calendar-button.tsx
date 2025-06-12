@@ -18,6 +18,7 @@ export function Button(
         <button
             {...mergeProps(buttonProps, focusProps)}
             ref={ref}
+            // TODO: Add dark mode support
             className={cn(
                 "p-2 rounded-lg outline-none text-gray-950 cursor-pointer",
                 props.isDisabled ? "text-gray-700" : "hover:bg-gray-400 active:bg-gray-500",

@@ -147,7 +147,7 @@ const CoachCard = ({
                     (coach.levels.length > 0 || coach.sports.length > 0) && (
 
                         <motion.div
-                            className="bg-neutral-50 dark:bg-neutral-700 border border-neutral-400/20 border-dashed rounded-md shadow-2xs flex flex-col gap-2 p-4 h-full"
+                            className="bg-neutral-50 dark:bg-neutral-700 border border-neutral-400/20 border-dashed rounded-md shadow-2xs flex flex-col justify-center items-center gap-2 p-4 h-full"
                         >
                             <Description levels={coach.levels} sports={coach.sports}/>
                         </motion.div>
