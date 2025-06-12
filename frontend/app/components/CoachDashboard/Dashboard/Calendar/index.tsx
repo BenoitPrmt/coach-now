@@ -12,7 +12,7 @@ import {
     DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu"
 import {Button} from "~/components/ui/button";
-import {formatDateForBackend} from "~/lib/time";
+import {formatDateForBackend, formatDateWithTime} from "~/lib/time";
 import {BanIcon, CalendarIcon, CircleUser, Goal, Rocket, TrashIcon, XIcon} from "lucide-react";
 import {cn} from "~/lib/utils";
 import {COACH_CALENDAR as COACH_CALENDAR_CONSTANTS} from "~/constants";
@@ -326,14 +326,14 @@ const CoachDashboardCalendar = ({user, userToken}: { user: SessionUser | null, u
                                         className="inline-block w-4 h-4 text-primary"
                                         aria-hidden="true"
                                     />
-                                    {new Date(selectedBooking.startDate).toLocaleString()}
+                                    {formatDateWithTime(new Date(selectedBooking.startDate))}
                                 </p>
                                 <p className="flex items-center text-gray-700 gap-1">
                                     <Goal
                                         className="inline-block w-4 h-4 text-primary"
                                         aria-hidden="true"
                                     />
-                                    {new Date(selectedBooking.endDate).toLocaleString()}
+                                    {formatDateWithTime(new Date(selectedBooking.endDate))}
                                 </p>
                                 <p className="flex items-center text-gray-700 gap-1">
                                     <CircleUser
@@ -401,7 +401,7 @@ const CoachDashboardCalendar = ({user, userToken}: { user: SessionUser | null, u
                                             className="inline-block mr-1 w-4 h-4"
                                             aria-hidden="true"
                                         />
-                                        {new Date(booking.endDate).toLocaleString()}
+                                        {formatDateWithTime(new Date(booking.startDate))}
                                     </motion.p>
                                 </motion.div>
                             </motion.div>
