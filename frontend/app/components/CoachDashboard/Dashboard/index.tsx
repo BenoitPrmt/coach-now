@@ -87,9 +87,6 @@ const CoachDashboardComponent = () => {
 
                 {dashboardData ? (
                     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                        <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                            Vue {view === 'dashboard' ? 'Dashboard' : 'Calendrier'}
-                        </h2>
                         {
                             view === 'dashboard' ? (
                                 <CoachDashboardStats dashboardData={dashboardData}/>

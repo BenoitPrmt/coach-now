@@ -5,9 +5,12 @@ import com.coachnow.api.model.repository.BookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
-import java.util.*;
 import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.format.DateTimeParseException;
+import java.util.*;
 
 @Service
 public class BookingService {
@@ -48,18 +51,22 @@ public class BookingService {
                 .orElse(null);
     }
 
-    public SequencedCollection<Booking> getBookingsByCoach(String coachId, String startDate, String endDate) throws ParseException {
-        DateFormat df = DateFormat.getDateInstance(DateFormat.LONG, Locale.FRANCE);
-
+    public SequencedCollection<Booking> getBookingsByCoach(String coachId, String startDate, String endDate) {
         Date startDateFormatted = null;
         Date endDateFormatted = null;
 
-        if (startDate != null) {
-            startDateFormatted = df.parse(startDate);
-        }
+        try {
+            if (startDate != null) {
+                DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                startDateFormatted = formatter.parse(startDate);
+            }
 
-        if (endDate != null) {
-            endDateFormatted = df.parse(endDate);
+            if (endDate != null) {
+                DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                endDateFormatted = formatter.parse(endDate);
+            }
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
         }
 
         if (startDateFormatted == null && endDateFormatted == null) {
