@@ -78,7 +78,7 @@ export type CoachCalendarData = {
     value: Date
 }
 
-export type TimelineDay = {
+export type TimelineDayType = {
     date: string;
     bookings: Booking[];
     count: number;

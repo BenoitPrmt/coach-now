@@ -12,18 +12,18 @@ import {
     DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu"
 import {Button, buttonVariants} from "~/components/ui/button";
-import {formatBookingDisplayDate, formatDateForBackend, formatDateWithTime} from "~/lib/time";
-import {BanIcon, CalendarIcon, CircleUser, Goal, Rocket, TrashIcon, XIcon, Clock, Users} from "lucide-react";
+import {formatDateForBackend, formatDateWithTime} from "~/lib/time";
+import {BanIcon, CalendarIcon, CircleUser, Goal, Rocket, TrashIcon, XIcon} from "lucide-react";
 import {cn} from "~/lib/utils";
 import {COACH_CALENDAR as COACH_CALENDAR_CONSTANTS} from "~/constants";
 import {ANIMATIONS} from "~/constants";
 import {groupBookingsByDay} from "~/lib/reorder";
+import Timeline from "~/components/CoachDashboard/Dashboard/Bookings/Timeline";
 
 const {COACH_CALENDAR} = COACH_CALENDAR_CONSTANTS;
 const {
     SELECTED_BOOKING_VARIANTS,
     TIMELINE_VARIANTS,
-    TIMELINE_DAY_VARIANTS,
     BOOKINGS_ITEMS_VARIANTS,
     CONTAINER_BOOKINGS_VARIANTS,
     BOOKING_CARD_VARIANTS
@@ -332,103 +332,11 @@ const CoachDashboardBookings = ({user, userToken}: { user: SessionUser | null, u
                                 </motion.div>
                             </motion.div>
                         ) : (
-                            <div className="relative">
-                                <div
-                                    className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary/30 via-primary/50 to-primary/30"></div>
-
-                                {timelineData.map((day) => (
-                                    <motion.div
-                                        key={day.date}
-                                        className="relative flex items-start space-x-6 pb-8"
-                                        variants={TIMELINE_DAY_VARIANTS}
-                                    >
-                                        <div className="relative flex-shrink-0">
-                                            <div
-                                                className="w-4 h-4 bg-primary rounded-full border-4 border-white shadow-lg z-10 relative"></div>
-                                            <motion.div
-                                                className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-semibold shadow-md"
-                                                initial={{scale: 0}}
-                                                animate={{scale: 1}}
-                                                transition={{delay: 0.2}}
-                                            >
-                                                {day.count}
-                                            </motion.div>
-                                        </div>
-
-                                        <div className="flex-1 min-w-0">
-                                            <motion.div
-                                                className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden"
-                                                whileHover={{y: -2}}
-                                            >
-                                                <div
-                                                    className="bg-gradient-to-r from-primary/5 to-primary/10 px-6 py-4 border-b border-gray-100">
-                                                    <div className="flex max-md:flex-col items-center justify-between">
-                                                        <h3 className="text-lg font-semibold text-gray-900 capitalize">
-                                                            {formatBookingDisplayDate(day.date)}
-                                                        </h3>
-                                                        <div
-                                                            className="flex items-center space-x-4 text-sm text-gray-600">
-                                                            <div className="flex items-center gap-1">
-                                                                <Users className="w-4 h-4"/>
-                                                                <span>{day.count} réservation{day.count > 1 ? 's' : ''}</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div className="p-4 space-y-3">
-                                                    {day.bookings.map((booking) => (
-                                                        <motion.div
-                                                            key={booking.id}
-                                                            className={cn("flex max-md:flex-col items-center justify-between p-3 rounded-lg transition-colors duration-200 cursor-pointer",
-                                                                selectedBooking?.id === booking.id
-                                                                    ? "bg-primary/10 border border-primary/20"
-                                                                    : "bg-gray-50 hover:bg-primary/5"
-                                                            )}
-                                                            whileHover={{scale: 1.01}}
-                                                            whileTap={{scale: 1}}
-                                                            onClick={() => setSelectedBooking(booking)}
-                                                        >
-                                                            <div
-                                                                className="flex max-md:flex-col items-center space-x-3">
-                                                                <div
-                                                                    className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                                                                    <CircleUser className="w-5 h-5 text-primary"/>
-                                                                </div>
-                                                                <div>
-                                                                    <p className="font-medium text-gray-900">
-                                                                        {booking.user.firstName} {booking.user.lastName}
-                                                                    </p>
-                                                                    <div
-                                                                        className="flex items-center gap-4 text-sm text-gray-600">
-                                                                        <span className="flex items-center gap-1">
-                                                                            <Clock className="w-3 h-3"/>
-                                                                            {new Date(booking.startDate).toLocaleTimeString('fr-FR', {
-                                                                                hour: '2-digit',
-                                                                                minute: '2-digit'
-                                                                            })}
-                                                                        </span>
-                                                                        <span>→</span>
-                                                                        <span>
-                                                                            {new Date(booking.endDate).toLocaleTimeString('fr-FR', {
-                                                                                hour: '2-digit',
-                                                                                minute: '2-digit'
-                                                                            })}
-                                                                        </span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="text-sm text-gray-500">
-                                                                {Math.round((new Date(booking.endDate).getTime() - new Date(booking.startDate).getTime()) / (1000 * 60))} min
-                                                            </div>
-                                                        </motion.div>
-                                                    ))}
-                                                </div>
-                                            </motion.div>
-                                        </div>
-                                    </motion.div>
-                                ))}
-                            </div>
+                            <Timeline
+                                timelineData={timelineData}
+                                selectedBooking={selectedBooking}
+                                setSelectedBooking={setSelectedBooking}
+                            />
                         )}
                     </motion.div>
                 ) : (
@@ -488,13 +396,16 @@ const CoachDashboardBookings = ({user, userToken}: { user: SessionUser | null, u
                                             {booking.user.firstName} {booking.user.lastName}
                                         </motion.h3>
 
-                                        <motion.div className="space-y-2">
+                                        <motion.div className="flex items-center justify-between">
                                             <motion.p className="flex items-center text-gray-600 text-sm">
                                                 <CalendarIcon
                                                     className="inline-block mr-1 w-4 h-4"
                                                     aria-hidden="true"
                                                 />
                                                 {formatDateWithTime(new Date(booking.startDate))}
+                                            </motion.p>
+                                            <motion.p className="text-gray-600 text-sm">
+
                                             </motion.p>
                                         </motion.div>
                                     </motion.div>
