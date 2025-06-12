@@ -5,6 +5,7 @@ import type {Booking} from "~/types";
 import {CalendarIcon} from "lucide-react";
 import {cn} from "~/lib/utils";
 import {useMemo} from "react";
+import {getBookingStatus} from "~/lib/booking";
 
 const {
     BOOKING_CARD_VARIANTS
@@ -22,23 +23,7 @@ const GridElement = ({
                          setSelectedBooking
                      }: Props) => {
 
-    const startDate = new Date(booking.startDate);
-    const endDate = new Date(booking.endDate);
-
-    const bookingStatus = useMemo(() => {
-        if (!booking.isActive) {
-            return "Annulée";
-        }
-
-        const now = new Date();
-        if (startDate > now) {
-            return "À venir";
-        } else if (startDate <= now && endDate >= now) {
-            return "En cours";
-        } else {
-            return "Terminée";
-        }
-    }, [booking.isActive]);
+    const bookingStatus = useMemo(() => getBookingStatus(booking), [booking]);
 
     const isCancelled = bookingStatus === 'Annulée';
 

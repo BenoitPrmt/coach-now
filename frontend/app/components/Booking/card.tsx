@@ -10,6 +10,7 @@ import {ManageBooking} from "~/components/Booking/booking/manage/ManageBooking";
 import CoachBadge from "~/components/Coach/CoachCard/CoachBadge";
 import type {TimeDuration} from "~/types/Time";
 import {Button} from "~/components/ui/button";
+import {getBookingStatus} from "~/lib/booking";
 
 const BookingCard = ({userProfile, booking, index, onRate}: {
     booking: Booking;
@@ -21,7 +22,11 @@ const BookingCard = ({userProfile, booking, index, onRate}: {
 }) => {
     const startDate = new Date(booking.startDate);
     const endDate = new Date(booking.endDate);
-    const duration: TimeDuration = getDurationFromDate(new Date(booking.startDate), new Date(booking.endDate));
+
+    const duration: TimeDuration = getDurationFromDate(
+        startDate,
+        endDate
+    );
 
     const userCanRate = useMemo(() => {
         if (!userProfile) return false;
@@ -34,20 +39,7 @@ const BookingCard = ({userProfile, booking, index, onRate}: {
         }
     }, [onRate, booking]);
 
-    const bookingStatus = useMemo(() => {
-        if (!booking.isActive) {
-            return "Annulée";
-        }
-
-        const now = new Date();
-        if (startDate > now) {
-            return "À venir";
-        } else if (startDate <= now && endDate >= now) {
-            return "En cours";
-        } else {
-            return "Terminée";
-        }
-    }, [booking.isActive]);
+    const bookingStatus = useMemo(() => getBookingStatus(booking), [booking]);
 
     const isBookingCancelled = !booking.isActive;
 
