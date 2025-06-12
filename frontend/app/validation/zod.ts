@@ -6,6 +6,15 @@ export const profileSchema = z.object({
     email: z.string().min(1, "L'email est requis").email("Format d'email invalide"),
 });
 
+export const coachProfileSchema = profileSchema.extend({
+    gender: z.enum(["MALE", "FEMALE"]).optional(),
+    hourlyRate: z.coerce.number().optional(),
+    sports: z.string().array().optional(),
+    profilePictureUrl: z.string().optional(),
+    birthDate: z.date().optional(),
+    level: z.enum(["BEGINNER", "MEDIUM", "HIGHLEVEL"]).optional(),
+});
+
 export const loginSchema = z.object({
     email: z.string({
         required_error: "L'adresse e-mail est requise."

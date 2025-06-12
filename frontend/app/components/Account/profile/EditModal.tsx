@@ -1,11 +1,10 @@
 import type {Coach, User, UserRole} from "~/types";
 import {useUser} from "~/hooks/useUser";
 import React, {useState} from "react";
-import {useForm} from "react-hook-form";
+import {Controller, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {profileSchema} from "~/validation/zod";
+import {coachProfileSchema, profileSchema} from "~/validation/zod";
 import {isOfTypeCoach} from "~/validation/typesValidations";
-import {getPublicEnv} from "../../../../env.common";
 import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} from "~/components/ui/dialog";
 import {Edit, Save, X} from "lucide-react";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "~/components/ui/form";
@@ -13,6 +12,14 @@ import {Input} from "~/components/ui/input";
 import {Button} from "~/components/ui/button";
 import {z} from "zod";
 import {API_URL} from "~/constants/api";
+import {BirthdayDateField} from "~/components/Forms/FormFields/form-fields/BirthdayDate";
+import { HourlyRateField } from "~/components/Forms/FormFields/form-fields/HourlyRate";
+import {MultiSelect} from "~/components/Forms/FormFields/form-fields/Sports";
+import {LevelField} from "~/components/Forms/FormFields/form-fields/Levels";
+import {ProfilePictureField} from "~/components/Forms/FormFields/form-fields/ProfilPicture";
+import {SPORTS_OPTIONS} from "~/constants/search";
+import {GenderField} from "~/components/Forms/FormFields/form-fields/GenderField";
+import {format} from "date-fns";
 
 type ProfileFormValues = z.infer<typeof profileSchema>;
 
@@ -23,15 +30,27 @@ const ProfileEditModal = ({isOpen, onClose, user, userRole, onProfileUpdate}: {
     userRole?: UserRole;
     onProfileUpdate: (updatedUser: User | Coach) => void;
 }) => {
-    const {userToken} = useUser();
+    const {user: currentUser, userToken} = useUser();
+
+    const coachId: string|null = currentUser && 'coachId' in currentUser ? currentUser.coachId : null;
+
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    const isCoach = Boolean(coachId);
+
     const form = useForm<ProfileFormValues>({
-        resolver: zodResolver(profileSchema),
+        resolver: zodResolver(isCoach ? coachProfileSchema : profileSchema),
         defaultValues: {
             firstName: isOfTypeCoach(user) ? user.user.firstName : user.firstName,
             lastName: isOfTypeCoach(user) ? user.user.lastName : user.lastName,
             email: isOfTypeCoach(user) ? user.user.email : user.email,
+            ...(isCoach && {
+                level: isOfTypeCoach(user) ? user.levels : '',
+                sports: isOfTypeCoach(user) ? user.sports : '',
+                hourlyRate: isOfTypeCoach(user) ? user.hourlyRate : '',
+                profilePicture: isOfTypeCoach(user) ? user.profilePictureUrl : '',
+                birthDate: isOfTypeCoach(user) ? user.birthdate : '',
+            }),
         },
     });
 
@@ -39,8 +58,23 @@ const ProfileEditModal = ({isOpen, onClose, user, userRole, onProfileUpdate}: {
         if (!userToken) return;
 
         setIsSubmitting(true);
+
+        const formattedBirthDate = values.birthDate
+          ? format(values.birthDate, "yyyy-MM-dd")
+          : null;
+
+        const { birthDate, ...rest } = values;
+
+        const dataToSend = {
+            ...rest,
+            ...(coachId && { coachId }),
+            ...(formattedBirthDate && { birthDate: formattedBirthDate }),
+        };
+
+        console.log("Donnée envoyé", dataToSend)
+
         try {
-            const endpoint = `${API_URL}/${userRole?.toLowerCase()}/${isOfTypeCoach(user) ? user.user.id : user.id}`;
+            const endpoint = `${API_URL}/${userRole?.toLowerCase()}/${isCoach ? coachId : user.id}`;
 
             const response = await fetch(endpoint, {
                 method: 'PUT',
@@ -48,7 +82,7 @@ const ProfileEditModal = ({isOpen, onClose, user, userRole, onProfileUpdate}: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${userToken}`,
                 },
-                body: JSON.stringify(values),
+                body: JSON.stringify(dataToSend),
             });
 
             if (!response.ok) {
@@ -66,7 +100,6 @@ const ProfileEditModal = ({isOpen, onClose, user, userRole, onProfileUpdate}: {
                 }
             });
             onClose();
-
             form.reset({
                 firstName: isOfTypeCoach(updatedUser) ? updatedUser.user.firstName : updatedUser.firstName,
                 lastName: isOfTypeCoach(updatedUser) ? updatedUser.user.lastName : updatedUser.lastName,
@@ -135,6 +168,35 @@ const ProfileEditModal = ({isOpen, onClose, user, userRole, onProfileUpdate}: {
                                 </FormItem>
                             )}
                         />
+
+                        {isCoach && (
+                          <>
+                              <GenderField control={form.control} />
+
+                              <BirthdayDateField control={form.control} />
+
+                              <ProfilePictureField control={form.control} />
+
+                              <HourlyRateField control={form.control} />
+
+                              <Controller
+                                control={form.control}
+                                name="sports"
+                                render={({ field }) => (
+                                  <MultiSelect
+                                    options={SPORTS_OPTIONS}
+                                    value={field.value}
+                                    onValueChange={field.onChange}
+                                    maxCount={2}
+                                    placeholder="Sélectionnez vos sports"
+                                  />
+                                )}
+                              />
+
+                              <LevelField control={form.control} />
+
+                          </>
+                        )}
 
                         <div className="flex justify-end space-x-2 pt-4">
                             <Button

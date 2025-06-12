@@ -11,21 +11,13 @@ import java.util.Set;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CoachUpdate {
-    private String birthdate;
+    private String birthDate;
     private String profilePictureUrl;
     private Float hourlyRate;
     private Set<Sports> sports;
     private Set<Level> levels;
     private Gender gender;
     private String userId;
-
-    public String getBirthdate() {
-        return birthdate;
-    }
-
-    public void setBirthdate(String birthdate) {
-        this.birthdate = birthdate;
-    }
 
     public String getProfilePictureUrl() {
         return profilePictureUrl;
@@ -57,6 +49,14 @@ public class CoachUpdate {
 
     public void setLevels(Set<Level> levels) {
         this.levels = levels;
+    }
+
+    public String getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(String birthDate) {
+        this.birthDate = birthDate;
     }
 
     public Gender getGender() {

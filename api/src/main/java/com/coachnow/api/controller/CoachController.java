@@ -129,8 +129,8 @@ public class CoachController {
 
         DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
-        if (coachUpdate.getBirthdate() != null) {
-            existingCoach.setBirthdate(new java.sql.Date(formatter.parse(coachUpdate.getBirthdate()).getTime()));
+        if (coachUpdate.getBirthDate() != null) {
+            existingCoach.setBirthdate(new java.sql.Date(formatter.parse(coachUpdate.getBirthDate()).getTime()));
         }
         if (coachUpdate.getProfilePictureUrl() != null) {
             existingCoach.setProfilePictureUrl(coachUpdate.getProfilePictureUrl());
