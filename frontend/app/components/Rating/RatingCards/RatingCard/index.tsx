@@ -14,12 +14,12 @@ type Props = {
 const RatingCard = ({rating, coachPage}: Props) => {
     return (
         <div
-            className="bg-white dark:bg-neutral-700 p-4 rounded-lg shadow-sm max-h-1/2 overflow-y-auto"
+            className="bg-white dark:bg-gray-700 p-4 rounded-lg shadow-sm max-h-1/2 overflow-y-auto"
         >
             {
                 (rating.comment && rating.comment.length > 0) && (
                     <motion.div
-                        className="bg-gray-50 dark:bg-neutral-600 rounded-lg p-2"
+                        className="bg-gray-50 dark:bg-gray-600 rounded-lg p-2"
                         initial={{opacity: 0}}
                         animate={{opacity: 1}}
                         transition={{delay: 0.2}}

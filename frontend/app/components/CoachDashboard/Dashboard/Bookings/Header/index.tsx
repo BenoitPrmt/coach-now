@@ -12,6 +12,7 @@ import {CalendarIcon, Goal, Rocket, TrashIcon} from "lucide-react";
 import {cn} from "~/lib/utils";
 import {COACH_CALENDAR as COACH_CALENDAR_CONSTANTS} from "~/constants";
 import type {CoachCalendarDataType} from "~/types";
+import {Separator} from "~/components/ui/separator";
 
 const {COACH_CALENDAR} = COACH_CALENDAR_CONSTANTS;
 
@@ -44,7 +45,7 @@ const BookingsHeader = ({
                     <DropdownMenuTrigger asChild>
                         <Button
                             className="relative overflow-hidden hover:bg-secondary/90 dark:hover:bg-secondary/80"
-                            variant="secondary"
+                            variant="outline"
                         >
                             <motion.span
                                 initial={{opacity: 0}}
@@ -57,7 +58,7 @@ const BookingsHeader = ({
                             </motion.span>
                         </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className="border-0 shadow-xl bg-white/95 dark:bg-neutral-800/95 backdrop-blur-sm">
+                    <DropdownMenuContent className="border-0 shadow-xl bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm">
                         <DropdownMenuLabel className="text-gray-700 dark:text-neutral-300 font-medium">
                             Sélection de la date de début
                         </DropdownMenuLabel>
@@ -108,7 +109,7 @@ const BookingsHeader = ({
                     <DropdownMenuTrigger asChild>
                         <Button
                             className="relative overflow-hidden hover:bg-secondary/90 dark:hover:bg-secondary/80"
-                            variant="secondary">
+                            variant="outline">
                             <motion.span
                                 initial={{opacity: 0}}
                                 animate={{opacity: 1}}
@@ -120,7 +121,7 @@ const BookingsHeader = ({
                             </motion.span>
                         </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className="border-0 shadow-xl bg-white/95 dark:bg-neutral-800/95 backdrop-blur-sm">
+                    <DropdownMenuContent className="border-0 shadow-xl bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm">
                         <DropdownMenuLabel className="text-gray-700 dark:text-neutral-300 font-medium">
                             Sélection d'une date de fin
                         </DropdownMenuLabel>
@@ -167,7 +168,7 @@ const BookingsHeader = ({
                     }), "flex items-center space-x-2 relative overflow-hidden hover:bg-primary/90 dark:hover:bg-primary/80 cursor-pointer",
                     view === "timeline"
                         ? "bg-primary text-white dark:bg-primary dark:text-white"
-                        : "bg-gray-200 text-gray-800 dark:bg-neutral-700 dark:text-neutral-200"
+                        : "bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-neutral-200"
                 )}
                 onClick={() => setView(view === "default" ? "timeline" : "default")}
                 whileHover={{scale: 1.05}}
@@ -175,7 +176,7 @@ const BookingsHeader = ({
             >
                         <span className="flex items-center gap-2">
                             <CalendarIcon className="w-4 h-4" aria-hidden="true"/>
-                            Vue Timeline
+                            Timeline
                         </span>
             </motion.div>
         </div>

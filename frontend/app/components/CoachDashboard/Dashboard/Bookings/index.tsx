@@ -47,8 +47,6 @@ const CoachDashboardBookings = ({user, userToken}: { user: SessionUser | null, u
                         }
                     });
 
-                console.log("Fetching bookings for coach ID:", response);
-
                 if (!response.ok) {
                     throw new Error("Failed to fetch bookings");
                 }
@@ -85,7 +83,7 @@ const CoachDashboardBookings = ({user, userToken}: { user: SessionUser | null, u
         <div className="space-y-6">
             <div className="flex max-md:flex-col justify-between items-center mb-4">
                 <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                    Vue Réservations
+                    Réservations
                 </h2>
 
                 <BookingsHeader
@@ -110,7 +108,6 @@ const CoachDashboardBookings = ({user, userToken}: { user: SessionUser | null, u
 
             <AnimatePresence mode="wait">
                 {view === "timeline" ? (
-                    // Vue Timeline
                     <motion.div
                         className="space-y-4"
                         variants={TIMELINE_VARIANTS}

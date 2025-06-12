@@ -120,11 +120,11 @@ const CoachProfile = ({coachId}: Props) => {
     }
 
     return (
-        <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 py-12 px-4 sm:px-6 lg:px-8 rounded-2xl">
+        <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-900 py-12 px-4 sm:px-6 lg:px-8 rounded-2xl">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Left Side - Profile Card */}
                 <motion.div
-                    className="bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-sm dark:shadow-neutral-700/20"
+                    className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm dark:shadow-neutral-700/20"
                     initial={{opacity: 0, y: 20}}
                     animate={{opacity: 1, y: 0}}
                     transition={{duration: 0.5}}
@@ -144,7 +144,7 @@ const CoachProfile = ({coachId}: Props) => {
                                     {
                                         (coach.levels.length > 0 || coach.sports.length > 0) && (
                                             <motion.div
-                                                className="mt-6 w-full bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 border-dashed rounded-md shadow-sm dark:shadow-neutral-700/20 flex flex-col gap-2 p-6"
+                                                className="mt-6 w-full bg-neutral-50 dark:bg-gray-700 border border-neutral-200 dark:border-neutral-600 border-dashed rounded-md shadow-sm dark:shadow-neutral-700/20 flex flex-col gap-2 p-6"
                                                 initial={{opacity: 0, y: 20}}
                                                 animate={{opacity: 1, y: 0}}
                                                 transition={{duration: 0.5, delay: 0.1}}
@@ -191,13 +191,13 @@ const CoachProfile = ({coachId}: Props) => {
 
                 {/* Right Side - Additional Information */}
                 <motion.div
-                    className="bg-white dark:bg-neutral-800 rounded-2xl h-[65vh] overflow-y-auto shadow-sm dark:shadow-neutral-700/20"
+                    className="bg-white dark:bg-gray-800 rounded-2xl h-[65vh] overflow-y-auto shadow-sm dark:shadow-neutral-700/20"
                     initial={{opacity: 0, y: 20}}
                     animate={{opacity: 1, y: 0}}
                     transition={{duration: 0.5, delay: 0.2}}
                 >
                     <div
-                        className="sticky top-0 right-0 left-0 bg-white dark:bg-neutral-800 z-10 py-10 px-8 mb-4 w-full border-b border-neutral-100 dark:border-neutral-700">
+                        className="sticky top-0 right-0 left-0 bg-white dark:bg-gray-800 z-10 py-10 px-8 mb-4 w-full border-b border-neutral-100 dark:border-neutral-700">
                         <h3 className="flex items-center text-xl font-semibold mb-4 gap-2 text-neutral-900 dark:text-neutral-100">
                             <Speech className="text-neutral-700 dark:text-neutral-300"/>
                             Avis

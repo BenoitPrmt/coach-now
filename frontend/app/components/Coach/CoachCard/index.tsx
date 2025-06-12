@@ -128,7 +128,7 @@ const CoachCard = ({
         <>
             <motion.div
                 className={cn(
-                    "flex-col w-full sm:max-w-sm p-2 bg-neutral-100 dark:bg-neutral-800 rounded-xl flex gap-2 cursor-pointer hover:scale-[1.02] active:scale-[1.0] transition-transform duration-200 ease-out",
+                    "flex-col w-full sm:max-w-sm p-2 bg-neutral-100 dark:bg-gray-800 rounded-xl flex gap-2 cursor-pointer hover:scale-[1.02] active:scale-[1.0] transition-transform duration-200 ease-out",
                     className
                 )}
                 onClick={handleCardClick}
@@ -147,7 +147,7 @@ const CoachCard = ({
                     (coach.levels.length > 0 || coach.sports.length > 0) && (
 
                         <motion.div
-                            className="bg-neutral-50 dark:bg-neutral-700 border border-neutral-400/20 border-dashed rounded-md shadow-2xs flex flex-col justify-center items-center gap-2 p-4 h-full"
+                            className="bg-neutral-50 dark:bg-gray-700 border border-neutral-400/20 border-dashed rounded-md shadow-2xs flex flex-col justify-center items-center gap-2 p-4 h-full"
                         >
                             <Description levels={coach.levels} sports={coach.sports}/>
                         </motion.div>

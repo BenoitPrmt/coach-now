@@ -72,7 +72,6 @@ const AccountComponent = () => {
             }
 
             const data = await res.json();
-            console.log(`Fetch successful for ${fetchKey}:`, data);
             setUserProfile(data);
 
         } catch (error) {
@@ -136,7 +135,6 @@ const AccountComponent = () => {
         if (!isOfTypeCoach(updatedUser)) {
             setUserProfile(updatedUser);
         }
-        console.log(`Profile updated:`, updatedUser);
     }, []);
 
     const handleRatingSubmit = useCallback((newRating: Rating) => {

@@ -80,7 +80,7 @@ const UserInfo = ({user, userRole = "USER", onEditClick}: {
                     onClick={onEditClick}
                     variant="outline"
                     size="sm"
-                    className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-primary/20 dark:border-primary/30 hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-all duration-300 shadow-sm dark:shadow-gray-700 text-gray-900 dark:text-gray-100"
+                    className="rounded-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-primary/20 dark:border-primary/30 hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-all duration-300 shadow-sm dark:shadow-gray-700 text-gray-900 dark:text-gray-100"
                 >
                     <Edit className="w-4 h-4 mr-2"/>
                     Modifier le profil

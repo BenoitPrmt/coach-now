@@ -127,14 +127,11 @@ export function CoachFormModal({mode, coach}: Props) {
     }, [open, mode]);
 
     const handleSubmit = async (data: CoachFormData) => {
-        console.log("Form data submitted:", data);
         try {
             if (mode === "edit" && coach) {
                 await updateCoach(userToken, coach.id, data);
-                console.log("Coach updated successfully");
             } else if (mode === "create") {
                 await createCoach(userToken, data);
-                console.log("Coach created successfully");
             }
 
             setOpen(false);
@@ -161,7 +158,7 @@ export function CoachFormModal({mode, coach}: Props) {
                         Créer un coach
                     </Button>
                 ) : (
-                    <Button variant="secondary" size="icon">
+                    <Button variant="outline" size="icon">
                         <EditIcon className="w-4 h-4"/>
                     </Button>
                 )}

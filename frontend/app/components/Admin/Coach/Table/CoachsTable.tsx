@@ -68,10 +68,6 @@ export function CoachsTable() {
         },
     })
 
-    table.getRowModel().rows.forEach((row) => {
-        console.log(row)
-    });
-
     return (
         <div className="w-full">
             <div className="rounded-md border border-gray-200 dark:border-gray-700">

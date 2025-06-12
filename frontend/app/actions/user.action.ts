@@ -32,7 +32,6 @@ async function updateUser(
     userId: string,
     data: Partial<User>
 ): Promise<User> {
-    console.log("Updating user with ID:", userId, "and data:", data);
     try {
         const url = API_URL + `/user/${userId}`;
 

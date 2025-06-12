@@ -56,7 +56,6 @@ const ProfileEditModal = ({isOpen, onClose, user, userRole, onProfileUpdate}: {
             }
 
             const updatedUser = await response.json();
-            console.log(`Profil mis à jour avec succès:`, updatedUser);
             onProfileUpdate({
                 ...updatedUser,
                 user: isOfTypeCoach(updatedUser) ? updatedUser.user : {

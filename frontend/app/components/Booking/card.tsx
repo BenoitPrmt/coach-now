@@ -46,7 +46,7 @@ const BookingCard = ({userProfile, booking, index, onRate}: {
     return (
         <motion.div
             className={cn(
-                "bg-white dark:bg-neutral-700 rounded-xl p-6 transition-all duration-300",
+                "bg-white dark:bg-gray-700 rounded-xl p-6 transition-all duration-300",
                 isBookingCancelled && "opacity-60 grayscale bg-gray-50 dark:bg-gray-800"
             )}
             initial={{opacity: 0, y: 20}}

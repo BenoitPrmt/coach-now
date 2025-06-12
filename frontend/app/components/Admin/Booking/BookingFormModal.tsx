@@ -107,7 +107,6 @@ export function BookingFormModal({ mode, booking }: Props) {
     }, [open, mode]);
 
     const handleSubmit = async (data: BookingFormData) => {
-        console.log("Form data submitted:", data);
         try {
             if (mode === "edit" && booking) {
                 await updateBooking(userToken, booking.id, data);
@@ -139,7 +138,7 @@ export function BookingFormModal({ mode, booking }: Props) {
                         Créer un booking
                     </Button>
                 ) : (
-                    <Button variant="secondary" size="icon">
+                    <Button variant="outline" size="icon">
                         <EditIcon className="w-4 h-4" />
                     </Button>
                 )}
@@ -329,11 +328,6 @@ export function BookingFormModal({ mode, booking }: Props) {
                             <Button
                                 type="submit"
                                 disabled={form.formState.isSubmitting}
-                                onClick={() => {
-                                    console.log("Button clicked");
-                                    console.log("Form values:", form.getValues());
-                                    console.log("Form errors:", form.formState.errors);
-                                }}
                             >
                                 {form.formState.isSubmitting
                                     ? "Enregistrement..."

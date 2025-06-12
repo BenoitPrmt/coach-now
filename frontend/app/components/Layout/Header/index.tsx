@@ -3,7 +3,7 @@
 import {AnimatePresence, motion} from "motion/react";
 import {useState, useEffect, Fragment} from "react";
 import {NAVIGATION} from "~/constants";
-import {Menu, X} from "lucide-react";
+import {LogOutIcon, Menu, X} from "lucide-react";
 import {cn} from "~/lib/utils";
 import {Link, useNavigate, useLocation} from "react-router";
 import {useUser} from "~/hooks/useUser";
@@ -121,7 +121,7 @@ export default function Header() {
                             animate={{opacity: 1, x: 0}}
                             transition={{...transitionBase, delay: headerElements.length * 0.1}}
                         >
-                            Déconnexion
+                            <LogOutIcon className="size-4" />
                         </motion.button>
                     </>
                 )}

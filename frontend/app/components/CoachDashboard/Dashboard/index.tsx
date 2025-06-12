@@ -71,23 +71,26 @@ const CoachDashboardComponent = () => {
                         )}
                     </div>
 
-                    {coachData?.id && user?.id && (
-                        <CoachHolidaysModal coachId={coachData?.id} userId={user?.id} userToken={userToken} />
-                    )}
 
-                    <div className="isolate flex -space-x-px">
-                        <Button variant="outline"
-                                className={cn("rounded-r-none focus:z-10", view === 'dashboard' ? 'bg-gray-200 dark:bg-gray-700 text-primary dark:text-primary-foreground' : 'dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700')}
-                                onClick={() => setView('dashboard')}>
-                            <ChartAreaIcon/>
-                            Dashboard
-                        </Button>
-                        <Button variant="outline"
-                                className={cn("rounded-l-none focus:z-10", view === 'calendar' ? 'bg-gray-200 dark:bg-gray-700 text-primary dark:text-primary-foreground' : 'dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700')}
-                                onClick={() => setView('calendar')}>
-                            <Calendar/>
-                            Réservations
-                        </Button>
+                    <div className="flex flex-row items-center space-x-4">
+                        {coachData?.id && user?.id && (
+                            <CoachHolidaysModal coachId={coachData?.id} userId={user?.id} userToken={userToken} />
+                        )}
+
+                        <div className="isolate flex -space-x-px">
+                            <Button variant="outline"
+                                    className={cn("rounded-r-none focus:z-10", view === 'dashboard' ? 'bg-gray-200 dark:bg-gray-700 text-primary dark:text-primary-foreground' : 'dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700')}
+                                    onClick={() => setView('dashboard')}>
+                                <ChartAreaIcon/>
+                                Dashboard
+                            </Button>
+                            <Button variant="outline"
+                                    className={cn("rounded-l-none focus:z-10", view === 'calendar' ? 'bg-gray-200 dark:bg-gray-700 text-primary dark:text-primary-foreground' : 'dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700')}
+                                    onClick={() => setView('calendar')}>
+                                <Calendar/>
+                                Réservations
+                            </Button>
+                        </div>
                     </div>
                 </div>
 
