@@ -63,7 +63,7 @@ export function LeftPanel({
 				)}
 				<div className="flex items-center text-gray-950 dark:text-gray-100">
 					<Clock4 className="size-4 mr-2" />
-					<p className="text-sm font-semibold">30 mins</p>
+					<p className="text-sm font-semibold">1h</p>
 				</div>
 			</div>
 		</div>
