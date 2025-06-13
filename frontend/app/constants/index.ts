@@ -7,6 +7,7 @@ import * as SPORTS from "./sports";
 import * as SEARCH from "./search";
 import * as API from "./api";
 import * as COACH_CALENDAR from "./coachCalendar";
+import * as CHART_CONFIG from "./charts";
 
 export {
     NAVIGATION,
@@ -16,5 +17,6 @@ export {
     SPORTS,
     SEARCH,
     API,
-    COACH_CALENDAR
+    COACH_CALENDAR,
+    CHART_CONFIG,
 }

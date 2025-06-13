@@ -95,3 +95,28 @@ export type TimelineDayType = {
     bookings: Booking[];
     count: number;
 }
+
+export interface ChartDataPoint {
+    date: string;
+    earnings: number;
+    count: number;
+}
+
+export interface TrendData {
+    direction: 'up' | 'down' | 'stable';
+    percentage: number;
+}
+
+export interface PerformanceIndicatorData {
+    color: string;
+    label: string;
+    bgColor: string;
+    percentage: number;
+}
+
+export interface MaxValueInfo {
+    value: number;
+    date?: string;
+    formattedValue: string;
+}
+

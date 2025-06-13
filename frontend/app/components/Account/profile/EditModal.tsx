@@ -45,7 +45,7 @@ const ProfileEditModal = ({isOpen, onClose, user, userRole, onProfileUpdate}: {
             firstName: isOfTypeCoach(user) ? user.user.firstName : user.firstName,
             lastName: isOfTypeCoach(user) ? user.user.lastName : user.lastName,
             ...(isCoach && {
-                gender: user.gender,
+                gender: isOfTypeCoach(user) && user.gender ? user.gender : undefined,
                 birthDate: isOfTypeCoach(user) && user.birthdate ? new Date(user.birthdate) : undefined,
                 hourlyRate: isOfTypeCoach(user) ? user.hourlyRate : '',
                 // Using [0] because we assume a coach has only one level
