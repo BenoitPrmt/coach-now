@@ -3,7 +3,6 @@ import {z} from "zod";
 export const profileSchema = z.object({
     firstName: z.string().min(1, "Le prénom est requis").min(2, "Le prénom doit contenir au moins 2 caractères"),
     lastName: z.string().min(1, "Le nom est requis").min(2, "Le nom doit contenir au moins 2 caractères"),
-    email: z.string().min(1, "L'email est requis").email("Format d'email invalide"),
 });
 
 export const coachProfileSchema = profileSchema.extend({

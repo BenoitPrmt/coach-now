@@ -44,7 +44,6 @@ const ProfileEditModal = ({isOpen, onClose, user, userRole, onProfileUpdate}: {
         defaultValues: {
             firstName: isOfTypeCoach(user) ? user.user.firstName : user.firstName,
             lastName: isOfTypeCoach(user) ? user.user.lastName : user.lastName,
-            email: isOfTypeCoach(user) ? user.user.email : user.email,
             ...(isCoach && {
                 level: isOfTypeCoach(user) ? user.levels : '',
                 sports: isOfTypeCoach(user) ? user.sports : '',
@@ -151,20 +150,6 @@ const ProfileEditModal = ({isOpen, onClose, user, userRole, onProfileUpdate}: {
                                     <FormLabel>Nom</FormLabel>
                                     <FormControl>
                                         <Input placeholder="Votre nom" {...field} />
-                                    </FormControl>
-                                    <FormMessage/>
-                                </FormItem>
-                            )}
-                        />
-
-                        <FormField
-                            control={form.control}
-                            name="email"
-                            render={({field}) => (
-                                <FormItem>
-                                    <FormLabel>Email</FormLabel>
-                                    <FormControl>
-                                        <Input type="email" placeholder="votre@email.com" {...field} />
                                     </FormControl>
                                     <FormMessage/>
                                 </FormItem>

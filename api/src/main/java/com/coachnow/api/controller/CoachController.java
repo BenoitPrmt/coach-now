@@ -137,9 +137,6 @@ public class CoachController {
         if (coachUpdate.getLastName() != null) {
             existingUser.setLastName(coachUpdate.getLastName());
         }
-        if (coachUpdate.getEmail() != null) {
-            existingUser.setEmail(coachUpdate.getEmail());
-        }
 
         userService.save(existingUser);
 

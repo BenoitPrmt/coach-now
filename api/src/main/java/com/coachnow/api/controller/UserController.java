@@ -53,9 +53,6 @@ public class UserController {
         if (userUpdate.getLastName() != null) {
             existingUser.setLastName(userUpdate.getLastName());
         }
-        if (userUpdate.getEmail() != null) {
-            existingUser.setEmail(userUpdate.getEmail());
-        }
         if (userUpdate.getRole() != null) {
             existingUser.setRole(userUpdate.getRole());
         }
