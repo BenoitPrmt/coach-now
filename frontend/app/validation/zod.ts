@@ -11,7 +11,7 @@ export const coachProfileSchema = profileSchema.extend({
     sports: z.string().array().optional(),
     profilePictureUrl: z.string().optional(),
     birthDate: z.date().optional(),
-    level: z.enum(["BEGINNER", "MEDIUM", "HIGHLEVEL"]).optional(),
+    levels: z.enum(["BEGINNER", "MEDIUM", "HIGHLEVEL"]).optional(),
 });
 
 export const loginSchema = z.object({

@@ -21,7 +21,9 @@ import {SPORTS_OPTIONS} from "~/constants/search";
 import {GenderField} from "~/components/Forms/FormFields/form-fields/GenderField";
 import {format} from "date-fns";
 
-type ProfileFormValues = z.infer<typeof profileSchema>;
+type UserFormValues = z.infer<typeof profileSchema>;
+type CoachFormValues = z.infer<typeof coachProfileSchema>;
+type ProfileFormValues = UserFormValues | CoachFormValues;
 
 const ProfileEditModal = ({isOpen, onClose, user, userRole, onProfileUpdate}: {
     isOpen: boolean;
@@ -47,12 +49,10 @@ const ProfileEditModal = ({isOpen, onClose, user, userRole, onProfileUpdate}: {
             ...(isCoach && {
                 gender: isOfTypeCoach(user) && user.gender ? user.gender : undefined,
                 birthDate: isOfTypeCoach(user) && user.birthdate ? new Date(user.birthdate) : undefined,
-                hourlyRate: isOfTypeCoach(user) ? user.hourlyRate : '',
-                // Using [0] because we assume a coach has only one level
-                level: isOfTypeCoach(user) ? user.levels[0] : '',
-                // Do not work 👇
-                sports: isOfTypeCoach(user) ? user.sports : '',
-                profilePictureUrl: isOfTypeCoach(user) ? user.profilePictureUrl : '',
+                hourlyRate: isOfTypeCoach(user) ? user.hourlyRate : undefined,
+                levels: isOfTypeCoach(user) ? user.levels[0] : undefined,
+                sports: isOfTypeCoach(user) ? user.sports : [],
+                profilePictureUrl: isOfTypeCoach(user) ? user.profilePictureUrl : undefined,
             }),
         },
     });
@@ -62,19 +62,25 @@ const ProfileEditModal = ({isOpen, onClose, user, userRole, onProfileUpdate}: {
 
         setIsSubmitting(true);
 
-        const formattedBirthDate = values.birthDate
+        const hasCoachFields = (vals: ProfileFormValues): vals is CoachFormValues => {
+            return 'birthDate' in vals;
+        };
+
+        const formattedBirthDate = hasCoachFields(values) && values.birthDate
             ? format(values.birthDate, "yyyy-MM-dd")
             : null;
 
-        const {birthDate, ...rest} = values;
+        const {birthDate, levels, ...rest} = hasCoachFields(values)
+            ? values
+            : {birthDate: undefined, levels: undefined, ...values};
 
         const dataToSend = {
             ...rest,
             ...(coachId && {coachId}),
             ...(formattedBirthDate && {birthDate: formattedBirthDate}),
             ...(userId && {userId}),
+            ...(levels && {levels: Array.isArray(levels) ? levels : [levels]}),
         };
-
 
         try {
             const endpoint = `${API_URL}/${userRole?.toLowerCase()}/${isCoach ? coachId : user.id}`;
@@ -109,10 +115,10 @@ const ProfileEditModal = ({isOpen, onClose, user, userRole, onProfileUpdate}: {
                 ...(isCoach && {
                     gender: updatedUser.gender,
                     birthDate: updatedUser.birthdate ? new Date(updatedUser.birthdate) : undefined,
-                    hourlyRate: updatedUser.hourlyRate || '',
-                    level: updatedUser.levels?.[0] || '',
-                    sports: updatedUser.sports || '',
-                    profilePictureUrl: updatedUser.profilePictureUrl || '',
+                    hourlyRate: updatedUser.hourlyRate || undefined,
+                    levels: updatedUser.levels?.[0] || undefined,
+                    sports: updatedUser.sports || [],
+                    profilePictureUrl: updatedUser.profilePictureUrl || undefined,
                 }),
             };
 

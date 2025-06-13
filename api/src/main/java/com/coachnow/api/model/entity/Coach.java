@@ -28,14 +28,16 @@ public class Coach {
     @Column(nullable = false)
     private Float hourlyRate;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @CollectionTable(name = "coach_sports", joinColumns = @JoinColumn(name = "coach_id"))
+    @Column(name = "sport", length = 20) // HORSE_RIDING = 12 chars + marge
     private Collection<Sports> sports;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @CollectionTable(name = "coach_levels", joinColumns = @JoinColumn(name = "coach_id"))
+    @Column(name = "level", length = 20)
     private Collection<Level> levels;
 
     @Enumerated(EnumType.STRING)
