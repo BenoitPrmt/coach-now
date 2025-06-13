@@ -16,7 +16,7 @@ import {BirthdayDateField} from "~/components/Forms/FormFields/form-fields/Birth
 import {HourlyRateField} from "~/components/Forms/FormFields/form-fields/HourlyRate";
 import {MultiSelect} from "~/components/Forms/FormFields/form-fields/Sports";
 import {LevelField} from "~/components/Forms/FormFields/form-fields/Levels";
-import {ProfilePictureField} from "~/components/Forms/FormFields/form-fields/ProfilPicture";
+import {ProfilePictureField} from "~/components/Forms/FormFields/form-fields/ProfilePicture";
 import {SPORTS_OPTIONS} from "~/constants/search";
 import {GenderField} from "~/components/Forms/FormFields/form-fields/GenderField";
 import {format} from "date-fns";
