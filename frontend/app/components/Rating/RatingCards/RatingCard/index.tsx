@@ -2,7 +2,7 @@ import type {Rating} from "~/types";
 import {motion} from "motion/react";
 import {Link} from "react-router";
 import {FaClock} from "react-icons/fa";
-import {timeAgo} from "~/lib/time";
+import {formatDateWithTime, timeAgo} from "~/lib/time";
 import RatingStar from "~/components/Rating/RatingCards/RatingCard/RatingStar";
 import {cn} from "~/lib/utils";
 
@@ -56,7 +56,7 @@ const RatingCard = ({rating, coachPage}: Props) => {
                         }
                         <span className="flex items-center gap-2">
                             <FaClock/>
-                            {timeAgo(rating.date)}
+                            {formatDateWithTime(new Date(rating.date))}
                         </span>
                     </div>
                     <RatingStar
