@@ -148,15 +148,27 @@ public class CoachController {
     public ResponseEntity<CoachDTO> update(@RequestBody CoachUpdate coachUpdate, @PathVariable String id) throws ParseException {
         try {
             Coach existingCoach = coachService.select(id);
-
             if (existingCoach == null) {
                 throw new IllegalArgumentException("Coach with id " + id + " does not exist.");
             }
 
-            DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            User existingUser = userService.select(coachUpdate.getUserId());
+            if (existingUser == null) {
+                throw new IllegalArgumentException("User with id " + coachUpdate.getUserId() + " does not exist.");
+            }
 
-            if (coachUpdate.getBirthdate() != null) {
-                existingCoach.setBirthdate(new java.sql.Date(formatter.parse(coachUpdate.getBirthdate()).getTime()));
+            if (coachUpdate.getFirstName() != null) {
+                existingUser.setFirstName(coachUpdate.getFirstName());
+            }
+            if (coachUpdate.getLastName() != null) {
+                existingUser.setLastName(coachUpdate.getLastName());
+            }
+
+            userService.save(existingUser);
+
+            if (coachUpdate.getBirthDate() != null) {
+                DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                existingCoach.setBirthdate(new java.sql.Date(formatter.parse(coachUpdate.getBirthDate()).getTime()));
             }
             if (coachUpdate.getProfilePictureUrl() != null) {
                 existingCoach.setProfilePictureUrl(coachUpdate.getProfilePictureUrl());
@@ -173,13 +185,8 @@ public class CoachController {
             if (coachUpdate.getGender() != null) {
                 existingCoach.setGender(coachUpdate.getGender());
             }
-            if (coachUpdate.getUserId() != null) {
-                User user = userService.select(coachUpdate.getUserId());
-                if (user == null) {
-                    throw new IllegalArgumentException("User with id " + coachUpdate.getUserId() + " does not exist.");
-                }
-                existingCoach.setUser(user);
-            }
+
+            existingCoach.setUser(existingUser);
 
             return new ResponseEntity<>(new CoachDTO(coachService.save(existingCoach)), HttpStatus.OK);
         } catch (IllegalArgumentException | ParseException e) {
@@ -188,6 +195,7 @@ public class CoachController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     @DeleteMapping("/coach/{id}")
     public void deleteCoach(@PathVariable String id) {
@@ -234,7 +242,7 @@ public class CoachController {
             @PathVariable String coachId
     ) throws ParseException {
         try {
-            return new ResponseEntity<List<Unavailability>>(coachService.getUnavailabilities(coachId), HttpStatus.OK);
+            return new ResponseEntity<>(coachService.getUnavailabilities(coachId), HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }

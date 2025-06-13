@@ -7,7 +7,6 @@ import {Info, Calendar, Star, ArrowRight} from "lucide-react";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "~/components/ui/tabs"
 import {Link} from "react-router";
 import RatingCards from "~/components/Rating/RatingCards";
-import {isOfTypeCoach} from "~/validation/typesValidations";
 import ProfileEditModal from "~/components/Account/profile/EditModal";
 import BookingCard from "~/components/Booking/card";
 import UserInfo from "~/components/Account/user/UserInfo";
@@ -25,7 +24,7 @@ const AccountComponent = () => {
         closeRatingModal,
         selectedBooking
     } = useRating();
-    const [userProfile, setUserProfile] = useState<User | null>(null);
+    const [userProfile, setUserProfile] = useState<User | Coach | null>(null);
     const [userProfileLoading, setUserProfileLoading] = useState(false);
     const [activeTab, setActiveTab] = useState("bookings");
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -54,10 +53,11 @@ const AccountComponent = () => {
         fetchInProgress.current = true;
         currentFetchKey.current = fetchKey;
         setUserProfileLoading(true);
+        const url = `${API_URL}${user?.role === "COACH" ? `/coach/${user?.coachId}` : `/user/${user?.id}`}`;
 
         try {
             const res = await fetch(
-                `${API_URL}/user/${user!.id}`,
+                url,
                 {
                     method: 'GET',
                     headers: {
@@ -71,6 +71,7 @@ const AccountComponent = () => {
                 throw new Error('Failed to fetch user profile');
             }
 
+
             const data = await res.json();
             setUserProfile(data);
 
@@ -81,7 +82,7 @@ const AccountComponent = () => {
             setUserProfileLoading(false);
             fetchInProgress.current = false;
         }
-    }, [fetchKey, user]);
+    }, [fetchKey, user?.role, user?.coachId, user?.id, userToken]);
 
     useEffect(() => {
         if (fetchKey && !isLoading) {
@@ -132,9 +133,7 @@ const AccountComponent = () => {
     }, [userProfile?.bookings]);
 
     const handleProfileUpdate = useCallback((updatedUser: User | Coach) => {
-        if (!isOfTypeCoach(updatedUser)) {
-            setUserProfile(updatedUser);
-        }
+        setUserProfile(updatedUser);
     }, []);
 
     const handleRatingSubmit = useCallback((newRating: Rating) => {
@@ -272,7 +271,8 @@ const AccountComponent = () => {
                                             <AnimatePresence>
                                                 <TabsContent value="bookings">
                                                     <Tabs defaultValue="future">
-                                                        <TabsList className="grid grid-cols-4 mb-8 p-1 bg-gray-100 dark:bg-gray-700">
+                                                        <TabsList
+                                                            className="grid grid-cols-4 mb-8 p-1 bg-gray-100 dark:bg-gray-700">
                                                             <TabsTrigger
                                                                 value="future"
                                                                 className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-600 data-[state=active]:text-gray-900 dark:data-[state=active]:text-white text-gray-600 dark:text-gray-300"
@@ -362,7 +362,8 @@ const AccountComponent = () => {
                                                                 </div>
                                                             )}
                                                             {!futureBookings || futureBookings.length === 0 && (
-                                                                <p className="text-gray-500 dark:text-gray-400 mt-4">Aucune réservation à
+                                                                <p className="text-gray-500 dark:text-gray-400 mt-4">Aucune
+                                                                    réservation à
                                                                     venir.</p>
                                                             )}
                                                         </TabsContent>
@@ -381,7 +382,8 @@ const AccountComponent = () => {
                                                                 </div>
                                                             )}
                                                             {!ongoingBookings || ongoingBookings.length === 0 && (
-                                                                <p className="text-gray-500 dark:text-gray-400 mt-4">Aucune réservation en
+                                                                <p className="text-gray-500 dark:text-gray-400 mt-4">Aucune
+                                                                    réservation en
                                                                     cours.</p>
                                                             )}
                                                         </TabsContent>
@@ -402,7 +404,8 @@ const AccountComponent = () => {
                                                                 </div>
                                                             )}
                                                             {!pastBookings || pastBookings.length === 0 && (
-                                                                <p className="text-gray-500 dark:text-gray-400 mt-4">Aucune réservation
+                                                                <p className="text-gray-500 dark:text-gray-400 mt-4">Aucune
+                                                                    réservation
                                                                     terminée.</p>
                                                             )}
                                                         </TabsContent>
@@ -420,7 +423,8 @@ const AccountComponent = () => {
                                                                 </div>
                                                             )}
                                                             {!cancelledBookings || cancelledBookings.length === 0 && (
-                                                                <p className="text-gray-500 dark:text-gray-400 mt-4">Aucune réservation
+                                                                <p className="text-gray-500 dark:text-gray-400 mt-4">Aucune
+                                                                    réservation
                                                                     annulée.</p>
                                                             )}
                                                         </TabsContent>
@@ -445,6 +449,7 @@ const AccountComponent = () => {
                                             </AnimatePresence>
                                         </Tabs>
                                     ) : (
+
                                         <div className="flex flex-col justify-center text-gray-500 dark:text-gray-400 gap-2">
                                             {user.role === 'COACH' ? (
                                                 <p>

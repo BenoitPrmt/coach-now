@@ -25,7 +25,6 @@ import {
     SelectValue,
 } from "~/components/ui/select";
 import {Input} from "~/components/ui/input";
-import {Checkbox} from "~/components/ui/checkbox";
 import {EditIcon, PlusCircleIcon} from "lucide-react";
 import {Controller, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -39,14 +38,12 @@ import {SPORTS as SPORTS_CONSTANT} from "~/constants";
 import type {Sport} from "~/constants/sports";
 import {getAllUsers} from "~/actions/user.action";
 import {MultiSelect} from "~/components/Forms/FormFields/form-fields/Sports";
-import {LevelField} from "~/components/Forms/FormFields/form-fields/Levels";
 
 const SPORTS = SPORTS_CONSTANT.SPORTS.map((sport: Sport) => ({
     key: sport.key,
     name: sport.name,
 }));
 
-const LEVELS: { key: Level; name: string }[] = levels;
 
 const GENDERS: { key: Gender; name: string }[] = [
     {key: "MALE", name: "Homme"},

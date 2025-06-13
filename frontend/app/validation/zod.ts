@@ -3,7 +3,15 @@ import {z} from "zod";
 export const profileSchema = z.object({
     firstName: z.string().min(1, "Le prénom est requis").min(2, "Le prénom doit contenir au moins 2 caractères"),
     lastName: z.string().min(1, "Le nom est requis").min(2, "Le nom doit contenir au moins 2 caractères"),
-    email: z.string().min(1, "L'email est requis").email("Format d'email invalide"),
+});
+
+export const coachProfileSchema = profileSchema.extend({
+    gender: z.enum(["MALE", "FEMALE"]).optional(),
+    hourlyRate: z.coerce.number().optional(),
+    sports: z.string().array().optional(),
+    profilePictureUrl: z.string().optional(),
+    birthDate: z.date().optional(),
+    level: z.enum(["BEGINNER", "MEDIUM", "HIGHLEVEL"]).optional(),
 });
 
 export const loginSchema = z.object({

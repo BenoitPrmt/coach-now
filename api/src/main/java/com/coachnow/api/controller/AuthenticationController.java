@@ -11,7 +11,6 @@ import com.coachnow.api.web.request.AuthRequest;
 import com.coachnow.api.web.request.coach.CoachCreation;
 import com.coachnow.api.web.request.coach.CoachRegistration;
 import com.coachnow.api.web.response.AuthResponse;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
