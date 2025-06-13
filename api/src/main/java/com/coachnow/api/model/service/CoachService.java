@@ -237,9 +237,7 @@ public class CoachService {
             throw new IllegalArgumentException("The date range cannot exceed 30 days.");
         }
 
-        List<Booking> bookings = coach.getBookings().stream().filter((Booking booking) -> {
-            return booking.getStartDate().after(startDate) && booking.getEndDate().before(endDate) && booking.getIsActive();
-        }).collect(Collectors.toList());
+        List<Booking> bookings = coach.getBookings().stream().filter((Booking booking) -> booking.getStartDate().after(startDate) && booking.getEndDate().before(endDate) && booking.getIsActive()).collect(Collectors.toList());
         return generateAvailabilitiesWithBookings(bookings, startDate, endDate);
     }
 

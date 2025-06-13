@@ -13,7 +13,7 @@ import {Button} from "~/components/ui/button";
 import {z} from "zod";
 import {API_URL} from "~/constants/api";
 import {BirthdayDateField} from "~/components/Forms/FormFields/form-fields/BirthdayDate";
-import { HourlyRateField } from "~/components/Forms/FormFields/form-fields/HourlyRate";
+import {HourlyRateField} from "~/components/Forms/FormFields/form-fields/HourlyRate";
 import {MultiSelect} from "~/components/Forms/FormFields/form-fields/Sports";
 import {LevelField} from "~/components/Forms/FormFields/form-fields/Levels";
 import {ProfilePictureField} from "~/components/Forms/FormFields/form-fields/ProfilPicture";
@@ -32,8 +32,8 @@ const ProfileEditModal = ({isOpen, onClose, user, userRole, onProfileUpdate}: {
 }) => {
     const {user: currentUser, userToken} = useUser();
 
-    const coachId: string|null = currentUser && 'coachId' in currentUser ? currentUser.coachId : null;
-    const userId: string|null = currentUser && 'id' in currentUser ? currentUser.id : null;
+    const coachId: string | null = currentUser && 'coachId' in currentUser ? currentUser.coachId : null;
+    const userId: string | null = currentUser && 'id' in currentUser ? currentUser.id : null;
 
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -45,11 +45,14 @@ const ProfileEditModal = ({isOpen, onClose, user, userRole, onProfileUpdate}: {
             firstName: isOfTypeCoach(user) ? user.user.firstName : user.firstName,
             lastName: isOfTypeCoach(user) ? user.user.lastName : user.lastName,
             ...(isCoach && {
-                level: isOfTypeCoach(user) ? user.levels : '',
-                sports: isOfTypeCoach(user) ? user.sports : '',
+                gender: user.gender,
+                birthDate: isOfTypeCoach(user) && user.birthdate ? new Date(user.birthdate) : undefined,
                 hourlyRate: isOfTypeCoach(user) ? user.hourlyRate : '',
-                profilePicture: isOfTypeCoach(user) ? user.profilePictureUrl : '',
-                birthDate: isOfTypeCoach(user) ? user.birthdate : '',
+                // Using [0] because we assume a coach has only one level
+                level: isOfTypeCoach(user) ? user.levels[0] : '',
+                // Do not work 👇
+                sports: isOfTypeCoach(user) ? user.sports : '',
+                profilePictureUrl: isOfTypeCoach(user) ? user.profilePictureUrl : '',
             }),
         },
     });
@@ -60,16 +63,16 @@ const ProfileEditModal = ({isOpen, onClose, user, userRole, onProfileUpdate}: {
         setIsSubmitting(true);
 
         const formattedBirthDate = values.birthDate
-          ? format(values.birthDate, "yyyy-MM-dd")
-          : null;
+            ? format(values.birthDate, "yyyy-MM-dd")
+            : null;
 
-        const { birthDate, ...rest } = values;
+        const {birthDate, ...rest} = values;
 
         const dataToSend = {
             ...rest,
-            ...(coachId && { coachId }),
-            ...(formattedBirthDate && { birthDate: formattedBirthDate }),
-            ...(userId && { userId }),
+            ...(coachId && {coachId}),
+            ...(formattedBirthDate && {birthDate: formattedBirthDate}),
+            ...(userId && {userId}),
         };
 
         console.log("Donnée envoyé", dataToSend)
@@ -91,12 +94,13 @@ const ProfileEditModal = ({isOpen, onClose, user, userRole, onProfileUpdate}: {
             }
 
             const updatedUser = await response.json();
+            console.log("Utilisateur mis à jour:", updatedUser);
             onProfileUpdate({
                 ...updatedUser,
                 user: isOfTypeCoach(updatedUser) ? updatedUser.user : {
                     firstName: updatedUser.firstName,
                     lastName: updatedUser.lastName,
-                    email: updatedUser.email
+                    email: updatedUser.email,
                 }
             });
             onClose();
@@ -156,32 +160,31 @@ const ProfileEditModal = ({isOpen, onClose, user, userRole, onProfileUpdate}: {
                         />
 
                         {isCoach && (
-                          <>
-                              <GenderField control={form.control} />
+                            <>
+                                <GenderField control={form.control}/>
 
-                              <BirthdayDateField control={form.control} />
+                                <BirthdayDateField control={form.control}/>
 
-                              <ProfilePictureField control={form.control} />
+                                <ProfilePictureField control={form.control}/>
 
-                              <HourlyRateField control={form.control} />
+                                <HourlyRateField control={form.control}/>
 
-                              <Controller
-                                control={form.control}
-                                name="sports"
-                                render={({ field }) => (
-                                  <MultiSelect
-                                    options={SPORTS_OPTIONS}
-                                    value={field.value}
-                                    onValueChange={field.onChange}
-                                    maxCount={2}
-                                    placeholder="Sélectionnez vos sports"
-                                  />
-                                )}
-                              />
+                                <Controller
+                                    control={form.control}
+                                    name="sports"
+                                    render={({field}) => (
+                                        <MultiSelect
+                                            options={SPORTS_OPTIONS}
+                                            value={field.value}
+                                            defaultValue={field.value}
+                                            onValueChange={field.onChange}
+                                            placeholder="Sélectionnez vos sports"
+                                        />
+                                    )}
+                                />
 
-                              <LevelField control={form.control} />
-
-                          </>
+                                <LevelField control={form.control}/>
+                            </>
                         )}
 
                         <div className="flex justify-end space-x-2 pt-4">

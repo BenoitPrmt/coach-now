@@ -242,7 +242,7 @@ public class CoachController {
             @PathVariable String coachId
     ) throws ParseException {
         try {
-            return new ResponseEntity<List<Unavailability>>(coachService.getUnavailabilities(coachId), HttpStatus.OK);
+            return new ResponseEntity<>(coachService.getUnavailabilities(coachId), HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }

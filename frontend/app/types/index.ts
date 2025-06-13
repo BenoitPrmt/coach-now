@@ -1,3 +1,8 @@
+export type SearchOptionsType = {
+    label: string;
+    value: string;
+}
+
 export type PaginatedResponse<T> = {
     isPaginationEnabled: boolean;
     page: number;
@@ -67,8 +72,8 @@ export type CoachDashboard = {
     averageRating: number;
     bookings: Booking[];
     nextBookings: Booking[];
-    totalHours:number;
-    monthlyEarnings:number;
+    totalHours: number;
+    monthlyEarnings: number;
 }
 
 

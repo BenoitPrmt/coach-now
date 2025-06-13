@@ -12,7 +12,6 @@ import {CalendarIcon, Goal, Rocket, TrashIcon} from "lucide-react";
 import {cn} from "~/lib/utils";
 import {COACH_CALENDAR as COACH_CALENDAR_CONSTANTS} from "~/constants";
 import type {CoachCalendarDataType} from "~/types";
-import {Separator} from "~/components/ui/separator";
 
 const {COACH_CALENDAR} = COACH_CALENDAR_CONSTANTS;
 
