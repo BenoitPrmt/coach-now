@@ -30,7 +30,7 @@ export function Calendar(props: Props<DateValue>) {
 	);
 
 	return (
-		<div {...calendarProps} className="inline-block text-gray-800">
+		<div {...calendarProps} className="inline-block text-gray-800 dark:text-gray-200">
 			<CalendarHeader
 				state={state}
 				calendarProps={calendarProps}

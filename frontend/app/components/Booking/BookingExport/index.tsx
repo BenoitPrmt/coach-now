@@ -11,7 +11,7 @@ type Props = {
 
 const BookingExport = ({ coachId }: Props) => {
 
-    const { userToken } =useUser();
+    const { userToken } = useUser();
 
     const handleExport = (format: ExportFormat) => {
         exportBookings(userToken, format, coachId).then((result) => {

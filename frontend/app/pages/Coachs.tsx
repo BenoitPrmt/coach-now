@@ -1,7 +1,6 @@
 import {useEffect, useState, useCallback, useMemo} from 'react';
 import CoachCard from "app/components/Coach/CoachCard";
 import {motion, type Variants} from "motion/react";
-import {getPublicEnv} from "../../env.common";
 import type {Coach, PaginatedResponse} from "~/types";
 import {useUser} from "~/hooks/useUser";
 import Loader from "~/components/Loader";
@@ -211,10 +210,10 @@ const CoachesPage = () => {
                 variants={titleTransition}
                 className="text-center mb-12 max-w-7xl mx-auto"
             >
-                <h1 className="text-4xl font-bold text-gray-900 sm:text-5xl md:text-6xl">
+                <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-50 sm:text-5xl md:text-6xl">
                     Nos Coachs
                 </h1>
-                <p className="mt-4 text-xl text-gray-600 max-w-2xl mx-auto">
+                <p className="mt-4 text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
                     Découvrez nos coachs professionnels prêts à vous accompagner dans votre parcours sportif.
                 </p>
 
@@ -301,7 +300,7 @@ const CoachesPage = () => {
             {isLoading && <Loader/>}
 
             {!isLoading && coaches && coaches.length === 0 && (
-                <div className="text-center text-gray-500 py-2">
+                <div className="text-center text-gray-500 dark:text-gray-400 py-2">
                     {search || filter ? 'Aucun coach trouvé pour cette recherche.' : 'Aucun coach disponible pour le moment.'}
                 </div>
             )}

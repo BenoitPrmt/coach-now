@@ -87,7 +87,6 @@ export function UserFormModal({ mode, user, onSubmit }: Props) {
     });
 
     const handleSubmit = async (data: UserFormData) => {
-        console.log("Form data submitted:", data);
         try {
             if (mode === "edit" && user) {
                 updateUser(userToken, user.id, data).then((updatedUser) => {
@@ -131,7 +130,7 @@ export function UserFormModal({ mode, user, onSubmit }: Props) {
                         Créer un utilisateur
                     </Button>
                 ) : (
-                    <Button variant="secondary" size="icon">
+                    <Button variant="outline" size="icon">
                         <EditIcon className="w-4 h-4" />
                     </Button>
                 )}

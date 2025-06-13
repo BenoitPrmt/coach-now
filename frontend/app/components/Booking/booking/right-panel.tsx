@@ -60,14 +60,14 @@ export function RightPanel({
     return (
         <div
             defaultValue="24"
-            className="flex flex-col gap-4 w-[280px] lg:border-l pl-6"
+            className="flex flex-col gap-4 w-[280px] lg:border-l lg:border-gray-200 lg:dark:border-gray-700 pl-6"
         >
             <div className="flex justify-between items-center">
                 <p
                     aria-hidden
-                    className="flex-1 align-center font-bold text-md text-gray-950"
+                    className="flex-1 align-center font-bold text-md text-gray-950 dark:text-gray-50"
                 >
-                    <span className="text-gray-11">{dayNumber}</span> {dayName}
+                    <span className="text-gray-11 dark:text-gray-400">{dayNumber}</span> {dayName}
                 </p>
             </div>
             <div>
@@ -85,7 +85,7 @@ export function RightPanel({
                                     key={idx}
                                     variant="outline"
                                     disabled
-                                    className="animate-pulse bg-gray-200 text-gray-200 border-gray-200"
+                                    className="animate-pulse bg-gray-200 dark:bg-gray-700 text-gray-200 dark:text-gray-700 border-gray-200 dark:border-gray-600"
                                 >
                                     00:00
                                 </Button>
@@ -101,13 +101,14 @@ export function RightPanel({
                                     }
                                     key={availableTime.start}
                                     disabled={!availableTime.available}
+                                    className="dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-700 disabled:dark:text-gray-500 disabled:dark:border-gray-700"
                                 >
                                     {availableTime.start}
                                 </Button>
                             ))
                         )}
                         {!isLoading && availableTimes.length === 0 && (
-                            <p className="text-gray-500 text-sm">
+                            <p className="text-gray-500 dark:text-gray-400 text-sm">
                                 Aucune disponibilité pour cette date
                             </p>
                         )}

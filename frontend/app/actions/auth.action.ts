@@ -59,7 +59,6 @@ export const registerCoach = (values: {
 async function postRegister<T>(endpoint: string, values: T & { isCoach?: boolean }) {
     const url = API_URL + endpoint;
 
-    console.log("Données envoyés:", values)
     try {
         const res = await fetch(url, {
             method: 'POST',

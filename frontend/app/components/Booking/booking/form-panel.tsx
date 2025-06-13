@@ -20,11 +20,11 @@ export function FormPanel({ handleCancelForm, handleSubmitBooking }: Props) {
 	return (
 		<form className="flex flex-col gap-5 w-[360px]">
 
-			<h2 className="text-gray-950 text-2xl font-bold">
+			<h2 className="text-gray-950 dark:text-gray-50 text-2xl font-bold">
 				Confirmation de votre réservation
 			</h2>
 
-			<p className="text-gray-110 text-xs my-4">
+			<p className="text-gray-110 dark:text-gray-400 text-xs my-4">
 				En réservant ce coach vous vous engagez à vous présenter à ce cours. Si vous souhaitez annuler, vous pouvez le faire dans les informations de votre réservation.
 			</p>
 			<div className="flex justify-end gap-2">
