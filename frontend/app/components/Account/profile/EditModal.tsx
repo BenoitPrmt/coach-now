@@ -1,11 +1,10 @@
 import type {Coach, User, UserRole} from "~/types";
 import {useUser} from "~/hooks/useUser";
 import React, {useState} from "react";
-import {useForm} from "react-hook-form";
+import {Controller, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {profileSchema} from "~/validation/zod";
+import {coachProfileSchema, profileSchema} from "~/validation/zod";
 import {isOfTypeCoach} from "~/validation/typesValidations";
-import {getPublicEnv} from "../../../../env.common";
 import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} from "~/components/ui/dialog";
 import {Edit, Save, X} from "lucide-react";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "~/components/ui/form";
@@ -13,6 +12,14 @@ import {Input} from "~/components/ui/input";
 import {Button} from "~/components/ui/button";
 import {z} from "zod";
 import {API_URL} from "~/constants/api";
+import {BirthdayDateField} from "~/components/Forms/FormFields/form-fields/BirthdayDate";
+import {HourlyRateField} from "~/components/Forms/FormFields/form-fields/HourlyRate";
+import {MultiSelect} from "~/components/Forms/FormFields/form-fields/Sports";
+import {LevelField} from "~/components/Forms/FormFields/form-fields/Levels";
+import {ProfilePictureField} from "~/components/Forms/FormFields/form-fields/ProfilPicture";
+import {SPORTS_OPTIONS} from "~/constants/search";
+import {GenderField} from "~/components/Forms/FormFields/form-fields/GenderField";
+import {format} from "date-fns";
 
 type ProfileFormValues = z.infer<typeof profileSchema>;
 
@@ -23,15 +30,30 @@ const ProfileEditModal = ({isOpen, onClose, user, userRole, onProfileUpdate}: {
     userRole?: UserRole;
     onProfileUpdate: (updatedUser: User | Coach) => void;
 }) => {
-    const {userToken} = useUser();
+    const {user: currentUser, userToken} = useUser();
+
+    const coachId: string | null = currentUser && 'coachId' in currentUser ? currentUser.coachId : null;
+    const userId: string | null = currentUser && 'id' in currentUser ? currentUser.id : null;
+
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    const isCoach = Boolean(coachId);
+
     const form = useForm<ProfileFormValues>({
-        resolver: zodResolver(profileSchema),
+        resolver: zodResolver(isCoach ? coachProfileSchema : profileSchema),
         defaultValues: {
             firstName: isOfTypeCoach(user) ? user.user.firstName : user.firstName,
             lastName: isOfTypeCoach(user) ? user.user.lastName : user.lastName,
-            email: isOfTypeCoach(user) ? user.user.email : user.email,
+            ...(isCoach && {
+                gender: user.gender,
+                birthDate: isOfTypeCoach(user) && user.birthdate ? new Date(user.birthdate) : undefined,
+                hourlyRate: isOfTypeCoach(user) ? user.hourlyRate : '',
+                // Using [0] because we assume a coach has only one level
+                level: isOfTypeCoach(user) ? user.levels[0] : '',
+                // Do not work 👇
+                sports: isOfTypeCoach(user) ? user.sports : '',
+                profilePictureUrl: isOfTypeCoach(user) ? user.profilePictureUrl : '',
+            }),
         },
     });
 
@@ -39,8 +61,23 @@ const ProfileEditModal = ({isOpen, onClose, user, userRole, onProfileUpdate}: {
         if (!userToken) return;
 
         setIsSubmitting(true);
+
+        const formattedBirthDate = values.birthDate
+            ? format(values.birthDate, "yyyy-MM-dd")
+            : null;
+
+        const {birthDate, ...rest} = values;
+
+        const dataToSend = {
+            ...rest,
+            ...(coachId && {coachId}),
+            ...(formattedBirthDate && {birthDate: formattedBirthDate}),
+            ...(userId && {userId}),
+        };
+
+
         try {
-            const endpoint = `${API_URL}/${userRole?.toLowerCase()}/${isOfTypeCoach(user) ? user.user.id : user.id}`;
+            const endpoint = `${API_URL}/${userRole?.toLowerCase()}/${isCoach ? coachId : user.id}`;
 
             const response = await fetch(endpoint, {
                 method: 'PUT',
@@ -48,7 +85,7 @@ const ProfileEditModal = ({isOpen, onClose, user, userRole, onProfileUpdate}: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${userToken}`,
                 },
-                body: JSON.stringify(values),
+                body: JSON.stringify(dataToSend),
             });
 
             if (!response.ok) {
@@ -56,22 +93,32 @@ const ProfileEditModal = ({isOpen, onClose, user, userRole, onProfileUpdate}: {
             }
 
             const updatedUser = await response.json();
-            console.log(`Profil mis à jour avec succès:`, updatedUser);
+
             onProfileUpdate({
                 ...updatedUser,
                 user: isOfTypeCoach(updatedUser) ? updatedUser.user : {
                     firstName: updatedUser.firstName,
                     lastName: updatedUser.lastName,
-                    email: updatedUser.email
+                    email: updatedUser.email,
                 }
             });
-            onClose();
 
-            form.reset({
+            const resetValues = {
                 firstName: isOfTypeCoach(updatedUser) ? updatedUser.user.firstName : updatedUser.firstName,
                 lastName: isOfTypeCoach(updatedUser) ? updatedUser.user.lastName : updatedUser.lastName,
-                email: isOfTypeCoach(updatedUser) ? updatedUser.user.email : updatedUser.email,
-            });
+                ...(isCoach && {
+                    gender: updatedUser.gender,
+                    birthDate: updatedUser.birthdate ? new Date(updatedUser.birthdate) : undefined,
+                    hourlyRate: updatedUser.hourlyRate || '',
+                    level: updatedUser.levels?.[0] || '',
+                    sports: updatedUser.sports || '',
+                    profilePictureUrl: updatedUser.profilePictureUrl || '',
+                }),
+            };
+
+            form.reset(resetValues);
+
+            onClose();
         } catch (error) {
             console.error('Erreur:', error);
         } finally {
@@ -122,19 +169,33 @@ const ProfileEditModal = ({isOpen, onClose, user, userRole, onProfileUpdate}: {
                             )}
                         />
 
-                        <FormField
-                            control={form.control}
-                            name="email"
-                            render={({field}) => (
-                                <FormItem>
-                                    <FormLabel>Email</FormLabel>
-                                    <FormControl>
-                                        <Input type="email" placeholder="votre@email.com" {...field} />
-                                    </FormControl>
-                                    <FormMessage/>
-                                </FormItem>
-                            )}
-                        />
+                        {isCoach && (
+                            <>
+                                <GenderField control={form.control}/>
+
+                                <BirthdayDateField control={form.control}/>
+
+                                <ProfilePictureField control={form.control}/>
+
+                                <HourlyRateField control={form.control}/>
+
+                                <Controller
+                                    control={form.control}
+                                    name="sports"
+                                    render={({field}) => (
+                                        <MultiSelect
+                                            options={SPORTS_OPTIONS}
+                                            value={field.value}
+                                            defaultValue={field.value}
+                                            onValueChange={field.onChange}
+                                            placeholder="Sélectionnez vos sports"
+                                        />
+                                    )}
+                                />
+
+                                <LevelField control={form.control}/>
+                            </>
+                        )}
 
                         <div className="flex justify-end space-x-2 pt-4">
                             <Button

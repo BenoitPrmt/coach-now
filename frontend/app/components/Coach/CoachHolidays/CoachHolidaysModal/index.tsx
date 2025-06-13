@@ -57,7 +57,6 @@ export function CoachHolidaysModal({coachId, userId, userToken}: Props) {
 
     useEffect(() => {
         if (!userToken || unavailabilities || isLoading) return;
-        console.log("Fetching unavailabilities for coachId:", coachId);
         setIsLoading(true);
         getUnavailabilites(userToken, coachId).then((data) => {
             setUnavailabilities(data);
@@ -72,8 +71,6 @@ export function CoachHolidaysModal({coachId, userId, userToken}: Props) {
         if (!range || !range.from || !range.to) return;
 
         const rangeComplete = rangeToRangeComplete(range);
-
-        console.log(rangeComplete)
 
         createBooking(userToken, {
             startDate: formatDateTimeForAPI(rangeComplete.from),
@@ -106,10 +103,7 @@ export function CoachHolidaysModal({coachId, userId, userToken}: Props) {
 
         const rangeComplete = rangeToRangeComplete(range);
 
-        console.log("Checking coach availability for range:", rangeComplete);
-
         isCoachAvailable(userToken, coachId, formatDateTimeForAPI(rangeComplete.from), formatDateTimeForAPI(rangeComplete.to)).then((data) => {
-            console.log("isCoachAvailable response:", data);
             setIsCoachAvailableInRange(data.isAvailable);
             setBookingsInRange(data.count);
         }).catch(() => {
@@ -118,7 +112,6 @@ export function CoachHolidaysModal({coachId, userId, userToken}: Props) {
     }, [range]);
 
     const onDeleteUnavailability = (unavailability: CoachUnavailability) => {
-        console.log("Deleting unavailability:", unavailability);
         if (!userToken) {
             toast.error("Vous devez être connecté pour supprimer une indisponibilité.");
             return;
@@ -143,7 +136,7 @@ export function CoachHolidaysModal({coachId, userId, userToken}: Props) {
                     Gérer mes indisponibilités
                 </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-xl p-8 bg-white">
+            <DialogContent className="max-w-xl p-8 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
                 <DialogHeader>
                     <DialogTitle>Gérer vos indisponibilités</DialogTitle>
                     <DialogDescription>
@@ -151,9 +144,19 @@ export function CoachHolidaysModal({coachId, userId, userToken}: Props) {
                     </DialogDescription>
                 </DialogHeader>
                 <Tabs defaultValue="view">
-                    <TabsList className="grid w-full grid-cols-2 mb-4 p-1">
-                        <TabsTrigger value="view">Voir</TabsTrigger>
-                        <TabsTrigger value="create">Ajouter une indisponibilité</TabsTrigger>
+                    <TabsList className="grid w-full grid-cols-2 mb-4 p-1 bg-gray-100 dark:bg-gray-700">
+                        <TabsTrigger
+                            value="view"
+                            className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-600 data-[state=active]:text-gray-900 dark:data-[state=active]:text-white text-gray-600 dark:text-gray-300"
+                        >
+                            Voir
+                        </TabsTrigger>
+                        <TabsTrigger
+                            value="create"
+                            className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-600 data-[state=active]:text-gray-900 dark:data-[state=active]:text-white text-gray-600 dark:text-gray-300"
+                        >
+                            Ajouter une indisponibilité
+                        </TabsTrigger>
                     </TabsList>
                     <TabsContent value="view">
                         <div className="flex gap-2 flex-col">
@@ -164,7 +167,7 @@ export function CoachHolidaysModal({coachId, userId, userToken}: Props) {
                                     unavailabilities
                                         .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())
                                         .map((unavailability) => (
-                                        <Card key={unavailability.startDate + unavailability.endDate} className="py-2">
+                                        <Card key={unavailability.startDate + unavailability.endDate} className="py-2 dark:bg-gray-700 bg-gray-100">
                                             <CardContent>
                                                 <div className="flex flex-row justify-between items-center">
                                                     {unavailability.startDate === unavailability.endDate ? (
@@ -190,7 +193,7 @@ export function CoachHolidaysModal({coachId, userId, userToken}: Props) {
                         </div>
                     </TabsContent>
                     <TabsContent value="create">
-                        <Card className="bg-gray-100">
+                        <Card className="bg-gray-100 dark:bg-gray-700">
                             <CardHeader>
                                 <CardTitle>Ajout d'une disponibilité</CardTitle>
                                 <CardDescription>
@@ -208,7 +211,7 @@ export function CoachHolidaysModal({coachId, userId, userToken}: Props) {
                                                 <Button
                                                     variant="outline"
                                                     id="dates"
-                                                    className="w-full justify-between font-normal"
+                                                    className="w-full justify-between font-normal dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-500 dark:hover:text-white"
                                                 >
                                                     {range?.from && range?.to
                                                         ? `${formatDate(range.from)} - ${formatDate(range.to)}`

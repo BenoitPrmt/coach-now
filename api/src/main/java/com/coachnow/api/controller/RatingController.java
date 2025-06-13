@@ -1,6 +1,5 @@
 package com.coachnow.api.controller;
 
-import com.coachnow.api.model.entity.Booking;
 import com.coachnow.api.model.entity.Coach;
 import com.coachnow.api.model.entity.Rating;
 import com.coachnow.api.model.entity.User;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -25,7 +23,7 @@ import java.util.List;
 public class RatingController {
 
     @Autowired
-    RatingService ratingService;
+    private RatingService ratingService;
     @Autowired
     private CoachService coachService;
     @Autowired
@@ -34,21 +32,24 @@ public class RatingController {
     private BookingService bookingService;
 
     @GetMapping("/ratings")
-    public List<RatingDTO> all() {
+    public ResponseEntity<List<RatingDTO>> all() {
         List<Rating> ratings = ratingService.selectAll();
         List<RatingDTO> listDTO = new ArrayList<>();
         for (Rating rating : ratings) {
             listDTO.add(new RatingDTO(rating));
         }
-        return listDTO;
+        return new ResponseEntity<>(listDTO, HttpStatus.OK);
     }
 
     @GetMapping("/rating/{id}")
-    public RatingDTO get(@PathVariable String id) {
+    public ResponseEntity<RatingDTO> get(@PathVariable String id) {
         Rating rating = ratingService.select(id);
 
-        return rating != null ? new RatingDTO(rating) : null;
-
+        if (rating == null) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+        RatingDTO ratingDTO = new RatingDTO(rating);
+        return new ResponseEntity<>(ratingDTO, HttpStatus.OK);
     }
 
     @PostMapping("/rating")
@@ -79,7 +80,7 @@ public class RatingController {
                 throw new IllegalArgumentException("User with id " + ratingData.getUserId() + " has not booked with this coach.");
             }
 
-            Rating rating = getRating(ratingData, coach, user);
+            Rating rating = ratingService.getRating(ratingData, coach, user);
             return new ResponseEntity<>(new RatingDTO(ratingService.save(rating)), HttpStatus.CREATED);
         } catch (IllegalArgumentException | ParseException e) {
             System.err.println("Error creating rating: " + e.getMessage());
@@ -87,20 +88,10 @@ public class RatingController {
         }
     }
 
-    private static Rating getRating(RatingCreation ratingData, Coach coach, User user) throws ParseException {
-        Rating rating = new Rating();
-        rating.setRating(ratingData.getRating());
-        rating.setComment(ratingData.getComment());
-        rating.setCoach(coach);
-        rating.setUser(user);
-        rating.setDate(new Date());
-        return rating;
-    }
-
     @PutMapping("/rating/{id}")
-    public RatingDTO create(@RequestBody Rating rating, @PathVariable String id) {
+    public ResponseEntity<RatingDTO> create(@RequestBody Rating rating, @PathVariable String id) {
         rating.setId(id);
-        return new RatingDTO(ratingService.save(rating));
+        return new ResponseEntity<>(new RatingDTO(ratingService.save(rating)), HttpStatus.OK);
     }
 
     @DeleteMapping("/rating/{id}")

@@ -20,7 +20,7 @@ export const useUser = () => {
         }
 
         setIsLoading(false);
-    }, [userToken, clearUser]);
+    }, [userToken]);
 
     const signOut = () => {
         clearUser();

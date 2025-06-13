@@ -85,7 +85,6 @@ async function updateCoach(
     coachId: string,
     data: Partial<Coach>
 ): Promise<Coach> {
-    console.log("Updating coach with ID:", coachId, "and data:", data);
     try {
         const url = API_URL + `/coach/${coachId}`;
 

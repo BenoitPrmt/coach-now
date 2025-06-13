@@ -11,7 +11,6 @@ import com.coachnow.api.web.request.AuthRequest;
 import com.coachnow.api.web.request.coach.CoachCreation;
 import com.coachnow.api.web.request.coach.CoachRegistration;
 import com.coachnow.api.web.response.AuthResponse;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -42,7 +41,7 @@ public class AuthenticationController {
     private UserRepository userRepository;
 
     @PostMapping("/login")
-    public AuthResponse login(@RequestBody AuthRequest request) {
+    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(), request.getPassword()
@@ -51,7 +50,10 @@ public class AuthenticationController {
 
         User user = userRepository.findUserByEmail(request.getEmail()).orElseThrow();
         String token = jwtService.generateToken(user);
-        return new AuthResponse(token);
+        return new ResponseEntity<>(
+                new AuthResponse(token),
+                HttpStatus.OK
+        );
     }
 
     @PostMapping("/register")
@@ -60,13 +62,13 @@ public class AuthenticationController {
 
         if (userFound.isPresent()) {
             return ResponseEntity
-                    .status(HttpStatus.CONFLICT) // 409 Conflict
+                    .status(HttpStatus.CONFLICT)
                     .body("User already exists with email: " + user.getEmail());
         }
 
         User savedUser = userService.registerUser(user);
         return ResponseEntity
-                .status(HttpStatus.CREATED) // 201 Created
+                .status(HttpStatus.CREATED)
                 .body(savedUser);
     }
 
@@ -103,7 +105,7 @@ public class AuthenticationController {
         coachService.save(coach);
 
         return ResponseEntity
-                .status(HttpStatus.CREATED) // 201 Created
+                .status(HttpStatus.CREATED)
                 .body(savedUser);
     }
 

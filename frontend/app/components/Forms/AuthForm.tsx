@@ -153,7 +153,7 @@ const AuthForm = ({
           await register(commonData);
         }
 
-        toast("Création du compte réussit 🎉", {
+        toast("Création du compte réussie 🎉", {
           description: "Bienvenue sur CoachNow !",
           action: {
             label: "Se connecter",

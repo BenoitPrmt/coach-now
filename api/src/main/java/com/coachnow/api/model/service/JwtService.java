@@ -39,18 +39,22 @@ public class JwtService {
                 throw new IllegalArgumentException("Coach with user id " + user.getId() + " does not exist.");
             }
         }
-        return Jwts.builder()
+        JwtBuilder jwts = Jwts.builder()
                 .setClaims(new HashMap<>())
                 .setSubject(user.getEmail())
                 .claim("id", user.getId())
-                .claim("coachId", coachId)
                 .claim("email", user.getEmail())
                 .claim("role", user.getRole())
-                .claim("name", user.getFirstName() + " " + user.getLastName().charAt(0))
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration)) // 24h
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
-                .compact();
+                .claim("name", user.getFirstName() + " " + user.getLastName().charAt(0));
+
+        if (user.getRole() == Roles.COACH) {
+            jwts.claim("coachId", coachId);
+        }
+
+        return jwts.setIssuedAt(new Date())
+            .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration)) // 24h
+            .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+            .compact();
     }
 
     public String extractEmail(String token) {

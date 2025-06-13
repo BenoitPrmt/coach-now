@@ -25,7 +25,6 @@ import {
     SelectValue,
 } from "~/components/ui/select";
 import {Input} from "~/components/ui/input";
-import {Checkbox} from "~/components/ui/checkbox";
 import {EditIcon, PlusCircleIcon} from "lucide-react";
 import {Controller, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -39,14 +38,12 @@ import {SPORTS as SPORTS_CONSTANT} from "~/constants";
 import type {Sport} from "~/constants/sports";
 import {getAllUsers} from "~/actions/user.action";
 import {MultiSelect} from "~/components/Forms/FormFields/form-fields/Sports";
-import {LevelField} from "~/components/Forms/FormFields/form-fields/Levels";
 
 const SPORTS = SPORTS_CONSTANT.SPORTS.map((sport: Sport) => ({
     key: sport.key,
     name: sport.name,
 }));
 
-const LEVELS: { key: Level; name: string }[] = levels;
 
 const GENDERS: { key: Gender; name: string }[] = [
     {key: "MALE", name: "Homme"},
@@ -127,14 +124,11 @@ export function CoachFormModal({mode, coach}: Props) {
     }, [open, mode]);
 
     const handleSubmit = async (data: CoachFormData) => {
-        console.log("Form data submitted:", data);
         try {
             if (mode === "edit" && coach) {
                 await updateCoach(userToken, coach.id, data);
-                console.log("Coach updated successfully");
             } else if (mode === "create") {
                 await createCoach(userToken, data);
-                console.log("Coach created successfully");
             }
 
             setOpen(false);
@@ -161,7 +155,7 @@ export function CoachFormModal({mode, coach}: Props) {
                         Créer un coach
                     </Button>
                 ) : (
-                    <Button variant="secondary" size="icon">
+                    <Button variant="outline" size="icon">
                         <EditIcon className="w-4 h-4"/>
                     </Button>
                 )}

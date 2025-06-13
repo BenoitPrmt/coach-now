@@ -70,15 +70,15 @@ export function UsersTable() {
 
     return (
         <div className="w-full">
-            <div className="rounded-md border">
+            <div className="rounded-md border border-gray-200 dark:border-gray-700">
                 <Table>
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id}
-                                      className="border-b border-dark-400 text-light-200 bg-black/5 hover:bg-black/5 rounded-t-md">
+                                      className="border-b border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200 bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-t-md">
                                 {headerGroup.headers.map((header) => {
                                     return (
-                                        <TableHead key={header.id} className="text-center">
+                                        <TableHead key={header.id} className="text-center text-gray-700 dark:text-gray-300">
                                             {header.isPlaceholder
                                                 ? null
                                                 : flexRender(
@@ -97,9 +97,10 @@ export function UsersTable() {
                                 <TableRow
                                     key={row.id}
                                     data-state={row.getIsSelected() && "selected"}
+                                    className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800/30"
                                 >
                                     {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>
+                                        <TableCell key={cell.id} className="text-gray-900 dark:text-gray-100">
                                             {flexRender(
                                                 cell.column.columnDef.cell,
                                                 cell.getContext()
@@ -109,10 +110,10 @@ export function UsersTable() {
                                 </TableRow>
                             ))
                         ) : (
-                            <TableRow>
+                            <TableRow className="hover:bg-transparent dark:hover:bg-transparent">
                                 <TableCell
                                     colSpan={columns.length}
-                                    className="h-24 text-center"
+                                    className="h-24 text-center text-gray-500 dark:text-gray-400"
                                 >
                                     Aucun résultat
                                 </TableCell>

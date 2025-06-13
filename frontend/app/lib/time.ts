@@ -18,13 +18,12 @@ const timeAgo = (dateString: string): string => {
     return `il y a ${years} an${years > 1 ? 's' : ''}`;
 }
 
-const formatDate = (date: Date) =>
-    date.toLocaleDateString("fr-FR", {
-        weekday: "short",
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
-    });
+const formatDate = (date: Date) => date.toLocaleDateString("fr-FR", {
+    weekday: "short",
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+});
 
 const formatDateForBackend = (date: Date): string => {
     const pad = (n: number) => n.toString().padStart(2, '0');

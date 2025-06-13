@@ -65,9 +65,9 @@ body {
 }
 
 .dark {
-    --background: oklch(0.1885 0.0171 252.5875);
+    --background: var(--color-gray-950);
     --foreground: oklch(1.0000 0 0);
-    --card: oklch(0.1885 0.0171 252.5875);
+    --card: var(--color-gray-900);
     --card-foreground: oklch(1.0000 0 0);
     --popover: oklch(0.1885 0.0171 252.5875);
     --popover-foreground: oklch(1.0000 0 0);
@@ -100,7 +100,7 @@ body {
     --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-serif: Georgia, serif;
     --font-mono: Menlo, monospace;
-    --radius: 0.25rem;
+    --radius: 0.5rem;
     --shadow-2xs: 2px 3px 5px 0px hsl(28 13% 20% / 0.06);
     --shadow-xs: 2px 3px 5px 0px hsl(28 13% 20% / 0.06);
     --shadow-sm: 2px 3px 5px 0px hsl(28 13% 20% / 0.12), 2px 1px 2px -1px hsl(28 13% 20% / 0.12);

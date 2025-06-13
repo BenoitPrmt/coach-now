@@ -274,6 +274,9 @@ public class CoachService {
                                 && bookingEndHour == hour + 1) {
                             hourAvailability.setAvailable(false);
                             break;
+                        } else if (isDateBetween(convertHourAvailabilityToDate(dayAvailability.getDate(), hourAvailability.getStart()), booking.getStartDate(), booking.getEndDate()) && isDateBetween(convertHourAvailabilityToDate(dayAvailability.getDate(), hourAvailability.getEnd()), booking.getStartDate(), booking.getEndDate())) {
+                            hourAvailability.setAvailable(false);
+                            break;
                         }
                     }
                     dayAvailability.getHours().add(hourAvailability);

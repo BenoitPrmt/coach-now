@@ -4,6 +4,7 @@ import {Link} from "react-router";
 import {FaClock} from "react-icons/fa";
 import {timeAgo} from "~/lib/time";
 import RatingStar from "~/components/Rating/RatingCards/RatingCard/RatingStar";
+import {cn} from "~/lib/utils";
 
 type Props = {
     rating: Rating
@@ -13,12 +14,12 @@ type Props = {
 const RatingCard = ({rating, coachPage}: Props) => {
     return (
         <div
-            className="bg-white dark:bg-neutral-700 p-4 rounded-lg shadow-sm max-h-1/2 overflow-y-auto"
+            className="bg-white dark:bg-gray-700 p-4 rounded-lg shadow-sm max-h-1/2 overflow-y-auto"
         >
             {
                 (rating.comment && rating.comment.length > 0) && (
                     <motion.div
-                        className="bg-gray-50 dark:bg-neutral-600 rounded-lg p-2"
+                        className="bg-gray-50 dark:bg-gray-600 rounded-lg p-2"
                         initial={{opacity: 0}}
                         animate={{opacity: 1}}
                         transition={{delay: 0.2}}
@@ -30,7 +31,7 @@ const RatingCard = ({rating, coachPage}: Props) => {
                 )
             }
             <div
-                className="flex flex-col text-sm text-neutral-500 dark:text-neutral-400 mt-2">
+                className={cn("flex flex-col text-sm text-neutral-500 dark:text-neutral-400", (rating.comment && rating.comment.length > 0) && "pt-2")}>
                 {
                     rating.user && (
                         <Link
@@ -54,9 +55,9 @@ const RatingCard = ({rating, coachPage}: Props) => {
                             )
                         }
                         <span className="flex items-center gap-2">
-                                        <FaClock/>
+                            <FaClock/>
                             {timeAgo(rating.date)}
-                                        </span>
+                        </span>
                     </div>
                     <RatingStar
                         value={rating.rating}
@@ -65,7 +66,8 @@ const RatingCard = ({rating, coachPage}: Props) => {
                 </div>
             </div>
         </div>
-    );
+    )
+        ;
 };
 
 export default RatingCard;

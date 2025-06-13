@@ -152,7 +152,7 @@ export function Booking({ coach, buttonClassName }: Props) {
 					<DialogTitle></DialogTitle>
 					<DialogDescription></DialogDescription>
 				</VisuallyHidden>
-				<div className="w-full bg-gray-50 px-8 py-6 rounded-md max-w-max mx-auto">
+				<div className="w-full bg-gray-50 dark:bg-gray-900 px-8 py-6 rounded-md max-w-max mx-auto">
 					<div className="flex gap-6 flex-col lg:flex-row">
 						<LeftPanel
 							showForm={showForm}

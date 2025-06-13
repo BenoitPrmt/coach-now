@@ -53,9 +53,9 @@ export function CalendarHeader({
 			{/* biome-ignore lint/a11y/useHeadingContent: <explanation> */}
 			<h2
 				aria-hidden
-				className="flex-1 align-center font-bold text-md text-gray-950"
+				className="flex-1 align-center font-bold text-md text-gray-950 dark:text-gray-50"
 			>
-				{monthName} <span className="text-gray-11">{year}</span>
+				{monthName} <span className="text-gray-11 dark:text-gray-400">{year}</span>
 			</h2>
 			<Button {...prevButtonProps} onClick={() => handleChange("prev")} isDisabled={isLoading}>
 				<ChevronLeftIcon className="size-4" />

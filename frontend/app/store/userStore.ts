@@ -43,7 +43,6 @@ export const userStore = create<UserStore>((set) => ({
             const decodedUser = JSON.parse(atob(paddedPayload)) as DecodedUser;
 
             if (decodedUser.exp && Date.now() / 1000 > decodedUser.exp) {
-                console.log("Token expiré");
                 set({user: null});
                 return;
             }
