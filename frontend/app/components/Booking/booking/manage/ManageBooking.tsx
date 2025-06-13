@@ -44,13 +44,6 @@ export function ManageBooking({ booking }: Props) {
             return;
         }
 
-        if (user.id !== booking.user.id) {
-            toast.error("Vous ne pouvez pas annuler une réservation qui ne vous appartient pas.", {
-                description: "Veuillez contacter le support si vous pensez qu'il s'agit d'une erreur.",
-            });
-            return;
-        }
-
         cancelBooking(userToken, booking.id).then(() => {
             toast.success("Réservation annulée avec succès !");
             window.location.reload();
