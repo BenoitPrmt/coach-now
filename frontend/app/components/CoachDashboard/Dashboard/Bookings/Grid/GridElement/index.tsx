@@ -6,6 +6,7 @@ import {CalendarIcon} from "lucide-react";
 import {cn} from "~/lib/utils";
 import {useMemo} from "react";
 import {getBookingStatus} from "~/lib/booking";
+import {ManageBooking} from "~/components/Booking/booking/manage/ManageBooking";
 
 const {
     BOOKING_CARD_VARIANTS

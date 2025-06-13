@@ -446,12 +446,18 @@ const AccountComponent = () => {
                                         </Tabs>
                                     ) : (
                                         <div className="flex flex-col justify-center text-gray-500 dark:text-gray-400 gap-2">
-                                            <p>
-                                                Pour accéder à vos réservations et avis reçus, veuillez aller sur le
-                                                dashboard dédié.
-                                            </p>
+                                            {user.role === 'COACH' ? (
+                                                <p>
+                                                    Pour accéder à vos réservations et avis reçus, veuillez aller sur le
+                                                    dashboard dédié.
+                                                </p>
+                                            ) : (
+                                                <p>
+                                                   Accéder à votre tableau de bord administrateur pour gérer les utilisateurs, coachs et réservations.
+                                                </p>
+                                            )}
                                             <Link
-                                                to="/dashboard"
+                                                to={user.role === 'COACH' ? '/dashboard': '/admin'}
                                                 className="text-blue-600 dark:text-blue-400 hover:underline group flex items-center justify-center text-sm font-medium transition-colors duration-200 rounded-lg px-4 py-2 bg-blue-50 dark:bg-blue-900/50 hover:bg-blue-100 dark:hover:bg-blue-800/50"
                                             >
                                                 Accéder au dashboard
