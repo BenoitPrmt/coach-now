@@ -1,6 +1,5 @@
 package com.coachnow.api.controller;
 
-import com.coachnow.api.model.entity.Booking;
 import com.coachnow.api.model.entity.Coach;
 import com.coachnow.api.model.entity.Rating;
 import com.coachnow.api.model.entity.User;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @RestController

@@ -4,50 +4,50 @@ import {Button} from "~/components/ui/button";
 import {cn} from "~/lib/utils";
 import {CalendarIcon} from "lucide-react";
 import {Calendar} from "~/components/ui/calendar";
-import { format } from "date-fns";
 import type {Props} from "~/interfaces/interfaces";
 import * as React from "react";
 import {formatDate} from "~/lib/time";
 
 
 export function BirthdayDateField({control}: Props) {
-  return (
-    <div className="grid w-full max-w-sm items-center gap-3">
-      <FormField
-        control={control}
-        name="birthDate"
-        render={({field}) => (
-          <FormItem className="grid w-full max-w-sm gap-3">
-            <FormLabel>Date de naissance</FormLabel>
-            <Popover>
-              <PopoverTrigger asChild>
-                <FormControl>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      "justify-start text-left font-normal",
-                      !field.value && "text-muted-foreground"
-                    )}
-                  >
-                    <CalendarIcon/>
-                    {field.value ? formatDate(field.value) : <span>Choisir une date</span>}
-                  </Button>
-                </FormControl>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                      mode="single"
-                      lang="fr"
-                      selected={field.value}
-                      captionLayout="dropdown"
-                      onSelect={field.onChange}
-                  />
-              </PopoverContent>
-            </Popover>
-            <FormMessage/>
-          </FormItem>
-        )}
-      />
-    </div>
-  );
+    return (
+        <div className="grid w-full max-w-sm items-center gap-3">
+            <FormField
+                control={control}
+                name="birthDate"
+                render={({field}) => (
+                    <FormItem className="grid w-full max-w-sm gap-3">
+                        <FormLabel>Date de naissance</FormLabel>
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <FormControl>
+                                    <Button
+                                        variant="outline"
+                                        className={cn(
+                                            "justify-start text-left font-normal",
+                                            !field.value && "text-muted-foreground"
+                                        )}
+                                    >
+                                        <CalendarIcon/>
+                                        {field.value ? formatDate(new Date(field.value)) :
+                                            <span>Choisir une date</span>}
+                                    </Button>
+                                </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                                <Calendar
+                                    mode="single"
+                                    lang="fr"
+                                    selected={new Date(field.value)}
+                                    captionLayout="dropdown"
+                                    onSelect={field.onChange}
+                                />
+                            </PopoverContent>
+                        </Popover>
+                        <FormMessage/>
+                    </FormItem>
+                )}
+            />
+        </div>
+    );
 }

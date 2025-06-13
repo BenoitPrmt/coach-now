@@ -53,24 +53,21 @@ public class UserController {
                 throw new IllegalArgumentException("User with id " + id + " does not exist.");
             }
 
-            if (userUpdate.getFirstName() != null) {
-                existingUser.setFirstName(userUpdate.getFirstName());
-            }
-            if (userUpdate.getLastName() != null) {
-                existingUser.setLastName(userUpdate.getLastName());
-            }
-            if (userUpdate.getEmail() != null) {
-                existingUser.setEmail(userUpdate.getEmail());
-            }
-            if (userUpdate.getRole() != null) {
-                existingUser.setRole(userUpdate.getRole());
-            }
-            if (userUpdate.getPassword() != null && !userUpdate.getPassword().isEmpty()) {
-                existingUser.setPassword(userUpdate.getPassword());
-                userService.updateUserPassword(existingUser);
-            } else {
-                userService.save(existingUser);
-            }
+        if (userUpdate.getFirstName() != null) {
+            existingUser.setFirstName(userUpdate.getFirstName());
+        }
+        if (userUpdate.getLastName() != null) {
+            existingUser.setLastName(userUpdate.getLastName());
+        }
+        if (userUpdate.getRole() != null) {
+            existingUser.setRole(userUpdate.getRole());
+        }
+        if (userUpdate.getPassword() != null && !userUpdate.getPassword().isEmpty()) {
+            existingUser.setPassword(userUpdate.getPassword());
+            userService.updateUserPassword(existingUser);
+        } else {
+            userService.save(existingUser);
+        }
 
             return new ResponseEntity<>(new UserDTO(existingUser), HttpStatus.OK);
         } catch (IllegalArgumentException e) {
