@@ -73,7 +73,6 @@ const AccountComponent = () => {
 
 
             const data = await res.json();
-            console.log('Fetched user profile:', data);
             setUserProfile(data);
 
         } catch (error) {
@@ -134,7 +133,6 @@ const AccountComponent = () => {
     }, [userProfile?.bookings]);
 
     const handleProfileUpdate = useCallback((updatedUser: User | Coach) => {
-        console.log('Profile updated:', updatedUser);
         setUserProfile(updatedUser);
     }, []);
 

@@ -75,7 +75,6 @@ const ProfileEditModal = ({isOpen, onClose, user, userRole, onProfileUpdate}: {
             ...(userId && {userId}),
         };
 
-        console.log("Donnée envoyé", dataToSend)
 
         try {
             const endpoint = `${API_URL}/${userRole?.toLowerCase()}/${isCoach ? coachId : user.id}`;
@@ -94,7 +93,7 @@ const ProfileEditModal = ({isOpen, onClose, user, userRole, onProfileUpdate}: {
             }
 
             const updatedUser = await response.json();
-            console.log("Utilisateur mis à jour:", updatedUser);
+
             onProfileUpdate({
                 ...updatedUser,
                 user: isOfTypeCoach(updatedUser) ? updatedUser.user : {
@@ -103,12 +102,23 @@ const ProfileEditModal = ({isOpen, onClose, user, userRole, onProfileUpdate}: {
                     email: updatedUser.email,
                 }
             });
-            onClose();
-            form.reset({
+
+            const resetValues = {
                 firstName: isOfTypeCoach(updatedUser) ? updatedUser.user.firstName : updatedUser.firstName,
                 lastName: isOfTypeCoach(updatedUser) ? updatedUser.user.lastName : updatedUser.lastName,
-                email: isOfTypeCoach(updatedUser) ? updatedUser.user.email : updatedUser.email,
-            });
+                ...(isCoach && {
+                    gender: updatedUser.gender,
+                    birthDate: updatedUser.birthdate ? new Date(updatedUser.birthdate) : undefined,
+                    hourlyRate: updatedUser.hourlyRate || '',
+                    level: updatedUser.levels?.[0] || '',
+                    sports: updatedUser.sports || '',
+                    profilePictureUrl: updatedUser.profilePictureUrl || '',
+                }),
+            };
+
+            form.reset(resetValues);
+
+            onClose();
         } catch (error) {
             console.error('Erreur:', error);
         } finally {
