@@ -9,7 +9,7 @@ export function LevelField({control, defaultValue}: Props & { defaultValue?: ("B
         <div className="grid gap-3">
             <FormField
                 control={control}
-                name="level"
+                name="levels"
                 render={({field}) => (
                     <FormItem className="grid gap-3">
                         <FormLabel>Pour quel niveau enseignez-vous ?</FormLabel>

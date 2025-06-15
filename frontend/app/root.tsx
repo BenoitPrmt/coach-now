@@ -14,6 +14,7 @@ import "./app.css";
 import type {ReactNode} from "react";
 import Footer from "~/components/Layout/Footer";
 import {Toaster} from "sonner";
+import Error404 from "~/pages/Error404";
 
 export const links: Route.LinksFunction = () => [
     {rel: "preconnect", href: "https://fonts.googleapis.com"},
@@ -61,17 +62,17 @@ export default function App() {
 }
 
 export function ErrorBoundary({error}: Route.ErrorBoundaryProps) {
+    if (isRouteErrorResponse(error)) {
+        if (error.status === 404) {
+            return <Error404 />;
+        }
+    }
+
     let message = "Oops!";
     let details = "An unexpected error occurred.";
     let stack: string | undefined;
 
-    if (isRouteErrorResponse(error)) {
-        message = error.status === 404 ? "404" : "Error";
-        details =
-            error.status === 404
-                ? "The requested page could not be found."
-                : error.statusText || details;
-    } else if (import.meta.env.DEV && error && error instanceof Error) {
+    if (import.meta.env.DEV && error instanceof Error) {
         details = error.message;
         stack = error.stack;
     }
@@ -82,9 +83,10 @@ export function ErrorBoundary({error}: Route.ErrorBoundaryProps) {
             <p>{details}</p>
             {stack && (
                 <pre className="w-full p-4 overflow-x-auto">
-          <code>{stack}</code>
-        </pre>
+                    <code>{stack}</code>
+                </pre>
             )}
         </main>
     );
 }
+

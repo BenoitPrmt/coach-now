@@ -15,8 +15,6 @@ export function ProfilePictureField({control}: Props) {
                             <Input
                                 type="text"
                                 placeholder="https://exemple.com/monimage.jpg"
-                                value={field.value}
-                                onChange={field.onChange}
                                 {...field}
                             />
                         </FormControl>
