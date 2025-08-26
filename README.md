@@ -1,24 +1,26 @@
 # CoachNow
 
-CoachNow est une plateforme web de réservation de coachs sportifs, permettant à chacun de trouver un coach qualifié en quelques clics, selon ses objectifs et sa disponibilité.
+[French README 🇫🇷](./README_FR.md)
 
-## 🚀 Stack Technique
+CoachNow is a web platform for booking sports coaches, allowing anyone to find a qualified coach in just a few clicks, based on their goals and availability.
+
+## 🚀 Tech Stack
 
 ### Frontend
-- [React](https://react.dev/) (avec **TypeScript**)
+- [React](https://react.dev/) (with **TypeScript**)
 - [React Router](https://reactrouter.com/)
 - [Tailwind CSS](https://tailwindcss.com/)
 - [shadcn/ui](https://ui.shadcn.com/)
-- [pnpm](https://pnpm.io/) pour la gestion des dépendances
+- [pnpm](https://pnpm.io/) for dependency management
 
 ### Backend
 - [Java Spring Boot](https://spring.io/projects/spring-boot)
 - [MySQL](https://www.mysql.com/)
-- [Postman](https://www.postman.com/) pour la documentation et les tests de l'API
+- [Postman](https://www.postman.com/) for API documentation and testing
 
 ---
 
-## 👨‍💻 Développeurs
+## 👨‍💻 Developers
 
 - **Benoît** — [GitHub](https://github.com/BenoitPrmt)
 - **Raphaël** — [GitHub](https://github.com/Raxuis)
@@ -26,10 +28,10 @@ CoachNow est une plateforme web de réservation de coachs sportifs, permettant �
 
 ---
 
-## 📦 Installation & Lancement
+## 📦 Installation & Launch
 
-### Prérequis
-- Node.js (v18 ou supérieur recommandé)
+### Prerequisites
+- Node.js (v18 or higher recommended)
 - pnpm (`npm install -g pnpm`)
 - Java 21+
 - MySQL
@@ -45,15 +47,14 @@ pnpm install
 ```
 
 ### Configuration
-1. Dupliquez le fichier `.env.example` en `.env` dans le dossier `frontend/`.
+1. Duplicate the `.env.example` file as `.env` in the `frontend/` folder.
 
-
-### Lancement en développement
+### Development launch
 ```
 pnpm dev
 ```
 
-Le frontend sera disponible par défaut sur :
+The frontend will be available by default at:  
 http://localhost:5173
 
 ---
@@ -61,7 +62,7 @@ http://localhost:5173
 ## ⚙️ Backend
 
 ### Configuration
-1. Crée un fichier `application.properties` dans `src/main/resources` avec les informations de configuration, en partant de ce modèle :
+1. Create an `application.properties` file in `src/main/resources` with the following configuration, based on this template:
 
 ```
 spring.application.name=api
@@ -82,32 +83,32 @@ spring.jpa.show-sql=true
 spring.jpa.hibernate.ddl-auto=update
 ```
 
-2. Créez votre base de donnée `coach_now` dans PHPMyAdmin.
-<br>→ Vous pouvez importer le fichier `coach_now.sql` depuis le dossier `docs/` pour créer les tables avec les données de test. Pour les comptes de test, tous les mots de passe sont `password`.
+2. Create your `coach_now` database in PHPMyAdmin.  
+→ You can import the `coach_now.sql` file from the `docs/` folder to create the tables with test data. For test accounts, all passwords are `password`.
 
-### Lancement
+### Launch
 ```
 ./mvnw spring-boot:run
 ```
 
-L'API sera disponible par défaut sur :
+The API will be available by default at:  
 http://localhost:7777
 
 ---
 
-## 📁 Structure du repo
+## 📁 Repository Structure
 
 ```
 /
-├── frontend/           → Application React (pnpm)
-├── api/                → Application Java Spring Boot
-├── docs/               → Exports SQL avec les données d'exemple
+├── frontend/           → React application (pnpm)
+├── api/                → Java Spring Boot application
+├── docs/               → SQL exports with example data
 └── README.md
 ```
 
 ---
 
-## 📄 Licence
+## 📄 License
 
-Ce projet a été réalisé dans un cadre pédagogique.
-Tous droits réservés aux auteurs du projet.
+This project was created for educational purposes.  
+All rights reserved to the project authors.
