@@ -35,7 +35,7 @@ public class User {
     private Roles role = Roles.USER;
 
     @OneToMany(mappedBy = "user")
-    private List<Booking> bookings = new ArrayList<Booking>();
+    private List<Booking> bookings = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
     private List<Rating> ratings;
@@ -48,8 +48,8 @@ public class User {
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", role=" + role +
-                ", bookings=" + (bookings != null ? bookings : "[]") +
-                ", ratings=" + (ratings != null ? ratings : "[]") +
+//                ", bookings=" + (bookings != null ? bookings : "[]") +
+//                ", ratings=" + (ratings != null ? ratings : "[]") +
                 '}';
     }
 

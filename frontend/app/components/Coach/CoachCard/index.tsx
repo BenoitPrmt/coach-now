@@ -13,7 +13,8 @@ interface UserInfoProps {
     profilePictureUrl: string;
     name: string;
     age: number;
-    gender: Gender
+    gender: Gender;
+    hourlyRate: number;
     isModal?: boolean;
 }
 
@@ -23,6 +24,7 @@ const UserInfo = (
         name,
         age,
         gender,
+        hourlyRate,
         isModal = false
     }: UserInfoProps) => {
 
@@ -57,7 +59,7 @@ const UserInfo = (
                     isModal ? "hidden" : "w-14 h-14"
                 )}
             />
-            <div className="flex flex-col">
+            <div className="flex flex-col pl-2">
                 <motion.h6
                     className={cn(
                         "font-semibold text-neutral-900 dark:text-neutral-200 text-lg"
@@ -71,7 +73,7 @@ const UserInfo = (
                         isModal && "mx-auto"
                     )}
                 >
-                    {age} ans | {renderGenderSpan}
+                    {age} ans | {renderGenderSpan} | {hourlyRate ? `${hourlyRate} €/h` : "Tarif non défini"}
                 </motion.p>
             </div>
         </div>
@@ -126,7 +128,7 @@ const CoachCard = ({
         <>
             <motion.div
                 className={cn(
-                    "flex-col w-full sm:max-w-sm p-2 bg-neutral-100 dark:bg-neutral-800 rounded-xl flex gap-2 cursor-pointer hover:scale-[1.02] active:scale-[1.0] transition-transform duration-200 ease-out",
+                    "flex-col w-full sm:max-w-sm p-2 bg-neutral-100 dark:bg-gray-800 rounded-xl flex gap-2 cursor-pointer hover:scale-[1.02] active:scale-[1.0] transition-transform duration-200 ease-out",
                     className
                 )}
                 onClick={handleCardClick}
@@ -137,14 +139,15 @@ const CoachCard = ({
                     <UserInfo profilePictureUrl={coach.profilePictureUrl}
                               name={coach.user.firstName + ' ' + coach.user.lastName}
                               age={calculateAgeFromBirthdate(coach.birthdate)}
-                              gender={coach.gender}/>
+                              gender={coach.gender}
+                              hourlyRate={coach.hourlyRate}/>
                 </motion.div>
 
                 {
                     (coach.levels.length > 0 || coach.sports.length > 0) && (
 
                         <motion.div
-                            className="bg-neutral-50 dark:bg-neutral-700 border border-neutral-400/20 border-dashed rounded-md shadow-2xs flex flex-col gap-2 p-4 h-full"
+                            className="bg-neutral-50 dark:bg-gray-700 border border-neutral-400/20 border-dashed rounded-md shadow-2xs flex flex-col justify-center items-center gap-2 p-4 h-full"
                         >
                             <Description levels={coach.levels} sports={coach.sports}/>
                         </motion.div>

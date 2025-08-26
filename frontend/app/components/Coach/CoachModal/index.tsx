@@ -3,7 +3,7 @@ import {CircleUserIcon, XIcon} from "lucide-react";
 import {Button} from "~/components/ui/button";
 import {Link} from "react-router";
 import {cn} from "~/lib/utils";
-import type {Coach, Gender, Level} from "~/types";
+import type {Coach, Gender} from "~/types";
 import {formatGender} from "~/lib/formatting";
 import {MarsIcon, VenusIcon, XIcon as XIcon2} from "lucide-react";
 import {useMemo} from "react";
@@ -26,12 +26,14 @@ const UserInfo = ({
                       name,
                       age,
                       gender,
+                      hourlyRate,
                       isModal = false
                   }: {
     profilePictureUrl: string;
     name: string;
     age: number;
     gender: Gender;
+    hourlyRate?: number;
     isModal?: boolean;
 }) => {
     const renderGenderSpan = useMemo(() => {
@@ -79,7 +81,7 @@ const UserInfo = ({
                         isModal && "mx-auto"
                     )}
                 >
-                    {age} ans | {renderGenderSpan}
+                    {age} ans | {renderGenderSpan} | {hourlyRate ? `${hourlyRate} €/h` : "Tarif non défini"}
                 </motion.p>
             </div>
         </div>
@@ -108,7 +110,7 @@ const CoachModal = ({
         >
             <motion.div
                 className={cn(
-                    "bg-neutral-100 dark:bg-neutral-800 rounded-2xl p-6 w-full max-w-md relative",
+                    "bg-neutral-100 dark:bg-gray-800 rounded-2xl p-6 w-full max-w-md relative",
                     className
                 )}
                 onClick={(e) => e.stopPropagation()}
@@ -119,7 +121,7 @@ const CoachModal = ({
             >
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 w-8 h-8 rounded-full bg-neutral-200 dark:bg-neutral-700 flex items-center justify-center hover:bg-neutral-300 dark:hover:bg-neutral-600 transition-colors z-10 cursor-pointer"
+                    className="absolute top-4 right-4 w-8 h-8 rounded-full bg-neutral-200 dark:bg-gray-700 flex items-center justify-center hover:bg-neutral-300 dark:hover:bg-neutral-600 transition-colors z-10 cursor-pointer"
                 >
                     <XIcon
                         className="w-4 h-4 text-neutral-600 dark:text-neutral-300"
@@ -147,6 +149,7 @@ const CoachModal = ({
                         name={coach.user.firstName + ' ' + coach.user.lastName}
                         age={calculateAgeFromBirthdate(coach.birthdate)}
                         gender={coach.gender}
+                        hourlyRate={coach.hourlyRate}
                         isModal={true}
                     />
                 </motion.div>
@@ -154,7 +157,7 @@ const CoachModal = ({
                 {
                     (coach.levels.length > 0 || coach.sports.length > 0) && (
                         <motion.div
-                            className="bg-neutral-50 dark:bg-neutral-700 border border-neutral-400/20 border-dashed rounded-md shadow-2xs flex flex-col gap-2 p-6">
+                            className="bg-neutral-50 dark:bg-gray-700 border border-neutral-400/20 border-dashed rounded-md shadow-2xs flex flex-col gap-2 p-6">
                             <motion.div>
                                 <Description levels={coach.levels} sports={coach.sports} isModal={true}/>
                             </motion.div>
@@ -176,7 +179,7 @@ const CoachModal = ({
                         )}
                         {showProfileButton && (
                             <Button
-                                className="flex-1 bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600 text-neutral-700 dark:text-neutral-200 font-medium h-11 rounded-lg transition-colors cursor-pointer"
+                                className="flex-1 bg-neutral-200 dark:bg-gray-700 hover:bg-neutral-300 dark:hover:bg-neutral-600 text-neutral-700 dark:text-neutral-200 font-medium h-11 rounded-lg transition-colors cursor-pointer"
                                 asChild
                             >
                                 <Link to={`/coach/${coach.id}`}>

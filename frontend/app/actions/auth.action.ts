@@ -1,10 +1,10 @@
 "use server";
 
-import {getPublicEnv} from "env.common";
+import {API_URL} from "~/constants/api";
 
 export async function login(values: { email: string; password: string }) {
     try {
-        const url = getPublicEnv(import.meta.env).VITE_API_URL + "/auth/login";
+        const url = API_URL + "/auth/login";
 
         const res = await fetch(url, {
             method: 'POST',
@@ -24,53 +24,42 @@ export async function login(values: { email: string; password: string }) {
     }
 }
 
-export async function register(values: {
+export const register = (values: {
     firstName: string;
     lastName: string;
     email: string;
-    password: string,
+    password: string;
     isCoach?: boolean;
-}) {
-    try {
-        const url = getPublicEnv(import.meta.env).VITE_API_URL + "/auth/register";
+}) => postRegister("/auth/register", values);
 
-        const res = await fetch(url, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                ...values,
-                role: values.isCoach ? 'COACH' : 'USER',
-            }),
-        });
-
-        if (!res.ok) {
-            const error = await res.text();
-            throw new Error(`Registration failed: ${error}`);
-        }
-
-        return await res.json();
-    } catch (err) {
-        console.error("Registration action failed:", err);
-        throw err;
-    }
-}
-
-export async function registerCoach(values: {
+export const registerCoach = (values: {
     firstName: string;
     lastName: string;
     email: string;
     password: string;
     isCoach: boolean;
-    gender: string;
-    hourlyRate?: number;
-    sports?: string;
-    profilePicture?: string;
     birthDate?: Date;
+    profilePictureUrl?: string;
+    hourlyRate?: number;
+    sports?: string[];
     level?: "BEGINNER" | "MEDIUM" | "HIGHLEVEL";
-}) {
-    try {
-        const url = getPublicEnv(import.meta.env).VITE_API_URL + "/auth/register/coach";
+    gender?: "MALE" | "FEMALE";
+}) => {
+    const formattedValues = {
+        ...values,
+        levels: [values.level],
+        birthdate: values.birthDate
+            ? new Date(values.birthDate).toISOString().slice(0, 10)
+            : undefined,
+    };
 
+    return postRegister("/auth/register/coach", formattedValues);
+};
+
+async function postRegister<T>(endpoint: string, values: T & { isCoach?: boolean }) {
+    const url = API_URL + endpoint;
+
+    try {
         const res = await fetch(url, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},

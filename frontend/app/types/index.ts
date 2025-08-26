@@ -1,3 +1,17 @@
+export type SearchOptionsType = {
+    label: string;
+    value: string;
+}
+
+export type PaginatedResponse<T> = {
+    isPaginationEnabled: boolean;
+    page: number;
+    pageSize: number;
+    totalPages: number;
+    totalElements: number;
+    elements: T[];
+}
+
 export type UserRole = 'USER' | 'COACH' | 'ADMIN';
 
 export type Gender = "MALE" | "FEMALE"
@@ -29,7 +43,7 @@ export type Rating = {
     id: string;
     date: string;
     comment: string;
-    coach: string;
+    coach: Coach;
     user: User;
 }
 
@@ -43,4 +57,66 @@ export type Coach = {
     gender: Gender;
     user: User;
     ratings: Rating[];
+    bookings: Booking[];
 }
+
+export type ExportFormat = 'csv' | 'pdf';
+
+export type CoachDashboard = {
+    todayBookings: number;
+    activeBookings: number;
+    totalBookings: number;
+    pendingEarnings: number;
+    totalEarnings: number;
+    totalRatings: number;
+    averageRating: number;
+    bookings: Booking[];
+    nextBookings: Booking[];
+    totalHours: number;
+    monthlyEarnings: number;
+}
+
+
+export type CoachUnavailability = {
+    id: string;
+    coachId: string;
+    startDate: string;
+    endDate: string;
+}
+
+
+export type CoachCalendarDataType = {
+    label: string;
+    value: Date
+}
+
+export type TimelineDayType = {
+    date: string;
+    bookings: Booking[];
+    count: number;
+}
+
+export interface ChartDataPoint {
+    date: string;
+    earnings: number;
+    count: number;
+}
+
+export interface TrendData {
+    direction: 'up' | 'down' | 'stable';
+    percentage: number;
+}
+
+export interface PerformanceIndicatorData {
+    color: string;
+    label: string;
+    bgColor: string;
+    percentage: number;
+}
+
+export interface MaxValueInfo {
+    value: number;
+    date?: string;
+    formattedValue: string;
+}
+

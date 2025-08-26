@@ -1,4 +1,3 @@
-// components/formFields/GenderField.tsx
 import {FormControl, FormField, FormItem, FormLabel, FormMessage} from "~/components/ui/form"
 import {RadioGroup, RadioGroupItem} from "~/components/ui/radio-group"
 import {Label} from "~/components/ui/label"
@@ -22,16 +21,12 @@ export function GenderField({control}: Props) {
                 className="flex gap-5"
               >
                 <div className="flex items-center gap-2">
-                  <RadioGroupItem value="male" id="gender-male"/>
+                  <RadioGroupItem value="MALE" id="gender-male"/>
                   <Label htmlFor="gender-male">Homme</Label>
                 </div>
                 <div className="flex items-center gap-2">
-                  <RadioGroupItem value="female" id="gender-female"/>
+                  <RadioGroupItem value="FEMALE" id="gender-female"/>
                   <Label htmlFor="gender-female">Femme</Label>
-                </div>
-                <div className="flex items-center gap-2">
-                  <RadioGroupItem value="other" id="gender-other"/>
-                  <Label htmlFor="gender-other">Autre</Label>
                 </div>
               </RadioGroup>
             </FormControl>

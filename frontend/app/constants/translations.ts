@@ -3,7 +3,7 @@ type Translation = {
     french: string;
 }
 
-const translations: Translation[] = [
+const TRANSLATIONS: Translation[] = [
     {
         english: "BEGINNER",
         french: "DÉBUTANT"
@@ -14,10 +14,10 @@ const translations: Translation[] = [
     },
     {
         english: "HIGHLEVEL",
-        french: "EXPERT"
+        french: "HAUT NIVEAU"
     }
 ]
 
 export {
-    translations
+    TRANSLATIONS
 }

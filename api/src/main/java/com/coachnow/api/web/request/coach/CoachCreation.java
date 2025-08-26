@@ -12,6 +12,33 @@ public class CoachCreation {
     private String birthdate;
     private String profilePictureUrl;
     private Float hourlyRate;
+    private Set<Sports> sports;
+    private Set<Level> levels;
+    private Gender gender;
+    private String userId;
+
+    public CoachCreation() {
+    }
+
+    public CoachCreation(CoachCreation coachCreation) {
+        this.birthdate = coachCreation.getBirthdate();
+        this.profilePictureUrl = coachCreation.getProfilePictureUrl();
+        this.hourlyRate = coachCreation.getHourlyRate();
+        this.sports = coachCreation.getSports();
+        this.levels = coachCreation.getLevels();
+    }
+
+    public static CoachCreation fromCoachRegistration(CoachRegistration coachRegistration, String userId) {
+        CoachCreation coachCreation = new CoachCreation();
+        coachCreation.setBirthdate(coachRegistration.getBirthdate());
+        coachCreation.setProfilePictureUrl(coachRegistration.getProfilePictureUrl());
+        coachCreation.setHourlyRate(coachRegistration.getHourlyRate());
+        coachCreation.setSports(coachRegistration.getSports());
+        coachCreation.setLevels(coachRegistration.getLevels());
+        coachCreation.setGender(coachRegistration.getGender());
+        coachCreation.setUserId(userId);
+        return coachCreation;
+    }
 
     public String getBirthdate() {
         return birthdate;
@@ -68,9 +95,4 @@ public class CoachCreation {
     public void setUserId(String userId) {
         this.userId = userId;
     }
-
-    private Set<Sports> sports;
-    private Set<Level> levels;
-    private Gender gender;
-    private String userId;
 }

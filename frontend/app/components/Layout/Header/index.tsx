@@ -2,11 +2,12 @@
 
 import {AnimatePresence, motion} from "motion/react";
 import {useState, useEffect, Fragment} from "react";
-import {navigation} from "~/constants";
-import {Menu, X} from "lucide-react";
+import {NAVIGATION} from "~/constants";
+import {LogOutIcon, Menu, X} from "lucide-react";
 import {cn} from "~/lib/utils";
 import {Link, useNavigate, useLocation} from "react-router";
 import {useUser} from "~/hooks/useUser";
+import {ModeToggle} from "~/components/mode-toggle";
 
 export default function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -25,50 +26,8 @@ export default function Header() {
         handleScroll();
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
-    // TODO: Conditional rendering for admin header must be done here
-    // if (adminHeader) {
-    //     return (
-    //         <motion.header
-    //             transition={{duration: 0.5, ease: "easeOut"}}
-    //             className={cn(
-    //                 "sticky top-0 z-50 transition-all duration-300",
-    //                 scrolled
-    //                     ? "bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b shadow-sm py-4"
-    //                     : "bg-transparent py-4"
-    //             )}
-    //         >
-    //             <div className="container mx-auto px-4 flex justify-between items-center">
-    //                 <motion.div
-    //                     whileHover={{scale: 1.05}}
-    //                     transition={{type: "spring", stiffness: 300}}
-    //                     className="flex items-center gap-2"
-    //                 >
-    //                     <Link to="/" className="flex items-center gap-2">
-    //                         <img
-    //                             src="/icon.png"
-    //                             className="h-10 w-10 text-primary"
-    //                             alt="CoachNow Logo"
-    //                         />
-    //                         <span className="text-xl font-bold">CoachNow</span>
-    //                     </Link>
-    //                 </motion.div>
-    //
-    //                 <div className="flex items-center gap-4">
-    //                     <motion.button
-    //                         onClick={handleSignOut}
-    //                         className="text-sm font-medium hover:text-primary transition-colors"
-    //                         whileHover={{scale: 1.05}}
-    //                     >
-    //                         Déconnexion
-    //                     </motion.button>
-    //                     <SidebarTrigger/>
-    //                 </div>
-    //             </div>
-    //         </motion.header>
-    //     );
-    // }
 
-    const {navigation: headerElements} = navigation;
+    const {NAVIGATION: headerElements} = NAVIGATION;
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
     const handleNavigation = (link: string) => {
@@ -152,20 +111,38 @@ export default function Header() {
                     );
                 })}
                 {isAuthenticated && (
-                    <>
+                    <div className="flex items-center gap-4 mx-auto">
 
                         <motion.button
                             onClick={signOut}
-                            className="text-sm font-medium hover:text-primary transition-colors cursor-pointer"
+                            className="text-sm font-medium transition-colors cursor-pointer text-destructive hover:text-destructive/80 hover:bg-destructive/10 p-2 rounded-full"
                             whileHover={{scale: 1.05}}
                             initial={{opacity: 0, x: -20}}
                             animate={{opacity: 1, x: 0}}
                             transition={{...transitionBase, delay: headerElements.length * 0.1}}
                         >
-                            Déconnexion
+                            <LogOutIcon className="size-4"/>
                         </motion.button>
-                    </>
+                        <motion.div
+                            whileHover={{scale: 1.05}}
+                            initial={{opacity: 0, x: -20}}
+                            animate={{opacity: 1, x: 0}}
+                            transition={{...transitionBase, delay: (headerElements.length + 1) * 0.1}}
+                        >
+                            <ModeToggle/>
+                        </motion.div>
+                    </div>
                 )}
+                {/*  Light / Dark Mode Toggle  */}
+                <motion.div
+                    whileHover={{scale: 1.05}}
+                    initial={{opacity: 0, x: -20}}
+                    animate={{opacity: 1, x: 0}}
+                    transition={{...transitionBase, delay: (headerElements.length + 1) * 0.1}}
+                    className={cn(isAuthenticated && "hidden")}
+                >
+                    <ModeToggle/>
+                </motion.div>
             </>
         );
     };

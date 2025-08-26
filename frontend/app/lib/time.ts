@@ -1,3 +1,5 @@
+import type {TimeDuration} from "~/types/Time";
+
 const timeAgo = (dateString: string): string => {
     const now = new Date();
     const date = new Date(dateString);
@@ -16,13 +18,85 @@ const timeAgo = (dateString: string): string => {
     return `il y a ${years} an${years > 1 ? 's' : ''}`;
 }
 
-const formatDate = (date: Date) =>
-  date.toLocaleDateString("fr-FR", {
+const formatDate = (date: Date) => date.toLocaleDateString("fr-FR", {
     weekday: "short",
     day: "2-digit",
     month: "long",
     year: "numeric",
-  });
+});
+
+const formatDateForBackend = (date: Date): string => {
+    const pad = (n: number) => n.toString().padStart(2, '0');
+
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ` +
+        `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+}
 
 
-export {timeAgo, formatDate};
+const formatDateWithTime = (date: Date) =>
+    date.toLocaleDateString("fr-FR", {
+        weekday: "short",
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+    }) + ' à ' + date.toLocaleTimeString("fr-FR", {
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+
+const formatDateTimeForAPI = (date: Date): string => {
+    return date.toISOString().split("T")[0] + " " + date.toTimeString().split(" ")[0]
+}
+
+const displayDuration = (hours: number, minutes: number) => {
+    if (hours === 0 && minutes === 0) return "0min";
+
+    return new Intl.NumberFormat('fr-FR', {
+        minimumIntegerDigits: 1,
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+    }).format(hours) + 'h' + (minutes > 0 ? minutes : '');
+};
+
+const getDurationFromDate = (startDate: Date, endDate: Date): TimeDuration => {
+    const durationMs = endDate.getTime() - startDate.getTime();
+    const totalMinutes = Math.floor(durationMs / 60000);
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    return {
+        hours,
+        minutes
+    };
+}
+
+
+const formatBookingDisplayDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    if (date.toDateString() === today.toDateString()) {
+        return "Aujourd'hui";
+    } else if (date.toDateString() === tomorrow.toDateString()) {
+        return "Demain";
+    } else {
+        return date.toLocaleDateString('fr-FR', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    }
+};
+
+export {
+    timeAgo,
+    formatDate,
+    formatDateWithTime,
+    formatDateTimeForAPI,
+    formatDateForBackend,
+    displayDuration,
+    getDurationFromDate,
+    formatBookingDisplayDate
+};

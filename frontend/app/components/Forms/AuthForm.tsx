@@ -10,22 +10,22 @@ import {Card, CardContent} from "~/components/ui/card";
 import {Checkbox} from "~/components/ui/checkbox";
 import {Link, useNavigate} from "react-router";
 import {type ComponentProps, useEffect, useMemo, useState} from "react";
-import {animations} from "~/constants";
+import {ANIMATIONS} from "~/constants";
 import {login, register, registerCoach} from "~/actions/auth.action";
 import {useLocalStorage} from "~/hooks/useLocalStorage";
 import {userStore} from "~/store/userStore";
 import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle
 } from "~/components/ui/dialog";
 import {GenderField} from "~/components/Forms/FormFields/form-fields/GenderField";
 import {HourlyRateField} from "~/components/Forms/FormFields/form-fields/HourlyRate";
-import {ProfilePictureField} from "~/components/Forms/FormFields/form-fields/ProfilPicture";
+import {ProfilePictureField} from "~/components/Forms/FormFields/form-fields/ProfilePicture";
 import {BirthdayDateField} from "~/components/Forms/FormFields/form-fields/BirthdayDate";
 import {LevelField} from "~/components/Forms/FormFields/form-fields/Levels";
 import {FirstNameField} from "~/components/Forms/FormFields/form-fields/FirstName";
@@ -34,472 +34,497 @@ import {EmailField} from "~/components/Forms/FormFields/form-fields/Email";
 import {PasswordField} from "~/components/Forms/FormFields/form-fields/Password";
 import {ConfirmPasswordField} from "~/components/Forms/FormFields/form-fields/ConfirmPassword";
 import {MultiSelect} from "~/components/Forms/FormFields/form-fields/Sports";
-import type {DataRegisterInterface} from "~/interfaces/interfaces";
-
-const sportsOptions = [
-  {label: "Football", value: "football"},
-  {label: "Basketball", value: "basketball"},
-  {label: "Tennis", value: "tennis"},
-];
+import {toast} from "sonner";
+import {SPORTS} from "~/constants";
 
 type AuthFormProps = ComponentProps<"div"> & {
-  type?: "login" | "register";
+    type?: "login" | "register";
 }
 
+type LoginFormValues = z.infer<typeof loginSchema>;
+type RegisterFormValues = z.infer<typeof registerSchema>;
+type FormValues = LoginFormValues | RegisterFormValues;
+
 const AuthForm = ({
-                    type = "login",
-                    className,
-                    ...props
+                      type = "login",
+                      className,
+                      ...props
                   }: AuthFormProps) => {
-  const {
-    authFormVariants,
-    authContainerVariants,
-    authItemVariants,
-    authImageVariants,
-    authImageContainerVariants
-  } = animations;
+    const {
+        AUTH_FORM_VARIANTS,
+        AUTH_CONTAINER_VARIANTS,
+        AUTH_ITEM_VARIANTS,
+        AUTH_IMAGE_VARIANTS,
+        AUTH_IMAGE_CONTAINER_VARIANTS
+    } = ANIMATIONS;
 
-  const setUserFromToken = userStore((state) => state.setUserFromToken);
-  const isLogin = useMemo(() => type === "login", [type]);
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const [preloadedImages, setPreloadedImages] = useState(new Set<string>());
-  const navigate = useNavigate();
-  const [_, setLocalStorageKey] = useLocalStorage("jwt-coach-now", "");
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const setUserFromToken = userStore((state) => state.setUserFromToken);
+    const isLogin = useMemo(() => type === "login", [type]);
+    const [imageLoaded, setImageLoaded] = useState(false);
+    const [preloadedImages, setPreloadedImages] = useState(new Set<string>());
+    const navigate = useNavigate();
+    const [_, setLocalStorageKey] = useLocalStorage("jwt-coach-now", "");
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
 
+    const schema = useMemo(() => {
+        return isLogin ? loginSchema : registerSchema;
+    }, [isLogin]);
 
-  const schema = useMemo(() => {
-    return isLogin ? loginSchema : registerSchema;
-  }, [isLogin]);
+    const currentImage = isLogin ? "/coach-swimming.webp" : "/coach-fitness.webp";
+    const nextImage = !isLogin ? "/coach-swimming.webp" : "/coach-fitness.webp";
 
-  const currentImage = isLogin ? "/coach-swimming.webp" : "/coach-fitness.webp";
-  const nextImage = !isLogin ? "/coach-swimming.webp" : "/coach-fitness.webp";
+    // Preload des images pour éviter les flashes
+    useEffect(() => {
+        const preloadImage = (src: string) => {
+            if (preloadedImages.has(src)) return;
 
-  // Preload des images pour éviter les flashes
-  useEffect(() => {
-    const preloadImage = (src: string) => {
-      if (preloadedImages.has(src)) return;
+            const img = new Image();
+            img.onload = () => {
+                setPreloadedImages(prev => new Set(prev).add(src));
+                if (src === currentImage) {
+                    setImageLoaded(true);
+                }
+            };
+            img.onerror = () => {
+                console.warn(`Failed to preload image: ${src}`);
+            };
+            img.src = src;
+        };
 
-      const img = new Image();
-      img.onload = () => {
-        setPreloadedImages(prev => new Set(prev).add(src));
-        if (src === currentImage) {
-          setImageLoaded(true);
+        preloadImage(currentImage);
+        preloadImage(nextImage);
+    }, [currentImage, nextImage, preloadedImages]);
+
+    useEffect(() => {
+        setImageLoaded(preloadedImages.has(currentImage));
+    }, [currentImage, preloadedImages]);
+
+    const form = useForm<FormValues>({
+        resolver: zodResolver(schema),
+        mode: "onChange",
+        defaultValues: {
+            email: "",
+            password: "",
+            ...((!isLogin) && {
+                confirmPassword: "",
+                firstName: "",
+                lastName: "",
+                isCoach: false,
+                gender: "MALE" as const,
+                hourlyRate: 0,
+                sports: [],
+                level: "BEGINNER" as const,
+                profilePictureUrl: "",
+                birthDate: new Date(),
+            }),
+        },
+    });
+
+    const password = form.watch("password");
+    const confirmPassword = form.watch("confirmPassword");
+
+    useEffect(() => {
+        if (password.length && confirmPassword && confirmPassword.length && !isLogin) {
+            if (confirmPassword !== password) {
+                form.setError("confirmPassword", {
+                    type: "manual",
+                    message: "Les mots de passe ne correspondent pas."
+                });
+                return;
+            }
         }
-      };
-      img.onerror = () => {
-        console.warn(`Failed to preload image: ${src}`);
-      };
-      img.src = src;
+        form.clearErrors("confirmPassword");
+    }, [password, confirmPassword, isLogin]);
+
+    const isRegisterFormValues = (values: FormValues): values is RegisterFormValues => {
+        return 'firstName' in values && 'lastName' in values;
     };
 
-    preloadImage(currentImage);
-    preloadImage(nextImage);
-  }, [currentImage, nextImage, preloadedImages]);
+    const onSubmit = async (values: FormValues) => {
+        try {
+            if (isLogin) {
+                // For login, we know values is LoginFormValues
+                const loginValues = values as LoginFormValues;
+                const response = await login({
+                    email: loginValues.email,
+                    password: loginValues.password
+                });
 
-  useEffect(() => {
-    setImageLoaded(preloadedImages.has(currentImage));
-  }, [currentImage, preloadedImages]);
+                if (response?.token) {
+                    setLocalStorageKey(response.token);
+                    setUserFromToken(response.token);
+                    navigate("/", {replace: true});
+                }
+            } else {
+                // For register, we know values is RegisterFormValues
+                if (!isRegisterFormValues(values)) {
+                    throw new Error("Invalid form data for registration");
+                }
 
+                const {
+                    firstName,
+                    lastName,
+                    email,
+                    password,
+                    isCoach,
+                    gender,
+                    hourlyRate,
+                    sports,
+                    profilePictureUrl,
+                    birthDate,
+                    level
+                } = values;
+                const commonData = {firstName, lastName, email, password, isCoach};
 
-  const form = useForm<z.infer<typeof schema>>({
-    resolver: zodResolver(schema),
-    mode: "onChange",
-    defaultValues: {
-      email: "",
-      password: "",
-      confirmPassword: "",
-      firstName: "",
-      lastName: "",
-      isCoach: false,
-      gender: "male",
-      hourlyRate: 0,
-      sports: [],
-      profilePicture: "",
-      birthDate: new Date(),
-      level: "BEGINNER",
-    },
-  });
+                if (isCoach) {
+                    await registerCoach({
+                        ...commonData,
+                        gender,
+                        hourlyRate,
+                        sports,
+                        profilePictureUrl,
+                        birthDate,
+                        level
+                    });
+                } else {
+                    await register(commonData);
+                }
 
+                toast("Création du compte réussie 🎉", {
+                    description: "Bienvenue sur CoachNow !",
+                    action: {
+                        label: "Se connecter",
+                        onClick: () => navigate("/login"),
+                    },
+                });
+            }
 
-  const handleChange = (selected: string[]) => {
-    console.log("Selected sports:", selected);
-  }
+            form.reset();
+        } catch (error) {
+            if (error instanceof Error && error.message.includes("already exists")) {
+                form.setError("email", {
+                    type: "manual",
+                    message: "Cet email est déjà utilisé.",
+                });
+                return;
+            }
 
-  const password = form.watch("password");
-  const confirmPassword = form.watch("confirmPassword");
-
-  useEffect(() => {
-    if (password.length && confirmPassword.length && !isLogin) {
-      if (confirmPassword !== password) {
-        form.setError("confirmPassword", {
-          type: "manual",
-          message: "Les mots de passe ne correspondent pas."
-        });
-        return;
-      }
-    }
-    form.clearErrors("confirmPassword");
-  }, [password, confirmPassword, isLogin]);
-
-  const onSubmit = async (values: z.infer<typeof registerSchema>) => {
-    console.log("Données du formulaire soumises :", values);
-
-    try {
-      if (isLogin) {
-        const {email, password} = values;
-        const response = await login({email, password});
-        if (response && response.token) {
-          setLocalStorageKey(response.token);
-          setUserFromToken(response.token);
-          navigate("/", {replace: true});
+            form.setError("root", {
+                type: "manual",
+                message: error instanceof Error ? error.message : "Une erreur est survenue",
+            });
+        } finally {
+            setImageLoaded(false);
+            setPreloadedImages(new Set());
         }
-      } else {
-        if (values.isCoach) {
-          const data = {
-            firstName: values.firstName,
-            lastName: values.lastName,
-            email: values.email,
-            password: values.password,
+    };
 
-          }
-          await registerCoach(values);
-        } else {
-          const data: DataRegisterInterface = {
-            firstName: values.firstName,
-            lastName: values.lastName,
-            email: values.email,
-            password: values.password,
-            isCoach: values.isCoach,
-          }
-          await register(data);
-        }
-        navigate("/login");
-      }
-
-      form.reset();
-    } catch (error) {
-      if (error instanceof Error && error.message.includes("already exists")) {
-        form.setError("email", {
-          type: "manual",
-          message: "Cet email est déjà utilisé.",
-        });
-        return;
-      }
-      form.setError("root", {
-        type: "manual",
-        message: error instanceof Error ? error.message : "Une erreur est survenue",
-      });
-    } finally {
-      setImageLoaded(false);
-      setPreloadedImages(new Set());
-    }
-  };
-
-  return (
-    <>
-      <div className={cn("flex flex-col gap-6 h-full", className)} {...props}>
-        <Card className="overflow-hidden p-0 h-full flex-1">
-          <CardContent className="grid p-0 md:grid-cols-2 h-full flex-1 relative">
-            <motion.div
-              key={`form-${type}`}
-              variants={authFormVariants}
-              initial="hidden"
-              animate={type}
-              className={cn(
-                "relative z-10 h-full",
-                !isLogin && "md:order-last"
-              )}
-              layout
-            >
-              <Form {...form}>
-                <motion.form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="flex flex-col p-6 md:p-10 w-full m-auto h-full justify-center"
-                  variants={authContainerVariants}
-                  initial="hidden"
-                  animate="visible"
-                  key={type}
-                >
-                  <motion.div className="flex flex-col gap-6" variants={authItemVariants}>
-                    <AnimatePresence mode="wait">
-                      <motion.div
-                        key={`header-${type}`}
-                        initial={{opacity: 0, y: -20}}
-                        animate={{opacity: 1, y: 0}}
-                        exit={{opacity: 0, y: 20}}
-                        transition={{duration: 0.3}}
-                        className="flex flex-col items-center text-center"
-                      >
-                        {isLogin ? (
-                          <>
-                            <h1 className="text-2xl font-bold">
-                              De retour ?
-                            </h1>
-                            <p className="text-muted-foreground text-balance">
-                              Se connecter pour continuer
-                            </p>
-                          </>
-                        ) : (
-                          <>
-                            <h1 className="text-2xl font-bold">
-                              Bienvenue !
-                            </h1>
-                            <p className="text-muted-foreground text-balance">
-                              Créer un compte pour commencer
-                            </p>
-                          </>
-                        )}
-                      </motion.div>
-                    </AnimatePresence>
-
-                    <AnimatePresence>
-                      {!isLogin && (
+    return (
+        <>
+            <div className={cn("flex flex-col gap-6 h-full", className)} {...props}>
+                <Card className="overflow-hidden p-0 h-full flex-1">
+                    <CardContent className="grid p-0 md:grid-cols-2 h-full flex-1 relative">
                         <motion.div
-                          initial={{opacity: 0, height: 0}}
-                          animate={{opacity: 1, height: "auto"}}
-                          exit={{opacity: 0, height: 0}}
-                          transition={{duration: 0.4, ease: "easeInOut"}}
-                          className="grid grid-cols-2 gap-3"
-                        >
-                          <FirstNameField control={form.control}/>
-                          <LastNameField control={form.control}/>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-
-                    <motion.div variants={authItemVariants}>
-                      <EmailField control={form.control}/>
-                    </motion.div>
-
-                    <motion.div variants={authItemVariants}>
-                      <PasswordField control={form.control}/>
-                    </motion.div>
-
-                    <AnimatePresence>
-                      {!isLogin && (
-                        <motion.div
-                          initial={{opacity: 0, height: 0, y: -20}}
-                          animate={{opacity: 1, height: "auto", y: 0}}
-                          exit={{opacity: 0, height: 0, y: -20}}
-                          transition={{
-                            duration: 0.5,
-                            ease: "easeInOut",
-                            height: {delay: 0.1}
-                          }}
-                          className="flex flex-col gap-4"
-                        >
-                          <ConfirmPasswordField control={form.control}/>
-                          <FormField
-                            control={form.control}
-                            name="isCoach"
-                            render={({field}) => (
-                              <FormItem>
-                                <motion.div
-                                  initial={{opacity: 0, scale: 0.95}}
-                                  animate={{opacity: 1, scale: 1}}
-                                  transition={{
-                                    delay: 0.2,
-                                    duration: 0.3,
-                                    ease: "easeOut"
-                                  }}
-                                >
-                                  <FormLabel
-                                    className="flex items-start gap-3 rounded-lg border p-4 cursor-pointer transition-all duration-200 hover:bg-muted/50 has-[[aria-checked=true]]:border-blue-600 has-[[aria-checked=true]]:bg-blue-50 dark:has-[[aria-checked=true]]:border-blue-900 dark:has-[[aria-checked=true]]:bg-blue-950"
-                                    htmlFor="coach-checkbox"
-                                  >
-                                    <FormControl className="mt-3">
-                                      <Checkbox
-                                        id="coach-checkbox"
-                                        checked={field.value === true}
-                                        onCheckedChange={(checked) => {
-                                          field.onChange(checked);
-                                          if (checked === true) {
-                                            setIsDialogOpen(true);
-                                          }
-                                        }}
-                                        onBlur={field.onBlur}
-                                        name={field.name}
-                                        ref={field.ref}
-                                        className="mt-0.5 data-[state=checked]:border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-white dark:data-[state=checked]:border-blue-700 dark:data-[state=checked]:bg-blue-700 transition-all duration-200"
-                                        aria-label="Je suis coach"
-                                      />
-                                    </FormControl>
-                                    <div className="grid gap-1.5 font-normal flex-1">
-                                      <p className="text-sm leading-none font-medium">
-                                        Je suis coach
-                                      </p>
-                                      <p className="text-muted-foreground text-xs leading-relaxed">
-                                        Cochez cette case si vous êtes un coach
-                                        et souhaitez proposer vos services.
-                                      </p>
-                                    </div>
-                                  </FormLabel>
-                                </motion.div>
-                              </FormItem>
+                            key={`form-${type}`}
+                            variants={AUTH_FORM_VARIANTS}
+                            initial="hidden"
+                            animate={type}
+                            className={cn(
+                                "relative z-10 h-full",
+                                !isLogin && "md:order-last"
                             )}
-                          />
-
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-
-                    <motion.div variants={authItemVariants}>
-                      <motion.div variants={authItemVariants}>
-                        <Button type="submit">
-                          {isLogin ? "Se connecter" : "Créer un compte"}
-                        </Button>
-                      </motion.div>
-
-                      {/* Container fixe pour les erreurs pour éviter le redimensionnement */}
-                      <div className="h-6 mt-2 flex items-start">
-                        <AnimatePresence>
-                          {form.formState.errors.root?.message && (
-                            <motion.p
-                              initial={{opacity: 0, y: -10}}
-                              animate={{opacity: 1, y: 0}}
-                              exit={{opacity: 0, y: -10}}
-                              transition={{duration: 0.2}}
-                              className="text-sm text-red-500"
-                            >
-                              {form.formState.errors.root.message}
-                            </motion.p>
-                          )}
-                        </AnimatePresence>
-                      </div>
-                    </motion.div>
-
-                    <motion.div variants={authItemVariants} className="text-center text-sm">
-                      <AnimatePresence mode="wait">
-                        <motion.span
-                          key={`link-${type}`}
-                          initial={{opacity: 0}}
-                          animate={{opacity: 1}}
-                          exit={{opacity: 0}}
-                          transition={{duration: 0.2}}
+                            layout
                         >
-                          {isLogin ? (
-                            <>
-                              Pas encore de compte ?{" "}
-                              <Link to="/register" className="underline underline-offset-4">
-                                S'inscrire
-                              </Link>
-                            </>
-                          ) : (
-                            <>
-                              Déjà un compte ?{" "}
-                              <Link to="/login" className="underline underline-offset-4">
-                                Se connecter
-                              </Link>
-                            </>
-                          )}
-                        </motion.span>
-                      </AnimatePresence>
-                    </motion.div>
-                  </motion.div>
-                </motion.form>
-              </Form>
-            </motion.div>
+                            <Form {...form}>
+                                <motion.form
+                                    onSubmit={form.handleSubmit(onSubmit)}
+                                    className="flex flex-col p-6 md:p-10 w-full m-auto h-full justify-center"
+                                    variants={AUTH_CONTAINER_VARIANTS}
+                                    initial="hidden"
+                                    animate="visible"
+                                    key={type}
+                                >
+                                    <motion.div className="flex flex-col gap-6" variants={AUTH_ITEM_VARIANTS}>
+                                        <AnimatePresence mode="wait">
+                                            <motion.div
+                                                key={`header-${type}`}
+                                                initial={{opacity: 0, y: -20}}
+                                                animate={{opacity: 1, y: 0}}
+                                                exit={{opacity: 0, y: 20}}
+                                                transition={{duration: 0.3}}
+                                                className="flex flex-col items-center text-center"
+                                            >
+                                                {isLogin ? (
+                                                    <>
+                                                        <h1 className="text-2xl font-bold">
+                                                            De retour ?
+                                                        </h1>
+                                                        <p className="text-muted-foreground text-balance">
+                                                            Se connecter pour continuer
+                                                        </p>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <h1 className="text-2xl font-bold">
+                                                            Bienvenue !
+                                                        </h1>
+                                                        <p className="text-muted-foreground text-balance">
+                                                            Créer un compte pour commencer
+                                                        </p>
+                                                    </>
+                                                )}
+                                            </motion.div>
+                                        </AnimatePresence>
 
-            <motion.div
-              className="bg-muted relative hidden md:block overflow-hidden h-full"
-              variants={authImageContainerVariants}
-              initial="login"
-              animate={type}
-              layout
-            >
-              <AnimatePresence>
-                {!imageLoaded && (
-                  <motion.div
-                    initial={{opacity: 0}}
-                    animate={{opacity: 1}}
-                    exit={{opacity: 0}}
-                    className="absolute inset-0 bg-gradient-to-br from-muted via-muted/80 to-muted/60 flex items-center justify-center"
-                  >
-                    {/* Skeleton loader */}
-                    <div
-                      className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin"/>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                                        <AnimatePresence>
+                                            {!isLogin && (
+                                                <motion.div
+                                                    initial={{opacity: 0, height: 0}}
+                                                    animate={{opacity: 1, height: "auto"}}
+                                                    exit={{opacity: 0, height: 0}}
+                                                    transition={{duration: 0.4, ease: "easeInOut"}}
+                                                    className="grid grid-cols-2 gap-3"
+                                                >
+                                                    <FirstNameField control={form.control}/>
+                                                    <LastNameField control={form.control}/>
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
 
-              <AnimatePresence mode="wait">
-                <motion.img
-                  key={currentImage}
-                  src={currentImage}
-                  alt="Image d'illustration"
-                  className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
-                  variants={authImageVariants}
-                  initial="initial"
-                  animate={imageLoaded ? "loaded" : "initial"}
-                  exit="exit"
-                  onLoad={() => setImageLoaded(true)}
-                  style={{
-                    // Évite le flash pendant le chargement
-                    visibility: imageLoaded ? 'visible' : 'hidden'
-                  }}
-                />
-              </AnimatePresence>
+                                        <motion.div variants={AUTH_ITEM_VARIANTS}>
+                                            <EmailField control={form.control}/>
+                                        </motion.div>
 
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"
-                initial={{opacity: 0}}
-                animate={{opacity: imageLoaded ? 1 : 0}}
-                transition={{delay: 0.3, duration: 0.4}}
-              />
-            </motion.div>
-          </CardContent>
-        </Card>
-      </div>
+                                        <motion.div variants={AUTH_ITEM_VARIANTS}>
+                                            <PasswordField control={form.control}/>
+                                        </motion.div>
 
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <Form {...form}>
-          <form>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Espace Coach</DialogTitle>
-                <DialogDescription>
-                  Veuillez remplir ses informations afin de finaliser votre inscription :)
-                </DialogDescription>
-              </DialogHeader>
+                                        <AnimatePresence>
+                                            {!isLogin && (
+                                                <motion.div
+                                                    initial={{opacity: 0, height: 0, y: -20}}
+                                                    animate={{opacity: 1, height: "auto", y: 0}}
+                                                    exit={{opacity: 0, height: 0, y: -20}}
+                                                    transition={{
+                                                        duration: 0.5,
+                                                        ease: "easeInOut",
+                                                        height: {delay: 0.1}
+                                                    }}
+                                                    className="flex flex-col gap-4"
+                                                >
+                                                    <ConfirmPasswordField control={form.control}/>
+                                                    <FormField
+                                                        control={form.control}
+                                                        name="isCoach"
+                                                        render={({field}) => (
+                                                            <FormItem>
+                                                                <motion.div
+                                                                    initial={{opacity: 0, scale: 0.95}}
+                                                                    animate={{opacity: 1, scale: 1}}
+                                                                    transition={{
+                                                                        delay: 0.2,
+                                                                        duration: 0.3,
+                                                                        ease: "easeOut"
+                                                                    }}
+                                                                >
+                                                                    <FormLabel
+                                                                        className="flex items-start gap-3 rounded-lg border p-4 cursor-pointer transition-all duration-200 hover:bg-muted/50 has-[[aria-checked=true]]:border-blue-600 has-[[aria-checked=true]]:bg-blue-50 dark:has-[[aria-checked=true]]:border-blue-900 dark:has-[[aria-checked=true]]:bg-blue-950"
+                                                                        htmlFor="coach-checkbox"
+                                                                    >
+                                                                        <FormControl className="mt-3">
+                                                                            <Checkbox
+                                                                                id="coach-checkbox"
+                                                                                checked={field.value === true}
+                                                                                onCheckedChange={(checked) => {
+                                                                                    field.onChange(checked);
+                                                                                    if (checked === true) {
+                                                                                        setIsDialogOpen(true);
+                                                                                    }
+                                                                                }}
+                                                                                onBlur={field.onBlur}
+                                                                                name={field.name}
+                                                                                ref={field.ref}
+                                                                                className="mt-0.5 data-[state=checked]:border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-white dark:data-[state=checked]:border-blue-700 dark:data-[state=checked]:bg-blue-700 transition-all duration-200"
+                                                                                aria-label="Je suis coach"
+                                                                            />
+                                                                        </FormControl>
+                                                                        <div
+                                                                            className="grid gap-1.5 font-normal flex-1">
+                                                                            <p className="text-sm leading-none font-medium">
+                                                                                Je suis coach
+                                                                            </p>
+                                                                            <p className="text-muted-foreground text-xs leading-relaxed">
+                                                                                Cochez cette case si vous êtes un coach
+                                                                                et souhaitez proposer vos services.
+                                                                            </p>
+                                                                        </div>
+                                                                    </FormLabel>
+                                                                </motion.div>
+                                                            </FormItem>
+                                                        )}
+                                                    />
 
-              <GenderField control={form.control}/>
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
 
-              <HourlyRateField control={form.control}/>
+                                        <motion.div variants={AUTH_ITEM_VARIANTS}>
+                                            <motion.div variants={AUTH_ITEM_VARIANTS}>
+                                                <Button type="submit">
+                                                    {isLogin ? "Se connecter" : "Créer un compte"}
+                                                </Button>
+                                            </motion.div>
 
-              <ProfilePictureField control={form.control}/>
+                                            {/* Container fixe pour les erreurs pour éviter le redimensionnement */}
+                                            <div className="h-6 mt-2 flex items-start">
+                                                <AnimatePresence>
+                                                    {form.formState.errors.root?.message && (
+                                                        <motion.p
+                                                            initial={{opacity: 0, y: -10}}
+                                                            animate={{opacity: 1, y: 0}}
+                                                            exit={{opacity: 0, y: -10}}
+                                                            transition={{duration: 0.2}}
+                                                            className="text-sm text-red-500"
+                                                        >
+                                                            {form.formState.errors.root.message}
+                                                        </motion.p>
+                                                    )}
+                                                </AnimatePresence>
+                                            </div>
+                                        </motion.div>
 
-              <BirthdayDateField control={form.control}/>
+                                        <motion.div variants={AUTH_ITEM_VARIANTS} className="text-center text-sm">
+                                            <AnimatePresence mode="wait">
+                                                <motion.span
+                                                    key={`link-${type}`}
+                                                    initial={{opacity: 0}}
+                                                    animate={{opacity: 1}}
+                                                    exit={{opacity: 0}}
+                                                    transition={{duration: 0.2}}
+                                                >
+                                                    {isLogin ? (
+                                                        <>
+                                                            Pas encore de compte ?{" "}
+                                                            <Link to="/register"
+                                                                  className="underline underline-offset-4">
+                                                                S'inscrire
+                                                            </Link>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            Déjà un compte ?{" "}
+                                                            <Link to="/login" className="underline underline-offset-4">
+                                                                Se connecter
+                                                            </Link>
+                                                        </>
+                                                    )}
+                                                </motion.span>
+                                            </AnimatePresence>
+                                        </motion.div>
+                                    </motion.div>
+                                </motion.form>
+                            </Form>
+                        </motion.div>
 
-              <LevelField control={form.control}/>
+                        <motion.div
+                            className="bg-muted relative hidden md:block overflow-hidden h-full"
+                            variants={AUTH_IMAGE_CONTAINER_VARIANTS}
+                            initial="login"
+                            animate={type}
+                            layout
+                        >
+                            <AnimatePresence>
+                                {!imageLoaded && (
+                                    <motion.div
+                                        initial={{opacity: 0}}
+                                        animate={{opacity: 1}}
+                                        exit={{opacity: 0}}
+                                        className="absolute inset-0 bg-gradient-to-br from-muted via-muted/80 to-muted/60 flex items-center justify-center"
+                                    >
+                                        {/* Skeleton loader */}
+                                        <div
+                                            className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin"/>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
 
+                            <AnimatePresence mode="wait">
+                                <motion.img
+                                    key={currentImage}
+                                    src={currentImage}
+                                    alt="Image d'illustration"
+                                    className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+                                    variants={AUTH_IMAGE_VARIANTS}
+                                    initial="initial"
+                                    animate={imageLoaded ? "loaded" : "initial"}
+                                    exit="exit"
+                                    onLoad={() => setImageLoaded(true)}
+                                    style={{
+                                        // Évite le flash pendant le chargement
+                                        visibility: imageLoaded ? 'visible' : 'hidden'
+                                    }}
+                                />
+                            </AnimatePresence>
 
-              <Controller
-                control={form.control}
-                name="sports"
-                render={({field}) => (
-                  <MultiSelect
-                    options={sportsOptions}
-                    value={field.value}
-                    onValueChange={field.onChange}
-                    maxCount={2}
-                    placeholder="Sélectionnez vos sports"
-                  />
-                )}
-              />
+                            <motion.div
+                                className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"
+                                initial={{opacity: 0}}
+                                animate={{opacity: imageLoaded ? 1 : 0}}
+                                transition={{delay: 0.3, duration: 0.4}}
+                            />
+                        </motion.div>
+                    </CardContent>
+                </Card>
+            </div>
 
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <Form {...form}>
+                    <form>
+                        <DialogContent className="sm:max-w-[425px] gap-5">
+                            <DialogHeader>
+                                <DialogTitle className="text-xl">Espace Coach</DialogTitle>
+                                <DialogDescription>
+                                </DialogDescription>
+                            </DialogHeader>
 
-              <DialogFooter>
-                <DialogClose asChild>
-                  <Button>Valider</Button>
-                </DialogClose>
-              </DialogFooter>
-            </DialogContent>
-          </form>
-        </Form>
-      </Dialog>
-    </>
-  );
+                            <GenderField control={form.control}/>
+
+                            <BirthdayDateField control={form.control}/>
+
+                            <ProfilePictureField control={form.control}/>
+
+                            <HourlyRateField control={form.control}/>
+
+                            <Controller
+                                control={form.control}
+                                name="sports"
+                                render={({field}) => (
+                                    <MultiSelect
+                                        options={SPORTS.SPORTS.map(sport => ({
+                                            label: sport.name,
+                                            value: sport.key
+                                        }))}
+                                        value={field.value}
+                                        onValueChange={field.onChange}
+                                        maxCount={2}
+                                        placeholder="Sélectionnez vos sports"
+                                    />
+                                )}
+                            />
+
+                            <LevelField control={form.control}/>
+
+                            <DialogFooter>
+                                <DialogClose asChild>
+                                    <Button>Valider</Button>
+                                </DialogClose>
+                            </DialogFooter>
+                        </DialogContent>
+                    </form>
+                </Form>
+            </Dialog>
+        </>
+    );
 };
 
 export default AuthForm;

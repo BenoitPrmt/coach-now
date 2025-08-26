@@ -28,6 +28,7 @@ import {useUser} from "~/hooks/useUser";
 import {createBooking} from "~/actions/booking.action";
 import {toast} from "sonner";
 import {VisuallyHidden} from "@react-aria/visually-hidden";
+import {formatDateTimeForAPI} from "~/lib/time";
 
 type Props = {
 	coach: Coach;
@@ -102,12 +103,9 @@ export function Booking({ coach, buttonClassName }: Props) {
 		startDate.setHours(startDate.getHours());
 		endDate.setHours(endDate.getHours() + 1);
 
-		const formattedStartDate = startDate.toISOString().split("T")[0] + " " + startDate.toTimeString().split(" ")[0];
-		const formattedEndDate = endDate.toISOString().split("T")[0] + " " + endDate.toTimeString().split(" ")[0];
-
 		createBooking(userToken, {
-			startDate: formattedStartDate,
-			endDate: formattedEndDate,
+			startDate: formatDateTimeForAPI(startDate),
+			endDate: formatDateTimeForAPI(endDate),
 			isActive: true,
 			totalPrice: coach.hourlyRate,
 			coachId: coach.id,
@@ -124,6 +122,7 @@ export function Booking({ coach, buttonClassName }: Props) {
 			});
 			setIsOpen(false);
 			resetSelectedDate();
+			window.location.reload();
 		}).catch((error) => {
 			console.error("Error creating booking:", error);
 			toast.error("Une erreur est survenue lors de la création de la réservation.", {
@@ -153,7 +152,7 @@ export function Booking({ coach, buttonClassName }: Props) {
 					<DialogTitle></DialogTitle>
 					<DialogDescription></DialogDescription>
 				</VisuallyHidden>
-				<div className="w-full bg-gray-50 px-8 py-6 rounded-md max-w-max mx-auto">
+				<div className="w-full bg-gray-50 dark:bg-gray-900 px-8 py-6 rounded-md max-w-max mx-auto">
 					<div className="flex gap-6 flex-col lg:flex-row">
 						<LeftPanel
 							showForm={showForm}

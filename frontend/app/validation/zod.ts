@@ -3,7 +3,15 @@ import {z} from "zod";
 export const profileSchema = z.object({
     firstName: z.string().min(1, "Le prénom est requis").min(2, "Le prénom doit contenir au moins 2 caractères"),
     lastName: z.string().min(1, "Le nom est requis").min(2, "Le nom doit contenir au moins 2 caractères"),
-    email: z.string().min(1, "L'email est requis").email("Format d'email invalide"),
+});
+
+export const coachProfileSchema = profileSchema.extend({
+    gender: z.enum(["MALE", "FEMALE"]).optional(),
+    hourlyRate: z.coerce.number().optional(),
+    sports: z.string().array().optional(),
+    profilePictureUrl: z.string().optional(),
+    birthDate: z.date().optional(),
+    levels: z.enum(["BEGINNER", "MEDIUM", "HIGHLEVEL"]).optional(),
 });
 
 export const loginSchema = z.object({
@@ -21,10 +29,10 @@ export const registerSchema = z.object({
     lastName: z.string().min(1, "Le nom est requis."),
     confirmPassword: z.string().min(8, "La confirmation du mot de passe doit comporter au moins 8 caractères."),
     isCoach: z.boolean().default(false),
-    gender: z.enum(["male", "female", "other"], { required_error: "Le genre est requis." }),
+    gender: z.enum(["MALE", "FEMALE"], {required_error: "Le genre est requis."}),
     hourlyRate: z.coerce.number().optional(),
     sports: z.string().array().optional(),
-    profilePicture: z.string().optional(),
+    profilePictureUrl: z.string().optional(),
     birthDate: z.date().optional(),
     level: z.enum(["BEGINNER", "MEDIUM", "HIGHLEVEL"]).optional(),
 }).superRefine((data, ctx) => {
@@ -68,3 +76,15 @@ export const registerSchema = z.object({
         }
     }
 });
+
+
+export const coachReviewSchema = z.object({
+    rating: z.string()
+        .min(1, {message: "La note est nécessaire"})
+        .regex(/^[1-5]$/, "La note doit être entre 1 et 5"),
+    comment: z
+        .string()
+        .max(500, "Le commentaire ne peut pas dépasser 500 caractères.")
+        .optional()
+        .transform((val) => val?.trim() || undefined)
+})

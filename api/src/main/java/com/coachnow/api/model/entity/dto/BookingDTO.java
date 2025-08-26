@@ -26,5 +26,4 @@ public class BookingDTO {
         this.coach = booking.getCoach() != null ? new SimpleCoachDTO(booking.getCoach()) : null;
         this.user = booking.getUser() != null ? new SimpleUserDTO(booking.getUser()) : null;
     }
-
 }

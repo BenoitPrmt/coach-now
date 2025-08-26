@@ -1,9 +1,9 @@
 import React from 'react';
-import {footer as footerConstant} from "~/constants";
+import {FOOTER as FOOTER_CONSTANT} from "~/constants";
 
 const Footer = () => {
     const currentYear = new Date().getFullYear();
-    const {footer} = footerConstant;
+    const {FOOTER} = FOOTER_CONSTANT;
 
     return (
         <footer
@@ -13,19 +13,19 @@ const Footer = () => {
                     <div className="mb-8 md:mb-0 max-w-md">
                         <div className="flex items-center gap-2 mb-4">
                             <img
-                                src={footer.iconUrl}
+                                src={FOOTER.iconUrl}
                                 className="h-10 w-10 text-primary"
-                                alt={footer.title}
+                                alt={FOOTER.title}
                             />
-                            <span className="text-2xl font-bold tracking-tight">{footer.title}</span>
+                            <span className="text-2xl font-bold tracking-tight">{FOOTER.title}</span>
                         </div>
                         <p className="text-md text-slate-600 dark:text-slate-300">
-                            {footer.description}
+                            {FOOTER.description}
                         </p>
                     </div>
 
                     <div className="grid grid-cols-2 gap-x-8 gap-y-6">
-                        {footer.links
+                        {FOOTER.links
                             .filter((item, index, self) =>
                                 (item.isAvailable ?? true) &&
                                 index === self.findIndex((i) => i.label === item.label)
@@ -53,17 +53,17 @@ const Footer = () => {
                 <div
                     className="pt-8 border-t border-slate-200 dark:border-slate-700 flex flex-col md:flex-row justify-between items-center">
                     <p className="text-sm text-slate-500 dark:text-slate-400 mb-4 md:mb-0">
-                        © {currentYear} {footer.companyName}. Tous droits réservés.
+                        © {currentYear} {FOOTER.companyName}. Tous droits réservés.
                     </p>
                     {
-                        footer.socialNetworksLinks
+                        FOOTER.socialNetworksLinks
                             .filter((social, index, self) =>
                                 social.isAvailable &&
                                 index === self.findIndex((s) => s.type === social.type)
                             ).length > 0 && (
                             <div className="flex space-x-6">
                                 {
-                                    footer.socialNetworksLinks
+                                    FOOTER.socialNetworksLinks
                                         .filter((social, index, self) =>
                                             social.isAvailable &&
                                             index === self.findIndex((s) => s.type === social.type)
